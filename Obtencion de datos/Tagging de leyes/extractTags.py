@@ -63,7 +63,7 @@ def get_datos(file):
           "url": url_ley
         }
     except Exception as e:
-      
+
       print("Error:" + str(e))
     
   return leyes
