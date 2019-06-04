@@ -5,18 +5,29 @@ from bs4 import BeautifulSoup
 
 import json
 
+#import pymongo
+
+#myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+#mydb = myclient["leytransparente"]
 
 diputados = open("JsonInfoProbidad.json", encoding="utf-8")
 data = json.load(diputados)
 largos =[]
+f = open("declaraciones.txt", "w")
+daata = {}
+daata["declaraciones"]=[]
 for diputado in data:
     url_declaracion = diputado["Declaracion"]["value"]
     response = requests.get(url_declaracion)
     soup = BeautifulSoup(response.text, "html.parser")
-    declaracion = soup.findAll("span",{"property" : "dip:jsonCargado"})
+    declaracion = soup.findAll("span",{"property" : "dip:jsonCargado"})[0].text
     print(declaracion)
-    largos.append(len(declaracion))
-    break
+    f.write(declaracion)
+    #daata["declaraciones"].append(declaracion)
+    #print(declaracion)
+    #largos.append(len(declaracion))
+#json.dump(daata,f, indent=4)
+f.close()
 print(largos)
 print(len(largos))
 
