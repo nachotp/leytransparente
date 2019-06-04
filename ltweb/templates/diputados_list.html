@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<table class="table table-bordered">
+	<thead>
+		<tr>
+			<td>Nombre</td>
+			<td>Apellido Paterno</td>
+			<td>Apellidos Materno</td>
+            <td>
+				<a class="btn btn-primary" href="{% url 'Subir declaracion' %}">Subir Declaracion</a>
+			</td>
+		</tr>
+		
+	</thead>
+	<tbody>
+		{% if diputados %}
+		{% for diputado in diputados %}
+		<tr>
+			<td>{{ diputado.nombres }}</td>
+			<td>{{ diputado.apellido_paterno }}</td>
+			<td>{{ diputado.apellido_materno }}</td>
+			<td>
+				<a class="btn btn-primary" href="#">Ver Declaracion</a>
+                <a class="btn btn-danger" href="#">Eliminar</a>
+			</td>
+		</tr>
+		{% endfor %}
+		
+		{% else %}
+		<h1>No hay registros de Parlamentarios</h1>
+		{% endif %}
+	</tbody>
+</table>
+{% endblock%}
