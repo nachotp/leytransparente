@@ -4,6 +4,7 @@ django-extensions==2.1.6
 django-rest-framework==0.1.0
 djangorestframework==3.9.2
 djongo==1.2.32
+dnspython==1.16.0
 pymongo==3.8.0
 pytz==2018.9
 six==1.12.0
