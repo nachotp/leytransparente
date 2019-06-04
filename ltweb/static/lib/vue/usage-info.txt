@@ -1,0 +1,9 @@
+Currently: v2.5.13
+
+Got the files from here:
+https://vuejs.org/v2/guide/installation.html#Direct-lt-script-gt-Include
+
+And also, to quote what it says there: Remember to use vue.js for development (for warning and such)
+but change to vue.min.js for production.
+
+(Btw, if you haven't already, get Vue devtools. It's a really useful browser extension)
