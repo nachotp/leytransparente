@@ -40,7 +40,7 @@ class SubirDeclaracionView(View):
         dic = json.loads(L)
         self.mycol.insert(dic)
 
-        return render(request, self.template_name, self.context)
+        return redirect('Lista Diputados')
 
 class DiputadosListView(TemplateView):
     
