@@ -1,0 +1,12 @@
+Got the files from here:
+https://unpkg.com/vue-multiselect@2.0.3/dist/
+
+These versions are slightly different from what I found on the GitHub's dist folder (which
+were causing an unimportant bug without any real visible effect, but seeing "false undefined"
+in the console all the time bugged me a lot... heh, "bugged me")
+
+In the future, you can probably still go here https://github.com/monterail/vue-multiselect
+for the most recent versions (the GitHub's fairly active and there's a good chance there's been
+bug fixes or even new features since I wrote this). Otherwise: https://unpkg.com/vue-multiselect
+will automatically take you to the min.js of the (I assume) most recent version
+
