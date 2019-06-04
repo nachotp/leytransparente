@@ -9,7 +9,10 @@ dfsala = pd.read_csv("VotosSala.csv", sep=";")
 
 boletines = dfboletines['Boletin'].unique().tolist()
 materias  = dfboletines['Materia'].unique().tolist()
-print(len(materias))
+materias.sort()
+with io.open("materias.dat","w", encoding='utf8') as fl:
+    fl.write("\n".join(materias))
+
 diputados = dfsala.DIPUTADO.unique().tolist()
 
 dictputados = {}

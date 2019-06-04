@@ -54,7 +54,7 @@ ROOT_URLCONF = 'leytransparente.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ["ltweb/templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -73,22 +73,22 @@ WSGI_APPLICATION = 'leytransparente.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-"""
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-"""
 
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
         'NAME': 'LeyTransparente',
     }
 }
-
+'''
 
 
 # Password validation
