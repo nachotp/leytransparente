@@ -1,0 +1,17 @@
+1.4.0
+https://bootstrap-vue.js.org/docs
+From the docs (but slightly modified so the paths make sense, since I'm not using unpkg.com stuff):
+    <!-- Add this to <head> -->
+    <link type="text/css" rel="stylesheet" href="[path-to-relevant-folder]/bootstrap.min.css"/>
+    <link type="text/css" rel="stylesheet" href="[path-to-relevant-folder]/bootstrap-vue.css"/>
+
+    <!-- Add this after vue.js -->
+    <script src="[path-to-relevant-folder]/polyfill.min.js"></script>
+    <script src="[path-to-relevant-folder]/bootstrap-vue.js"></script>
+
+Bootstrap-Vue DOES NOT use Bootstrap's javascript files.
+
+(you can also go here https://unpkg.com/bootstrap-vue@1.4.0/dist/, or changing the url to the relevant version,
+to get the files, including map files and such)
+
+Since they're fairly active, there's probably newer versions since I wrote this, so consider upgrading.
