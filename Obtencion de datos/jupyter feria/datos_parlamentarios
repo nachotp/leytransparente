@@ -1,0 +1,22 @@
+import requests
+import urllib.request
+
+from bs4 import BeautifulSoup
+
+import json
+
+
+diputados = open("JsonInfoProbidad.json", encoding="utf-8")
+data = json.load(diputados)
+largos =[]
+for diputado in data:
+    url_declaracion = diputado["Declaracion"]["value"]
+    response = requests.get(url_declaracion)
+    soup = BeautifulSoup(response.text, "html.parser")
+    declaracion = soup.findAll("span",{"property" : "dip:jsonCargado"})
+    print(declaracion)
+    largos.append(len(declaracion))
+    break
+print(largos)
+print(len(largos))
+
