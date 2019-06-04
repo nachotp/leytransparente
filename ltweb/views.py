@@ -14,9 +14,9 @@ class SubirDeclaracionView(View):
     
     context = {}
     initial = {'key': 'value'}
-    myclient = MongoClient("mongodb://localhost:27017/")
-    mydb = myclient["LeyTransparente"]
-    mycol = mydb["Declaraciones"]
+    myclient = MongoClient("mongodb+srv://admin:leytransparente@leytransparente-m6y51.mongodb.net/test?retryWrites=true&w=majority")
+    mydb = myclient["leytransparente"]
+    mycol = mydb["declaraciones"]
     template_name = 'declaracion_form.html'
 
     def get(self, request, *args, **kwargs):
@@ -44,9 +44,9 @@ class SubirDeclaracionView(View):
 
 class DiputadosListView(TemplateView):
     
-    myclient = MongoClient("mongodb://localhost:27017/")
-    mydb = myclient["LeyTransparente"]
-    mycol = mydb["Declaraciones"]
+    myclient = MongoClient("mongodb+srv://admin:leytransparente@leytransparente-m6y51.mongodb.net/test?retryWrites=true&w=majority")
+    mydb = myclient["leytransparente"]
+    mycol = mydb["declaraciones"]
     template_name = 'diputados_list.html'
 
     def get_context_data(self, **kwargs):
