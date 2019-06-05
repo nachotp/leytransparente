@@ -7,6 +7,8 @@ from pymongo import *
 from bs4 import BeautifulSoup
 from bson.objectid import ObjectId
 
+from ltweb import conflict_detection
+
 
 class HomeView(TemplateView):
     template_name = "home.html"
@@ -145,10 +147,13 @@ class SubirLeyView(View):
 
             lista_tags = []
 
-            for tag in soup.findAll("terminolibre"):
+            for tag in soup.findAll("materia"):
                 lista_tags.append(tag.text.strip())  # almacenar los tags en una lista
 
-            url_ley = soup.findAll("url")[0].text  # guardar la url de la ley para mostrarla en caso que sea necesario
+            if(len(soup.findAll("url")) > 0):
+                url_ley = soup.findAll("url")[0].text  # guardar la url de la ley para mostrarla en caso que sea necesario
+            else:
+                url_ley=""
 
             if (len(soup.findAll("Resumen")) > 0):
                 resumen = soup.findAll("Resumen")[0].text
@@ -168,8 +173,8 @@ class SubirLeyView(View):
                 print("problemas agregando la ley a la base")
 
         """SEGMENTO AGREGADO EN BASE AL TRABAJO DE OBTENCION DE DATOS"""
-
-        return redirect('Lista Leyes')
+        matches = conflict_detection.conflicto_patrimonio(lista_tags)
+        return redirect('Conflictos', matches = matches)
 
 
 class LeyesListView(TemplateView):
@@ -195,3 +200,6 @@ class LeyesListView(TemplateView):
 
         context['leyes'] = data
         return context
+
+class ConflictoView(TemplateView):
+    print()
