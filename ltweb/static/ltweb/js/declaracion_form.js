@@ -45,5 +45,26 @@ var ParlamentariosForm = new Vue({
         get_profesion(){
             return this.$store.state.form_data.Datos_del_Declarante.Profesion_Oficio.nombre;
         },
+        get_estadoc(){
+            return this.$store.state.form_data.Datos_del_Declarante.Estado_Civil.nombre;
+        },
+        get_regimenp(){
+            return this.$store.state.form_data.Datos_del_Declarante.Regimen_Patrimonial.nombre;
+        },
+        get_fechacargo(){
+            return this.$store.state.form_data.Datos_Entidad_Por_La_Que_Declara.Fecha_Asuncion_Cargo.split(' ')[0];
+        },
+        get_regiondesempeno(){
+            return this.$store.state.form_data.Datos_Entidad_Por_La_Que_Declara.Region_Desempeno_Chile.nombre;
+        },
+        get_region(){
+            return this.$store.state.form_data.Region.nombre;
+        },
+        get_comuna(){
+            return this.$store.state.form_data.Comuna.nombre;
+        },
+        get_fechadecla(){
+            return this.$store.state.form_data.Fecha_de_la_Declaracion.split(' ')[0];
+        }
     },
 });
