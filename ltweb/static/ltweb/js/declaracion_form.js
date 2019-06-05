@@ -14,11 +14,11 @@ var ParlamentariosForm = new Vue({
         form_data(){
             return this.$store.state.form_data
         },
+        form_base(){
+            return this.$store.state.form_base.template
+        },
         edit_form(form){
             updateForm(this.$store.state, form)
         },
-        for_form_item(){
-
-        }
     },
 });

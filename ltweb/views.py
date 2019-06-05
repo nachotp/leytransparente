@@ -13,6 +13,11 @@ class HomeView(TemplateView):
 class EditarDeclaracion(TemplateView):
     template_name = "editar.html"
 
+    def get_context_data(self, **kwargs):
+        #Eso es get, para que sea más seguro, usar POST
+        ctx = super().get_context_data()
+        ctx['id'] = self.request.GET.get('id', None)
+        return ctx
 
 class SubirDeclaracionView(View):
     context = {}

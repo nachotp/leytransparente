@@ -10,10 +10,6 @@
 {% block content %}
 
 <body>
-
-
-
-
     <div id="ParlamentariosForm">
         <table  class="table table-striped table-bordered compact" id="dip_table" cellspacing="0">
             <thead>
@@ -23,6 +19,11 @@
                 </tr>
             </thead>
             <tbody>
+                <tr>
+                <td>Nombre Diptuado</td>
+                <td>[[form_data.Nombre]]</td>
+                </tr>
+
                 <tr>
                 <td>Id declaración</td>
                 <td>[[form_data.Id_Declaracion]]</td>
@@ -77,6 +78,26 @@
                 <td>Bienes inmuebles situados en Chile</td>
                 <td>[[form_data.Bienes_Inmuebles_Situados_En_Chile]]</td>
                 </tr>
+
+                <tr>
+                <td>Vehiculos motorizados</td>
+                <td>[[form_data.Vehiculos_Motorizados]]</td>
+                </tr>
+
+                <tr>
+                <td>Naves o artefactos Navales</td>
+                <td>[[form_data.Naves_Artefactos_Navales]]</td>
+                </tr>
+
+                <tr>
+                <td>Derechos o acciones en Chile</td>
+                <td>[[form_data.Derechos_Acciones_Chile]]</td>
+                </tr>
+
+                <tr>
+                <td>Pasivos</td>
+                <td>[[form_data.Pasivos]]</td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -100,13 +121,13 @@
       </b-card-header>
       <b-collapse id="accordion-2" accordion="my-accordion" role="tabpanel">
         <b-card-body>
-          <b-card-text>{{ text }}</b-card-text>
+          <b-card-text>aaa</b-card-text>
         </b-card-body>
       </b-collapse>
     </b-card>
-    </div>
+    </div-->
 
-    <h3>
+    <!--h3>
         <form name ='edit_json' method='POST'>
             {% csrf_token %}
 
