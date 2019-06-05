@@ -1,6 +1,8 @@
 import pandas as pd
 import json
 import io
+import re
+from unicodedata import normalize   
 
 dfboletines = pd.read_csv("tagsBoletines.csv", sep=";")
 dfcomision = pd.read_csv("VotosComision.csv", sep=";")
@@ -21,8 +23,10 @@ for dip in diputados:
     dictputados[dip] = {}
 
 dict_boletines = dfboletines.groupby('Boletin')['Materia'].apply(list).to_dict()
-
 for dip,votos in dfsala.groupby('DIPUTADO')['BOLETIN', 'VOTACION']:
+    dip = re.sub(r"([^n\u0300-\u036f]|n(?!\u0303(?![\u0300-\u036f])))[\u0300-\u036f]+", r"\1", normalize( "NFD", dip), 0, re.I)
+    dip = dip.upper()
+    print(dip)
     for index, row in votos.iterrows():
         try:
             bol_materias = dict_boletines[row["BOLETIN"]]
