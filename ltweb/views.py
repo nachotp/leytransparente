@@ -76,7 +76,8 @@ class DiputadosListView(TemplateView):
         data = []
         
         for par in query:
-            dic = {'nombres': par['Datos_del_Declarante']['nombre'],
+            dic = {'id':par["_id"],
+                    'nombres': par['Datos_del_Declarante']['nombre'],
                    'apellido_paterno': par['Datos_del_Declarante']['Apellido_Paterno'],
                    'apellido_materno': par['Datos_del_Declarante']['Apellido_Materno']}
             data.append(dic)
