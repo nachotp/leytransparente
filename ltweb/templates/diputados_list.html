@@ -17,7 +17,7 @@
 			<td>Apellido Paterno</td>
 			<td>Apellidos Materno</td>
             <td>
-				<a class="btn btn-primary" href="{% url 'Subir declaracion' %}">Subir Declaracion</a>
+				<div class="text-center"><a class="btn btn-primary center" href="{% url 'Subir declaracion' %}">Subir Declaracion</a></div>
 			</td>
 		</tr>
 	</thead>
@@ -29,8 +29,10 @@
 			<td>{{ diputado.apellido_paterno }}</td>
 			<td>{{ diputado.apellido_materno }}</td>
 			<td>
-				<a class="btn btn-sm btn-primary" href="{% url 'Editar Declaracion' %}?id={{ diputado.id }}" >Ver Declaración</a>
-                <a class="btn btn-sm btn-danger" href="#">Eliminar</a>
+				<div class="text-right">
+                    <a class="btn btn-sm btn-primary" href="{% url 'Editar Declaracion' %}?id={{ diputado.id }}" >Ver Declaración</a>
+                    <a class="btn btn-sm btn-danger " href="#">Eliminar</a>
+                </div>
 			</td>
 		</tr>
 		{% endfor %}
