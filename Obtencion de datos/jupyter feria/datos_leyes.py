@@ -12,11 +12,10 @@ def get_datos(id_norma_start, id_norma_end):
     #itercomp = iter(compilado)
     #next(itercomp)
 
-    """myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+    myclient = pymongo.MongoClient("mongodb://localhost:27017/")
     mydb = myclient["leytransparente"]
-
     mycol = mydb["leyes"]
-"""
+
     f=open("id_normas.txt","w")
 
     for row in range(id_norma_start, id_norma_end+1):
@@ -33,6 +32,8 @@ def get_datos(id_norma_start, id_norma_end):
                 tipo = soup.findAll("tipo")[0].text
             elif(len(soup.findAll("Tipo"))>0):
                 tipo = soup.findAll("Tipo")[0].text
+            else:
+                tipo=""
 
             if (tipo == "Ley"):  # condicion para filtrar decreto, codigo, ley, etc
                 f.write(str(row)+"\n")
@@ -45,7 +46,11 @@ def get_datos(id_norma_start, id_norma_end):
                     lista_tags.append(tag.text.strip())  # almacenar los tags en una lista
 
                 url_ley = soup.findAll("url")[0].text  # guardar la url de la ley para mostrarla en caso que sea necesario
-                resumen = soup.findAll("resumen").text
+
+                if(len(soup.findAll("Resumen"))>0):
+                    resumen = soup.findAll("Resumen")[0].text
+                else:
+                    resumen = ""
 
                 ley["numero"] = numero
                 ley["nombre"] = nombre
@@ -53,13 +58,13 @@ def get_datos(id_norma_start, id_norma_end):
                 ley["tags"] = lista_tags
                 ley["url"] = url_ley
 
-                """try:
+                try:
                     x = mycol.insert_one(ley)
                     print("ley insertada correctamente")
                 except:
-                    print("problemas agregando la ley a la base")"""
+                    print("problemas agregando la ley a la base")
     f.close()
 
 
 
-get_datos(3892,1132091)
+get_datos(21876,1132091)
