@@ -5,6 +5,7 @@
   <script type="text/javascript" charset="utf8" src="{% static 'lib/DataTables/jquery-3.3.1.min.js' %}"></script>
   <script type="text/javascript" charset="utf8" src="{% static 'lib/DataTables/jquery.dataTables.min.js' %}"></script>
   <script type="text/javascript" charset="utf8" src="{% static 'lib/DataTables/dataTables.bootstrap4.min.js' %}"></script>
+  <script type="text/javascript" charset="utf8" src="{% static 'lib/DataTables/Spanish.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -44,41 +45,19 @@
 
 {% block body_end %}
 <script>
-var table = "#dip_table";
-console.log('creating table '+table);
-$(table+' thead tr:eq(0) th').each( function (i) {
-      var title = $(this).text();
-      $(this).html( '<input type="text" class="form-control" style="width: 100%;" placeholder="filter '+title+'" />' );
+$(document).ready(function() {
+    var table = "#dip_table";
+    console.log('creating table '+table);
 
-      $( 'input', this ).on( 'keyup change', function () {
-          if ( diputable.column(i).search() !== this.value ) {
-              diputable
-                  .column(i)
-                  .search( this.value )
-                  .draw();
-          }
-      });
-  });
+    var diputable = $(table).DataTable({
+        "language": langSpanish,
+        orderCellsTop: true,
+        "order": [[ 0, "desc" ]],
+        "scrollY":        "70vh",
+        "paging":         true,
 
-var diputable = $(table).DataTable({
-  orderCellsTop: true,
-  "order": [[ 0, "desc" ]],
-  "scrollY":        "70vh",
-  "scrollCollapse": true,
-  "paging":         false,
 
-});
-
-diputable.columns( '.hidden-search' ).every( function () {
-    var that = this;
-    // Create the select list and search operation
-    var select = $(table+'-select')
-        .on( 'change', function () {
-            that
-                .search( $(this).val() )
-                .draw();
-        });
-    that.search(select.val()).draw();
+    });
 });
 </script>
 {% endblock %}
