@@ -5,66 +5,85 @@ from bs4 import BeautifulSoup
 import csv
 import pymongo
 
-def get_datos(id_norma_start, id_norma_end):
+def get_datos():
     #comp = open(file, "r", encoding='latin')
     #compilado = csv.reader(comp, delimiter=";")
 
     #itercomp = iter(compilado)
     #next(itercomp)
 
-    myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+    myclient = pymongo.MongoClient("mongodb+srv://admin:leytransparente@leytransparente-m6y51.mongodb.net/test?retryWrites"
+                           "=true&w=majority")
     mydb = myclient["leytransparente"]
     mycol = mydb["leyes"]
 
-    f=open("id_normas.txt","w")
+    #f=open("id_normas.txt","w")
 
-    for row in range(id_norma_start, id_norma_end+1):
+    for leyes in get_ley():
         ley = {}
-        print(row)
-        url = "https://www.leychile.cl/Consulta/obtxml?opt=4546&idNorma=" + str(row)
-        response = requests.get(url)
+        status=0
+        while(status != 200):
+            url = "https://www.leychile.cl/Consulta/obtxml?opt=4546&idLey=" + str(leyes)
+            response = requests.get(url)
+            status = response.status_code
+
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        if(len(soup.findAll("tipo"))>0):
+            tipo = soup.findAll("tipo")[0].text
+        elif(len(soup.findAll("Tipo"))>0):
+            tipo = soup.findAll("Tipo")[0].text
+        else:
+            tipo=""
+
+        if (tipo == "Ley" or tipo == "LEY"):  # condicion para filtrar decreto, codigo, ley, etc
+            #f.write(str(row)+"\n")
+            numero = soup.findAll("numero")[0].text  # obtener el numero de la ley
+            nombre = soup.findAll("titulonorma")[0].text
+
+            lista_tags = []
+
+            for tag in soup.findAll("materia"):
+                lista_tags.append(tag.text.strip())  # almacenar los tags en una lista
 
 
-        if(response.status_code == 200):
-            soup = BeautifulSoup(response.text, "html.parser")
+            url_ley = soup.findAll("url")[0].text  # guardar la url de la ley para mostrarla en caso que sea necesario
 
-            if(len(soup.findAll("tipo"))>0):
-                tipo = soup.findAll("tipo")[0].text
-            elif(len(soup.findAll("Tipo"))>0):
-                tipo = soup.findAll("Tipo")[0].text
+            if(len(soup.findAll("resumen"))>0):
+                resumen = soup.findAll("resumen")[0].text
             else:
-                tipo=""
+                resumen = ""
 
-            if (tipo == "Ley"):  # condicion para filtrar decreto, codigo, ley, etc
-                f.write(str(row)+"\n")
-                numero = soup.findAll("numero")[0].text  # obtener el numero de la ley
-                nombre = soup.findAll("titulonorma")[0].text
+            ley["numero"] = numero
+            ley["nombre"] = nombre
+            ley["resumen"] = resumen
+            ley["tags"] = lista_tags
+            ley["url"] = url_ley
 
-                lista_tags = []
+            try:
+                x = mycol.insert_one(ley)
+                print("ley insertada correctamente")
+            except:
+                print("problemas agregando la ley a la base")
+        else:
+            print(leyes)
+            print("not a ley?")
+    #f.close()
 
-                for tag in soup.findAll("terminolibre"):
-                    lista_tags.append(tag.text.strip())  # almacenar los tags en una lista
+def get_ley():
+    leyes=[]
+    for i in range(1,10):
+        url = "https://www.leychile.cl/Consulta/listaresultadosimple?cadena=&npagina="+str(i)+"&itemsporpagina=30&exacta=0&orden=0&tipoviene=0&totalitems=242&seleccionado=0&fc_tn=%2CLey&fc_ra=&fc_rp=&fc_de=&fc_pr=&fc_pb=2016+TO+2018"
+        response = requests.get(url)
+        soup = BeautifulSoup(response.text, "html.parser")
 
-                url_ley = soup.findAll("url")[0].text  # guardar la url de la ley para mostrarla en caso que sea necesario
+        for ley in soup.findAll("a",{"class" : "link_norma_tpn"}):
+            leyes.append(ley.text.split(" ")[1])
 
-                if(len(soup.findAll("Resumen"))>0):
-                    resumen = soup.findAll("Resumen")[0].text
-                else:
-                    resumen = ""
-
-                ley["numero"] = numero
-                ley["nombre"] = nombre
-                ley["resumen"] = resumen
-                ley["tags"] = lista_tags
-                ley["url"] = url_ley
-
-                try:
-                    x = mycol.insert_one(ley)
-                    print("ley insertada correctamente")
-                except:
-                    print("problemas agregando la ley a la base")
-    f.close()
+    print(leyes)
+    print(len(leyes))
+    return leyes
+#get_ley()
 
 
-
-get_datos(21876,1132091)
+get_datos()
