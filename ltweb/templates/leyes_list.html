@@ -9,9 +9,14 @@
 {% endblock %}
 
 {% block content %}
-<div>
-    <b-button block variant="primary" href="{% url 'Subir Ley' %}" style="margin-bottom: 20px">Subir Ley <i class="fas fa-file-upload"></i></b-button>
-</div>
+<b-row>
+    <b-col>
+        <h2>Leyes disponibles</h2>
+    </b-col>
+    <b-col>
+        <b-button size="lg" variant="primary" href="{% url 'Subir Ley' %}" class="mb-3 float-right"><i class="fas fa-file-upload"></i> <b>Subir Ley</b></b-button>
+    </b-col>
+</b-row>
 <table  class="table table-striped table-bordered compact" id="dip_table" cellspacing="0">
 	<thead>
 		<tr>
@@ -39,7 +44,7 @@
             </td>
 			<td class="align-middle">
                 <div class="text-center">
-                    <a class="btn btn-sm btn-primary" href="{{ ley.url }}"><i class="far fa-file-alt"></i></a>
+                    <a class="" href="{{ ley.url }}"><i class="far fa-file-alt"></i></a>
                 </div>
 			</td>
 		</tr>
