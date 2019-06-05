@@ -7,41 +7,44 @@ import json
 
 import pymongo
 
-"""myclient = pymongo.MongoClient("mongodb://localhost:27017/")
-mydb = myclient["leytransparente"]
+def cargar_info():
+    myclient = pymongo.MongoClient("mongodb+srv://admin:leytransparente@leytransparente-m6y51.mongodb.net/test?retryWrites"
+                "=true&w=majority")
+    mydb = myclient["leytransparente"]
 
-mycol = mydb["declaraciones"]
+    mycol = mydb["prueba_chris"]
 
-diputados = open("E:\Proyects\leytransparente\Obtencion de datos\Tagging de leyes\JsonInfoProbidad.json", encoding="utf-8")
-data = json.load(diputados)
-largos =[]
-#f = open("declaraciones.txt", "w")
-daata = {}
-daata["declaraciones"]=[]
-for diputado in data:
-    url_declaracion = diputado["Declaracion"]["value"]
-    response = requests.get(url_declaracion)
-    soup = BeautifulSoup(response.text, "html.parser")
-    declaracion = soup.findAll("span",{"property" : "dip:jsonCargado"})[0].text
-    print(type(declaracion))
-    declaracion = json.loads(declaracion)
-    print(type(declaracion))
-    x = mycol.insert_one(declaracion)
-    #f.write(declaracion)
-    #daata["declaraciones"].append(declaracion)
-    #print(declaracion)
-    #largos.append(len(declaracion))
-#json.dump(daata,f, indent=4)
-#f.close()
-#print(largos)
-#print(len(largos))
-"""
+    diputados = open("E:\Proyects\leytransparente\Obtencion de datos\Tagging de leyes\JsonInfoProbidad.json", encoding="utf-8")
+    data = json.load(diputados)
+    largos =[]
+    #f = open("declaraciones.txt", "w")
+    daata = {}
+    daata["declaraciones"]=[]
+    for diputado in data:
+        url_declaracion = diputado["Declaracion"]["value"]
+        response = requests.get(url_declaracion)
+        soup = BeautifulSoup(response.text, "html.parser")
+        declaracion = soup.findAll("span",{"property" : "dip:jsonCargado"})[0].text
+        print(type(declaracion))
+        declaracion = json.loads(declaracion)
+        print(type(declaracion))
+        x = mycol.insert_one(declaracion)
+    mycol.update_many({}, {"$set": {"Meta": True}})
+        #f.write(declaracion)
+        #daata["declaraciones"].append(declaracion)
+        #print(declaracion)
+        #largos.append(len(declaracion))
+    #json.dump(daata,f, indent=4)
+    #f.close()
+    #print(largos)
+    #print(len(largos))
+
 def actual():
     myclient = pymongo.MongoClient(
         "mongodb+srv://admin:leytransparente@leytransparente-m6y51.mongodb.net/test?retryWrites"
         "=true&w=majority")
     mydb = myclient["leytransparente"]
-    mycol = mydb["declaraciones"]
+    mycol = mydb["prueba_chris"]
 
     newvalue = {"$set":{"Meta": bool(False)}}
 
@@ -60,6 +63,41 @@ def actual():
                             query = {"_id": x["_id"]}
                             mycol.update_one(query, newvalue)
 
-actual()
 
+def cargar_actualizaciones():
+    myclient = pymongo.MongoClient("mongodb+srv://admin:leytransparente@leytransparente-m6y51.mongodb.net/test?retryWrites"
+                           "=true&w=majority")
+    mydb = myclient["leytransparente"]
 
+    mycol = mydb["prueba_chris"]
+
+    diputados = open("E:\Proyects\leytransparente\Obtencion de datos\Tagging de leyes\JsonInfoProbidadAct.json",
+                     encoding="utf-8")
+    data = json.load(diputados)
+    daata = {}
+    daata["declaraciones"] = []
+    for diputado in data:
+        url_declaracion = diputado["Declaracion"]["value"]
+        response = requests.get(url_declaracion)
+        soup = BeautifulSoup(response.text, "html.parser")
+        declaracion = soup.findAll("span", {"property": "dip:jsonCargado"})[0].text
+        #print(declaracion)
+        declaracion = json.loads(declaracion)
+
+        for x in mycol.find({"Meta":True , "Datos_del_Declarante.nombre":declaracion["Datos_del_Declarante"]["nombre"],"Datos_del_Declarante.Apellido_Paterno": declaracion["Datos_del_Declarante"]["Apellido_Paterno"], "Datos_del_Declarante.Apellido_Materno": declaracion["Datos_del_Declarante"]["Apellido_Materno"]}) :
+            if(x["Id_Declaracion"] != declaracion["Id_Declaracion"]):
+                if(x["Fecha_de_la_Declaracion"] > declaracion["Fecha_de_la_Declaracion"]):
+                    declaracion["Meta"]=False
+                else:
+                    declaracion["Meta"]=True
+                    query = {"_id": x["_id"]}
+                    newvalue = {"$set": {"Meta": bool(False)}}
+                    mycol.update_one(query, newvalue)
+                    mycol.insert_one(declaracion)
+
+        #print(type(declaracion))
+        #x = mycol.insert_one(declaracion)
+
+#cargar_info()
+#actual()
+cargar_actualizaciones()
