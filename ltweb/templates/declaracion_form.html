@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<form name='load_file_form' method='POST' action="{% url 'Subir declaracion' %}" enctype="multipart/form-data">
+    <form name='load_file_form' method='POST' action="{% url 'Subir declaracion' %}" enctype="multipart/form-data">
         {% csrf_token %}
         <h4>
             Subir JSON del diputado

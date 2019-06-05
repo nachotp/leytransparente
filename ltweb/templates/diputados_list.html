@@ -20,7 +20,6 @@
 				<a class="btn btn-primary" href="{% url 'Subir declaracion' %}">Subir Declaracion</a>
 			</td>
 		</tr>
-		
 	</thead>
 	<tbody>
 		{% if diputados %}
@@ -30,7 +29,7 @@
 			<td>{{ diputado.apellido_paterno }}</td>
 			<td>{{ diputado.apellido_materno }}</td>
 			<td>
-				<a class="btn btn-sm btn-primary" href="#">Ver Declaracion</a>
+				<a class="btn btn-sm btn-primary" href="{% url "Editar Declaracion" %}">Ver Declaracion</a>
                 <a class="btn btn-sm btn-danger" href="#">Eliminar</a>
 			</td>
 		</tr>
