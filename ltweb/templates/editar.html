@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body_end %}
+    <script src="{% static 'lib/vuex/vuex.js' %}"></script>
+    <script src="{% static 'ltweb/js/declaracion_store.js' %}"></script>
+    <script src="{% static 'ltweb/js/declaracion_form.js' %}"></script>
+{% endblock %}
+
+
+{% block content %}
+
+<body>
+    <div id="ParlamentariosForm">
+        <table  class="table table-striped table-bordered compact" id="dip_table" cellspacing="0">
+            <thead>
+                <tr>
+                    <td><b>Atributo</b></td>
+                    <td><b>Valor</b></td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                <td>Id declaración</td>
+                <td>[[form_data.Id_Declaracion]]</td>
+                </tr>
+
+                <tr>
+                <td>Fecha de declaración</td>
+                <td>[[form_data.Fecha_de_la_Declaracion]]</td>
+                </tr>
+
+                <tr>
+                <td>Tipo de la declaración</td>
+                <td>[[form_data.Tipo_Declaracion]]</td>
+                </tr>
+
+                <tr>
+                <td>Region</td>
+                <td>[[form_data.Region]]</td>
+                </tr>
+
+                <tr>
+                <td>Comuna</td>
+                <td>[[form_data.Comuna]]</td>
+                </tr>
+
+                <tr>
+                <td>Datos del declarante</td>
+                <td>[[form_data.Datos_del_Declarante]]</td>
+                </tr>
+
+                <tr>
+                <td>Datos del conyuge</td>
+                <td>[[form_data.Datos_del_Conyuge]]</td>
+                </tr>
+
+                <tr>
+                <td>¿Declara bienes del conyuge?</td>
+                <td>[[form_data.Declara_Bienes_Conyuge]]</td>
+                </tr>
+
+                <tr>
+                <td>Datos de la entidad por la que declara</td>
+                <td>[[form_data.Datos_Entidad_Por_La_Que_Declara]]</td>
+                </tr>
+
+                <tr>
+                <td>Datos Parientes</td>
+                <td>[[form_data.Datos_Parientes]]</td>
+                </tr>
+
+                <tr>
+                <td>Bienes inmuebles situados en Chile</td>
+                <td>[[form_data.Bienes_Inmuebles_Situados_En_Chile]]</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!--div role="tablist">
+    <b-card no-body class="mb-1">
+      <b-card-header header-tag="header" class="p-1" role="tab">
+        <b-button block href="#" v-b-toggle.accordion-1 variant="info">FeeF</b-button>
+      </b-card-header>
+      <b-collapse id="accordion-1" visible accordion="my-accordion" role="tabpanel">
+        <b-card-body>
+          <b-card-text>I start opened because <code>visible</code> is <code>true</code></b-card-text>
+          <b-card-text>{{ text }}</b-card-text>
+        </b-card-body>
+      </b-collapse>
+    </b-card>
+
+    <b-card no-body class="mb-1">
+      <b-card-header header-tag="header" class="p-2" role="tab">
+        <b-button block href="#" v-b-toggle.accordion-2 variant="info">Accordion 2</b-button>
+      </b-card-header>
+      <b-collapse id="accordion-2" accordion="my-accordion" role="tabpanel">
+        <b-card-body>
+          <b-card-text>{{ text }}</b-card-text>
+        </b-card-body>
+      </b-collapse>
+    </b-card>
+    </div>
+
+    <h3>
+        <form name ='edit_json' method='POST'>
+            {% csrf_token %}
+
+            <table id="t01">
+                <tr>
+                    <th>Atributo</th>
+                    <th>Valor</th>
+                </tr>
+                <tr>
+                    <td>Id de la declaración</td>
+                    <td><input type="text" name="id_declaracion" value="{{ dict.Id_Declaracion }}"><br></td>
+                </tr>
+                <tr>
+                    <td>Fecha de la declaración</td>
+                    <td><input type="text" name="techa_declaracion" value="{{ dict.Fecha_de_la_Declaracion }}"><br></td>
+                </tr>
+                <tr>
+                    <td>ID</td>
+                    <td><input type="text" name="Id_tipo_declaracion" value="{{ dict.Tipo_Declaracion.id }}"><br></td>
+                </tr>
+                <tr>
+                    <td>Nombre Declaracion</td>
+                    <td><input type="text" name="nombre_declaracion" value="{{ dict.Tipo_Declaracion.nombre }}"><br></td>
+                </tr>
+            </table>
+            <input type="submit" value="Editar Json">
+        </form>
+    </h3>
+
+{% endblock%}
+</body>
+
