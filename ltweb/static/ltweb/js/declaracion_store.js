@@ -1,12 +1,12 @@
 var FormParlamentarios = {
     'Id_Declaracion': 0,
-    'Fecha_de_la_Declaracion': "",
+    'Fecha_de_la_Declaracion': "N/A",
     'Tipo_Declaracion': {},
     'Region': {},
     'Comuna': {},
     'Datos_del_Declarante': {},
     'Datos_del_Conyuge': {},
-    'Declara_Bienes_Conyuge': "",
+    'Declara_Bienes_Conyuge': "N/A",
     'Datos_Entidad_Por_La_Que_Declara': {},
     'Datos_Parientes': [],
     'Bienes_Inmuebles_Situados_En_Chile': [],
@@ -29,15 +29,19 @@ Vue.use(window.VueResource);
 var declaracion_data = new Vuex.Store({
     state: {
         editable: false,
-        form_data: {},
+        form_data: FormParlamentarios,
     },
     actions: {
 
     },
     mutations: {
-
+        updateEditable: state => {
+            state.editable = true;
+        },
+        updateForm: (state, dic) => {
+            state.form_data = dic;
+        }
     },
     getters: {
-
     },
 });
