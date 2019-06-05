@@ -72,11 +72,12 @@ class DiputadosListView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        query = self.mycol.find()
+        query = self.mycol.find({"Meta":True}, {"_id":1, "Datos_del_Declarante.nombre":1, "Datos_del_Declarante.Apellido_Paterno":1, "Datos_del_Declarante.Apellido_Materno":1})
         data = []
         
         for par in query:
-            dic = {'nombres': par['Datos_del_Declarante']['nombre'],
+            dic = {'id':par["_id"],
+                    'nombres': par['Datos_del_Declarante']['nombre'],
                    'apellido_paterno': par['Datos_del_Declarante']['Apellido_Paterno'],
                    'apellido_materno': par['Datos_del_Declarante']['Apellido_Materno']}
             data.append(dic)
