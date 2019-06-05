@@ -11,6 +11,43 @@
 
 <body data="{{ declaracion }}">
     <div id="ParlamentariosForm">
+
+        <div class="container">
+            <b-card no-body>
+                <b-card-body>
+                    <b-card-title><h2>[[get_nombre]]</h2></b-card-title>
+                    <b-card-sub-title class="mb-2"><h4>[[get_cargo|capitalize]]</h4></b-card-sub-title>
+                    <b-card-text>
+                        <h6>Asume el cargo : [[get_fechacargo]]<br>
+                        Región: [[get_region|capitalize]]<br>
+                        Comuna: [[get_comuna|capitalize]]</h6>
+                    </b-card-text>
+                </b-card-body>
+
+                <b-list-group flush>
+                    <b-list-group-item>Profesión: [[get_profesion|capitalize]]</b-list-group-item>
+                    <b-list-group-item>Estado Civil: [[get_estadoc|capitalize]]</b-list-group-item>
+                    <b-list-group-item>Regimen Patrimonial: [[get_regimenp|capitalize]] </b-list-group-item>
+                </b-list-group>
+            </b-card>
+        </div>
+
+        <div class="container">
+            <b-card no-body>
+                <b-card-body>
+                    <b-card-title><h2>Declaración de patrimonio</h2></b-card-title>
+                    <b-card-sub-title class="mb-2"><h4>Fecha de declaración: [[get_fechadecla]]</h4></b-card-sub-title>
+                </b-card-body>
+
+                <b-list-group flush>
+                    <b-list-group-item>Tipo de declaración: [[form_data.Tipo_Declaracion.nombre|capitalize]]</b-list-group-item>
+                    <b-list-group-item>Region: [[form_data.Datos_Entidad_Por_La_Que_Declara.Region_Desempeno_Chile.nombre|capitalize]]</b-list-group-item>
+                    <b-list-group-item>Comuna: [[form_data.Datos_Entidad_Por_La_Que_Declara.Comuna_Desempeno_Chile.nombre|capitalize]]</b-list-group-item>
+                    <b-list-group-item>Comuna: [[form_data.Datos_Entidad_Por_La_Que_Declara.Grado_Renta_Mensual|capitalize]]</b-list-group-item>
+                </b-list-group>
+            </b-card>
+        </div>
+
         <table  class="table table-striped table-bordered compact" id="dip_table" cellspacing="0">
             <thead>
                 <tr>
@@ -32,8 +69,8 @@
                 </tr>
 
                 <tr>
-                <td>Fecha de declaración</td>
-                <td>[[form_data.Fecha_de_la_Declaracion]]</td>
+                <td>Fecha de la declaración</td>
+                <td></td>
                 </tr>
 
                 <tr>

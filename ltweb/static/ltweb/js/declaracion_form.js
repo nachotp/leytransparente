@@ -10,6 +10,12 @@ var ParlamentariosForm = new Vue({
         this.$store.state.form_data = JSON.parse(document.getElementsByTagName('body')[0].getAttribute('data') || '{}');
     },
     store: declaracion_data,
+    filters: {
+        capitalize: function(value){
+            value = value.toString().toLowerCase();
+            return value.charAt(0).toUpperCase() + value.slice(1);
+        },
+    },
     computed: {
         editable(){
             return this.$store.state.editable
@@ -20,8 +26,45 @@ var ParlamentariosForm = new Vue({
         form_base(){
             return this.$store.state.form_base.template
         },
-        edit_form(form){
-            updateForm(this.$store.state, form)
+        get_nombre(){
+            var names = this.$store.state.form_data.Datos_del_Declarante.nombre.toLowerCase().split(' ')
+            var name = names[0].charAt(0).toUpperCase() + names[0].slice(1) + ' ' +
+                names[1].charAt(0).toUpperCase() + names[1].slice(1);
+
+            var ApellidoP = this.$store.state.form_data.Datos_del_Declarante.Apellido_Paterno.toLowerCase();
+            ApellidoP = ApellidoP.charAt(0).toUpperCase() + ApellidoP.slice(1);
+
+            var ApellidoM = this.$store.state.form_data.Datos_del_Declarante.Apellido_Materno.toLowerCase();
+            ApellidoM = ApellidoM.charAt(0).toUpperCase() + ApellidoM.slice(1);
+
+            return name + ' ' + ApellidoP + ' ' + ApellidoM;
         },
+        get_cargo(){
+            return this.$store.state.form_data.Datos_Entidad_Por_La_Que_Declara.Cargo_Funcion.nombre
+        },
+        get_profesion(){
+            return this.$store.state.form_data.Datos_del_Declarante.Profesion_Oficio.nombre;
+        },
+        get_estadoc(){
+            return this.$store.state.form_data.Datos_del_Declarante.Estado_Civil.nombre;
+        },
+        get_regimenp(){
+            return this.$store.state.form_data.Datos_del_Declarante.Regimen_Patrimonial.nombre;
+        },
+        get_fechacargo(){
+            return this.$store.state.form_data.Datos_Entidad_Por_La_Que_Declara.Fecha_Asuncion_Cargo.split(' ')[0];
+        },
+        get_regiondesempeno(){
+            return this.$store.state.form_data.Datos_Entidad_Por_La_Que_Declara.Region_Desempeno_Chile.nombre;
+        },
+        get_region(){
+            return this.$store.state.form_data.Region.nombre;
+        },
+        get_comuna(){
+            return this.$store.state.form_data.Comuna.nombre;
+        },
+        get_fechadecla(){
+            return this.$store.state.form_data.Fecha_de_la_Declaracion.split(' ')[0];
+        }
     },
 });
