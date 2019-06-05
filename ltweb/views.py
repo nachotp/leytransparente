@@ -10,6 +10,9 @@ class HomeView(TemplateView):
     template_name = "home.html"
 # Create your views here.
 
+class EditarDeclaracion(TemplateView):
+    template_name = "editar.html"
+
 
 class SubirDeclaracionView(View):
     context = {}
