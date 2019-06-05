@@ -9,7 +9,7 @@
 
 {% block content %}
 
-<body>
+<body data="{{ declaracion }}">
     <div id="ParlamentariosForm">
         <table  class="table table-striped table-bordered compact" id="dip_table" cellspacing="0">
             <thead>
@@ -19,10 +19,12 @@
                 </tr>
             </thead>
             <tbody>
+                {% if declaracion.Nombre %}
                 <tr>
                 <td>Nombre Diptuado</td>
                 <td>[[form_data.Nombre]]</td>
                 </tr>
+                {% endif %}
 
                 <tr>
                 <td>Id declaración</td>
@@ -35,8 +37,13 @@
                 </tr>
 
                 <tr>
-                <td>Tipo de la declaración</td>
-                <td>[[form_data.Tipo_Declaracion]]</td>
+                <td>Tipo de la declaración, ID</td>
+                <td>[[form_data.Tipo_Declaracion.id]]</td>
+                </tr>
+
+                <tr>
+                <td>Tipo de la declaración, Nombre</td>
+                <td>[[form_data.Tipo_Declaracion.nombre]]</td>
                 </tr>
 
                 <tr>

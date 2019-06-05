@@ -24,7 +24,8 @@ class EditarDeclaracion(TemplateView):
         ctx['id'] = self.request.GET.get('id', None)
         
         query = self.mycol.find_one({"_id":ObjectId(ctx['id'])})
-        ctx['declaracion'] = query
+        query.pop('_id')
+        ctx['declaracion'] = json.dumps(query)
         
         return ctx
 

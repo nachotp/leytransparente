@@ -51,7 +51,7 @@ var declaracion_data = new Vuex.Store({
         updateEditable: state => {
             state.editable = true;
         },
-        updateForm: (state, dic) => {
+        updateForm: function (state, dic) {
             state.form_data = dic;
         }
     },

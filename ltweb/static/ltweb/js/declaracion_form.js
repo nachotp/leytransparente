@@ -6,6 +6,9 @@ var ParlamentariosForm = new Vue({
     components: {
 
     },
+    created: function() {
+        this.$store.state.form_data = JSON.parse(document.getElementsByTagName('body')[0].getAttribute('data') || '{}');
+    },
     store: declaracion_data,
     computed: {
         editable(){
