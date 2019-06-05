@@ -1,6 +1,8 @@
 import pandas as pd
 import json
 import io
+import re
+from unicodedata import normalize   
 
 dfboletines = pd.read_csv("tagsBoletines.csv", sep=";")
 dfcomision = pd.read_csv("VotosComision.csv", sep=";")
@@ -21,7 +23,6 @@ for dip in diputados:
     dictputados[dip] = {}
 
 dict_boletines = dfboletines.groupby('Boletin')['Materia'].apply(list).to_dict()
-
 for dip,votos in dfsala.groupby('DIPUTADO')['BOLETIN', 'VOTACION']:
     for index, row in votos.iterrows():
         try:
