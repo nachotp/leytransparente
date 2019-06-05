@@ -7,7 +7,7 @@ from pymongo import *
 from bs4 import BeautifulSoup
 from bson.objectid import ObjectId
 
-from ltweb import conflict_detection
+from ltweb import conflict_detection as confd
 
 
 class HomeView(TemplateView):
@@ -201,5 +201,31 @@ class LeyesListView(TemplateView):
         context['leyes'] = data
         return context
 
+
 class ConflictoView(TemplateView):
-    print()
+    template_name = "conflict_view.html"
+    myclient = MongoClient("mongodb+srv://admin:leytransparente@leytransparente-m6y51.mongodb.net/test?retryWrites"
+                           "=true&w=majority")
+    mydb = myclient["leytransparente"]
+    decl = mydb["declaraciones"]
+    leyes = mydb["leyes"]
+    cats = mydb["categorias"]
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data()
+        ley = self.kwargs['ley']
+        print(f"Buscando Ley {ley}")
+        tags_ley = self.leyes.find_one({"numero": ley}, {"tags": 1})
+        print("Buscando tags:")
+        tag_set = set({})
+        if tags_ley is not None:
+            for tag in tags_ley["tags"]:
+                print(tag)
+                tags = self.cats.find_one({"tags": tag.upper()}, {"tags": 1})
+                if tags is not None:
+                    for cat_tag in tags["tags"]:
+                        tag_set.add(cat_tag)
+        print("Revisando declaraciones")
+        ctx["conflictos"] = confd.conflicto_patrimonio(list(tag_set))
+        print("Conflictos encontrados: "+ str(len(ctx["conflictos"])))
+        return ctx

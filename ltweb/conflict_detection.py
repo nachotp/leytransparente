@@ -25,7 +25,7 @@ def conflicto_patrimonio(kwrds):
         {"_id": 1, "Id_Declaracion": 1, "Datos_del_Declarante": 1,
          "Derechos_Acciones_Chile": {"$elemMatch": {"Giro_Registrado_SII": {"$in": kwrds}}}}
     )
-
+    print(query is not None)
     matches = []
     for person in query:
         nombre = person["Datos_del_Declarante"]["Apellido_Paterno"] + " " + person["Datos_del_Declarante"][
