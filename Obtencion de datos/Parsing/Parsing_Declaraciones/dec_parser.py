@@ -23,3 +23,5 @@ def parser_dec(archivo):
         except KeyError:
             pass
     return dic
+
+print(parser_dec("declaraciones.json"))
