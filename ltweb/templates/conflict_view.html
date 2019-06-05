@@ -1,4 +1,28 @@
+{% extends 'base.html' %}
 
 {% block content %}
-
+{% if conflictos %}
+<div>
+        <div>
+<b-card-group deck>
+    {% for diputado in conflictos %}
+            <b-card bg-variant="Light" title= "{{ diputado.1 }}" header= "Conflicto {{forloop.counter}}" header-text-variant="white" header-bg-variant="dark"> 
+              <b-card-text>
+                    Conflicto : <br>
+                    Nombre Razon Social : 
+                    {{diputado.3.Nombre_Razon_Social}}
+                  <br>
+                  Score : {{ diputado.0 }} 
+                  <br>
+              </b-card-text>
+          
+              <b-button href="{% url 'Ver Declaracion' %}?id={{ diputado.2 }}" variant="primary">Ver declaracion</b-button>
+            </b-card>
+    {% endfor %}
+</b-card-group>
+</div>
+</div>
+{% else %}
+<h1>No se han encontrado conflictos de interes.</h1>
+{% endif %}
 {% endblock %}
