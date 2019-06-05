@@ -7,7 +7,7 @@ import json
 
 import pymongo
 
-myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+"""myclient = pymongo.MongoClient("mongodb://localhost:27017/")
 mydb = myclient["leytransparente"]
 
 mycol = mydb["declaraciones"]
@@ -35,6 +35,31 @@ for diputado in data:
 #f.close()
 #print(largos)
 #print(len(largos))
+"""
+def actual():
+    myclient = pymongo.MongoClient(
+        "mongodb+srv://admin:leytransparente@leytransparente-m6y51.mongodb.net/test?retryWrites"
+        "=true&w=majority")
+    mydb = myclient["leytransparente"]
+    mycol = mydb["declaraciones"]
 
+    newvalue = {"$set":{"Meta": bool(False)}}
+
+    for x in mycol.find():
+        print(x)
+        if(x["Meta"] == bool(True)):
+            print("ja")
+            for y in mycol.find():
+                print(y)
+                if(x["_id"] != y["_id"]):
+                    if(x["Datos_del_Declarante"]["nombre"] == y["Datos_del_Declarante"]["nombre"] and x['Datos_del_Declarante']['Apellido_Paterno'] == y['Datos_del_Declarante']['Apellido_Paterno'] and x['Datos_del_Declarante']['Apellido_Materno'] == y['Datos_del_Declarante']['Apellido_Materno']):
+                        if(x["Fecha_de_la_Declaracion"]>y["Fecha_de_la_Declaracion"]):
+                            query = {"_id" : y["_id"]}
+                            mycol.update_one(query,newvalue)
+                        else:
+                            query = {"_id": x["_id"]}
+                            mycol.update_one(query, newvalue)
+
+actual()
 
 
