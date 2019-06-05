@@ -7,9 +7,10 @@ from pymongo import *
 from bs4 import BeautifulSoup
 from bson.objectid import ObjectId
 
+
 class HomeView(TemplateView):
     template_name = "home.html"
-# Create your views here.
+
 
 class EditarDeclaracion(TemplateView):
     template_name = "editar.html"
@@ -19,15 +20,16 @@ class EditarDeclaracion(TemplateView):
     mycol = mydb["declaraciones"]
 
     def get_context_data(self, **kwargs):
-        #Eso es get, para que sea más seguro, usar POST
+        # Eso es get, para que sea más seguro, usar POST
         ctx = super().get_context_data()
         ctx['id'] = self.request.GET.get('id', None)
         
-        query = self.mycol.find_one({"_id":ObjectId(ctx['id'])})
+        query = self.mycol.find_one({"_id": ObjectId(ctx['id'])})
         query.pop('_id')
         ctx['declaracion'] = json.dumps(query)
         
         return ctx
+
 
 class SubirDeclaracionView(View):
     context = {}
@@ -63,10 +65,10 @@ class SubirDeclaracionView(View):
                                     "Datos_del_Declarante.Apellido_Materno":dic["Datos_del_Declarante"]["Apellido_Materno"],
                                     "Meta":True})
         
-        if query == None: #inserta automaticamente porque no existe nadie.
+        if query == None: # inserta automaticamente porque no existe nadie.
             self.mycol.insert(dic)
 
-        else: #actualiza el registri por los datos contenidos en el JSON
+        else: # actualiza el registri por los datos contenidos en el JSON
             if(dic["Fecha_de_la_Declaracion"] > query["Fecha_de_la_Declaracion"]):
                 self.mycol.update({"Datos_del_Declarante.nombre":dic["Datos_del_Declarante"]["nombre"], 
                                     "Datos_del_Declarante.Apellido_Paterno":dic["Datos_del_Declarante"]["Apellido_Paterno"], 
@@ -168,7 +170,6 @@ class SubirLeyView(View):
         """SEGMENTO AGREGADO EN BASE AL TRABAJO DE OBTENCION DE DATOS"""
 
         return redirect('Lista Leyes')
-
 
 
 class LeyesListView(TemplateView):
