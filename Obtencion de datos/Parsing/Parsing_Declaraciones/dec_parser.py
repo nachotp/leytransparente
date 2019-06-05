@@ -14,14 +14,12 @@ def parser_dec(archivo):
             name = declaracion["Datos_del_Declarante"]["Apellido_Paterno"] + " " + declaracion["Datos_del_Declarante"]["Apellido_Materno"]
             name = re.sub(r"([^n\u0300-\u036f]|n(?!\u0303(?![\u0300-\u036f])))[\u0300-\u036f]+", r"\1", normalize( "NFD", name), 0, re.I)
             name = normalize( 'NFC', name)
-            print(name)
             raw_id = str(declaracion[(list(declaracion.keys())[1])])
             id_declaracion = re.search(r" '(.*)'}", raw_id, re.M|re.I).group(1)
-            dic[id_declaracion] = (name,[])
+            dic[name] = (id_declaracion,[])
             acciones = declaracion['Derechos_Acciones_Chile']
             for accion in acciones:
-                dic[id_declaracion][1].append(accion['Giro_Registrado_SII'])
+                dic[name][1].append(accion['Giro_Registrado_SII'])
         except KeyError:
             pass
-
     return dic

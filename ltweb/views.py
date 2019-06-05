@@ -6,7 +6,6 @@ from django.views.generic import TemplateView
 from pymongo import *
 from bs4 import BeautifulSoup
 
-
 class HomeView(TemplateView):
     template_name = "home.html"
 # Create your views here.
@@ -28,8 +27,7 @@ class SubirDeclaracionView(View):
         return render(request, self.template_name, self.context)
 
     def post(self, request, *args, **kwargs):
-        print('Nombre del diputado: ', request.POST.get('fname'))
-        print('Uploaded file: ', request.FILES['uploaded_file'])
+        
         L = ''
         contador = 0
 
@@ -43,7 +41,23 @@ class SubirDeclaracionView(View):
                 contador += 1
 
         dic = json.loads(L)
-        self.mycol.insert(dic)
+        dic["Meta"] = True
+
+        query = self.mycol.find_one({"Datos_del_Declarante.nombre":dic["Datos_del_Declarante"]["nombre"], 
+                                    "Datos_del_Declarante.Apellido_Paterno":dic["Datos_del_Declarante"]["Apellido_Paterno"], 
+                                    "Datos_del_Declarante.Apellido_Materno":dic["Datos_del_Declarante"]["Apellido_Materno"],
+                                    "Meta":True})
+        
+        if query == None: #inserta automaticamente porque no existe nadie.
+            self.mycol.insert(dic)
+
+        else: #actualiza el registri por los datos contenidos en el JSON
+            if(dic["Fecha_de_la_Declaracion"] > query["Fecha_de_la_Declaracion"]):
+                self.mycol.update({"Datos_del_Declarante.nombre":dic["Datos_del_Declarante"]["nombre"], 
+                                    "Datos_del_Declarante.Apellido_Paterno":dic["Datos_del_Declarante"]["Apellido_Paterno"], 
+                                    "Datos_del_Declarante.Apellido_Materno":dic["Datos_del_Declarante"]["Apellido_Materno"],
+                                    "Meta":True}, { "$set": {"Meta": False}})
+                self.mycol.insert(dic)
 
         return redirect('Lista Diputados')
 
