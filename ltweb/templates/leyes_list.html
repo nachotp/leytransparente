@@ -33,7 +33,7 @@
 		{% for ley in leyes %}
 		<tr>
 			<td>{{ ley.numero }}</td>
-			<td>{{ ley.nombre }}</td>
+			<td>{{ ley.nombre|title }}</td>
 			<td>{{ ley.resumen|truncatechars:250 }}</td>
             <td>
                 <ul>
@@ -67,7 +67,6 @@ $(document).ready(function() {
         "language": langSpanish,
         orderCellsTop: true,
         "order": [[ 0, "desc" ]],
-        "scrollY":        "70vh",
         "paging":         true,
 
 
