@@ -1,16 +1,25 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div>
+        <b-card bg-variant="light" text-variant="dark" title="Ley N°{{nro_ley}}" class="text-center">
+          <b-card-text>
+            {{nombre_ley}}
+          </b-card-text>
+          <b-list-group flush>
+                <b-list-group-item class="bg-light">Resumen: {{desc_ley}}</b-list-group-item >
+              </b-list-group>
+        </b-card>
+      </div>
+<br>
 {% if conflictos %}
 <div>
-        <div>
-<b-card-group deck>
-    Ley {{nro_ley}} - {{desc_ley}}  -  {{nombre_ley}}
+        <div>        
     {% for diputado in conflictos %}
             {% if diputado.0 > 109 %}
-            <b-card bg-variant="Light" title= "{{ diputado.1 }}" header= "Conflicto " header-text-variant="white" header-bg-variant="danger"> 
+            <b-card bg-variant="Light" title= "{{ diputado.1 }}" header= " " header-text-variant="white" header-bg-variant="danger"> 
              {% else %}
-             <b-card bg-variant="Light" title= "{{ diputado.1 }}" header= "Conflicto Leve" header-text-variant="white" header-bg-variant="warning"> 
+             <b-card bg-variant="Light" title= "{{ diputado.1 }}" header= " " header-text-variant="white" header-bg-variant="warning"> 
              {% endif %}
                 <b-card-text>
                     <b-list-group flush>
@@ -24,7 +33,6 @@
               <b-button href="{% url 'Ver Declaracion' %}?id={{ diputado.2 }}" variant="primary">Ver declaracion</b-button>
             </b-card>
     {% endfor %}
-</b-card-group>
 </div>
 </div>
 {% else %}
