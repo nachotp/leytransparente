@@ -186,8 +186,8 @@ class SubirLeyView(View):
                 print("problemas agregando la ley a la base")
 
         """SEGMENTO AGREGADO EN BASE AL TRABAJO DE OBTENCION DE DATOS"""
-        # matches = confd.conflicto_patrimonio(lista_tags)
-        return redirect('Conflictos', matches = matches)
+        #matches = confd.conflicto_patrimonio(lista_tags)
+        return redirect('Conflictos', ley = numero)
 
 
 class LeyesListView(TemplateView):
