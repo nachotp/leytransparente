@@ -28,7 +28,7 @@ var ParlamentariosForm = {
                     Region: [[form_data.Datos_Entidad_Por_La_Que_Declara.Region_Desempeno_Chile.nombre|capitalize]]<br>
                     Comuna: [[form_data.Datos_Entidad_Por_La_Que_Declara.Comuna_Desempeno_Chile.nombre|capitalize]]<br>
                     Renta Mensual: [[form_data.Datos_Entidad_Por_La_Que_Declara.Grado_Renta_Mensual|capitalize]]</b-list-group-item>
-                    <!--b-list-group-item v-for="(item,key,index) in form_data">[[key]]: [[item]]</b-list-group-item-->
+                    <!--b-list-group-item v-for="(item,key,index) in form_data" :key="key">[[key]]: [[item]]</b-list-group-item-->
                     
                     <b-card no-body class="mb-1">
                         <b-card-header header-tag="header" class="p-1" role="tab">
@@ -68,6 +68,59 @@ var ParlamentariosForm = {
                             </b-list-group>
                         </b-collapse>
                      </b-card>
+                     
+                    <b-card no-body class="mb-1">
+                        <b-card-header header-tag="header" class="p-1" role="tab">
+                            <b-button block href="#" v-b-toggle.Vehiculos_motorizados variant="info">Vehículos motorizados</b-button>
+                        </b-card-header>
+                        <b-collapse id="Vehiculos_motorizados" accordion="VehiculosMotorizados" role="tabpanel">
+                            <b-list-group flush v-for="(auto, index) in getVehiculos" :key="index">
+                                <b-list-group-item>
+                                    <h5>[[auto.Marca.nombre|capitalize]] [[auto.Modelo|capitalize]], [[auto.Annio_Fabricacion]]</h5>
+                                    Avalúo Fiscal: $[[auto.Avaluo_Fiscal|number]]<br>
+                                    Año de inscripción vehículo: [[auto.Annio_Inscripcion]]<br>
+                                    Número de inscripción: [[auto.Numero_Inscripcion]]<br>
+                                </b-list-group-item>
+                            </b-list-group>
+                        </b-collapse>
+                     </b-card>
+                     
+                    <b-card no-body class="mb-1">
+                        <b-card-header header-tag="header" class="p-1" role="tab">
+                            <b-button block href="#" v-b-toggle.Datos_Conyuge variant="info">Datos del Conyuge</b-button>
+                        </b-card-header>
+                        <b-collapse id="Datos_Conyuge" accordion="DatosConyuge" role="tabpanel">
+                            <b-list-group flush>
+                                <b-list-group-item>
+                                    <div v-for="actividad in form_data.Actividades_Profesionales_Conyuge">
+                                    <h5>[[get_nombreConyuge]]</h5>
+                                    <b-list-group-item>
+                                    Tipo de actividad: [[actividad.Tipo_Actividad.nombre|capitalize]]<br>
+                                    Rubro: [[actividad.Rubro.nombre|capitalize]]<br>
+                                    Fecha de inicio: [[actividad.Fecha_Inicio|dateOnly]]<br>
+                                    Clasificación: [[actividad.Clasificacion.nombre|capitalize]]<br>
+                                    Nombre Razón Social: [[actividad.Nombre_Razon_Social|capitalize]]
+                                    </b-list-group-item>
+                                    </div>
+                                </b-list-group-item>
+                            </b-list-group>
+                        </b-collapse>
+                     </b-card>
+                     
+                    <b-card no-body class="mb-1">
+                        <b-card-header header-tag="header" class="p-1" role="tab">
+                            <b-button block href="#" v-b-toggle.Parientes variant="info">Parientes</b-button>
+                        </b-card-header>
+                        <b-collapse id="Parientes" accordion="Parientes" role="tabpanel">
+                            <b-list-group flush v-for="(pariente, index) in form_data.Datos_Parientes" :key="index">
+                                <b-list-group-item>
+                                    <h5>[[pariente.nombre|name]] [[pariente.Apellido_Paterno|capitalize]]</h5>
+                                    Parentezco: [[pariente.Parentesco.nombre|capitalize]]<br>
+                                    Fecha de nacimiento: [[pariente.Fecha_Nacimiento|dateOnly]]
+                                </b-list-group-item>
+                            </b-list-group>
+                        </b-collapse>
+                     </b-card>
 
                 </b-list-group>
             </b-card>
@@ -82,18 +135,30 @@ var ParlamentariosForm = {
     },
     store: declaracion_data,
     filters: {
-        capitalize: function(value){
-            value = value.toString().toLowerCase();
-            return value.charAt(0).toUpperCase() + value.slice(1);
+        capitalize: function (value) {
+            if (value !== undefined)
+                value = value.toString().toLowerCase();
+                return value.charAt(0).toUpperCase() + value.slice(1);
         },
         dateOnly: function (value) {
-            return value.split(' ')[0];
+            if (value !== undefined)
+                return value.split(' ')[0];
+            else
+                return "No hay información";
         },
         yesNo: function (value) {
             return (value || value === "Si") ? 'Si' : 'No'
         },
         number: function (value) {
-            return parseInt(value,10).toLocaleString('es')
+            return parseInt(value, 10).toLocaleString('es')
+        },
+        name: function (value) {
+            value = value.toLowerCase().split(' ')
+            var name = '';
+            for (let i = 0; i < value.length; i++) {
+                name += value[i].charAt(0).toUpperCase() + value[i].slice(1) + ' ';
+            }
+            return name;
         },
     },
     computed: {
@@ -119,6 +184,20 @@ var ParlamentariosForm = {
             ApellidoP = ApellidoP.charAt(0).toUpperCase() + ApellidoP.slice(1);
 
             var ApellidoM = this.$store.state.form_data.Datos_del_Declarante.Apellido_Materno.toLowerCase();
+            ApellidoM = ApellidoM.charAt(0).toUpperCase() + ApellidoM.slice(1);
+
+            return name + ' ' + ApellidoP + ' ' + ApellidoM;
+        },
+        get_nombreConyuge(){
+            var names = this.$store.state.form_data.Datos_del_Conyuge.nombre.toLowerCase().split(' ')
+            var name = '';
+            for (let i = 0; i < names.length; i++) {
+                name += names[i].charAt(0).toUpperCase() + names[i].slice(1) + ' ';
+            }
+            var ApellidoP = this.$store.state.form_data.Datos_del_Conyuge.Apellido_Paterno.toLowerCase();
+            ApellidoP = ApellidoP.charAt(0).toUpperCase() + ApellidoP.slice(1);
+
+            var ApellidoM = this.$store.state.form_data.Datos_del_Conyuge.Apellido_Materno.toLowerCase();
             ApellidoM = ApellidoM.charAt(0).toUpperCase() + ApellidoM.slice(1);
 
             return name + ' ' + ApellidoP + ' ' + ApellidoM;
@@ -158,6 +237,9 @@ var ParlamentariosForm = {
         },
         getBienesChile(){
             return this.$store.state.form_data.Bienes_Inmuebles_Situados_En_Chile;
+        },
+        getVehiculos(){
+            return this.$store.state.form_data.Vehiculos_Motorizados;
         }
     },
 };

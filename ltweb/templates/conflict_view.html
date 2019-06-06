@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div>
+<b-container class="bv-example-row">  
+
         <b-card bg-variant="light" text-variant="dark" title="Ley N°{{nro_ley}}" class="text-center">
           <b-card-text>
             {{nombre_ley}}
@@ -10,7 +11,7 @@
                 <b-list-group-item class="bg-light">Resumen: {{desc_ley}}</b-list-group-item >
               </b-list-group>
         </b-card>
-      </div>
+<b-container>  
 <br>
 {% if conflictos %}
 <b-container class="bv-example-row">  
@@ -18,32 +19,36 @@
             <b-col>
                 <h4>Conflictos</h4>
                     {% for diputado in high%}
-                        <b-card bg-variant="Light" title= "{{ diputado.1 }}" header= " " header-text-variant="white" header-bg-variant="danger"> 
+                        <b-card bg-variant="Light" header= " " header-text-variant="white" header-bg-variant="danger"> 
+                            <a class="" href="{% url 'Ver Declaracion' %}?id={{ diputado.2 }}"><h4>{{ diputado.1 }}</h4></a>
                             <b-card-text>
                                 <b-list-group flush>
                                     <b-list-group-item><b>Nombre Razon Social : </b>{{diputado.3.Nombre_Razon_Social}}</b-list-group-item>
+                                    <b-list-group-item><b>Porcentaje Propiedad : </b>{{diputado.3.Cantidad_Porcentaje}}%</b-list-group-item>
                                 </b-list-group>
-                                <div class="bg-light text-dark text-center">
+                                <br>
+                                <div class="bg-default text-dark text-center">
                                     <b>{{diputado.3.Tiene_Calidad_Controlador}}</b> tiene calidad de controlador
                                 </div>
                             </b-card-text>
-                            <b-button href="{% url 'Ver Declaracion' %}?id={{ diputado.2 }}" variant="primary">Ver declaracion</b-button>
                         </b-card>
                     {% endfor %}
             </b-col>
             <b-col>
                 <h4>Conflictos Leves</h4>
                     {% for diputado in low%}
-                        <b-card bg-variant="Light" title= "{{ diputado.1 }}" header= " " header-text-variant="white" header-bg-variant="warning"> 
+                        <b-card bg-variant="Light"  header= " " header-text-variant="white" header-bg-variant="warning"> 
+                                <a class="" href="{% url 'Ver Declaracion' %}?id={{ diputado.2 }}"><h4>{{ diputado.1 }}</h4></a>
                             <b-card-text>
                                     <b-list-group flush>
-                                        <b-list-group-item><b>Nombre Razon Social : </b>{{diputado.3.Nombre_Razon_Social}}</b-list-group-item>
+                                        <b-list-group-item><b>Razón Social : </b>{{diputado.3.Nombre_Razon_Social}}</b-list-group-item>
+                                        <b-list-group-item><b>Porcentaje Propiedad : </b>{{diputado.3.Cantidad_Porcentaje}}%</b-list-group-item>
                                     </b-list-group>
-                                    <div class="bg-light text-dark text-center">
+                                    <br>
+                                    <div class="bg-default text-dark text-center">
                                         <b>{{diputado.3.Tiene_Calidad_Controlador}}</b> tiene calidad de controlador
                                     </div>
                                 </b-card-text>
-                                <b-button href="{% url 'Ver Declaracion' %}?id={{ diputado.2 }}" variant="primary">Ver declaracion</b-button>
                         </b-card>
                     {% endfor %}
             </b-col>
