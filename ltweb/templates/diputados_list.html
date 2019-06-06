@@ -56,7 +56,7 @@
                     <td>{{ diputado.fecha_declaracion }}</td>
                     <td class="align-middle">
                         <div class="text-center">
-                            <a class="" href="{% url 'Ver Declaracion' %}?id={{ diputado.id }}" >Ver Declaración</a>
+                            <a class="" href="{% url 'Ver Declaracion' id=diputado.id %}" >Ver Declaración</a>
                         </div>
                     </td>
                 </tr>

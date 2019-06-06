@@ -77,9 +77,9 @@ class SubirDeclaracionView(View):
                                     "Datos_del_Declarante.Apellido_Paterno":dic["Datos_del_Declarante"]["Apellido_Paterno"], 
                                     "Datos_del_Declarante.Apellido_Materno":dic["Datos_del_Declarante"]["Apellido_Materno"],
                                     "Meta":True}, { "$set": {"Meta": False}})
-                self.mycol.insert(dic)
+                x = self.mycol.insert(dic)
 
-        return redirect('Lista Diputados')
+        return redirect('Ver Declaracion', id=x)
 
 
 class DiputadosListView(TemplateView):
