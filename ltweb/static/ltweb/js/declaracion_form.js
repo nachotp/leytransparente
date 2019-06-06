@@ -28,7 +28,7 @@ var ParlamentariosForm = {
                     Region: [[form_data.Datos_Entidad_Por_La_Que_Declara.Region_Desempeno_Chile.nombre|capitalize]]<br>
                     Comuna: [[form_data.Datos_Entidad_Por_La_Que_Declara.Comuna_Desempeno_Chile.nombre|capitalize]]<br>
                     Renta Mensual: [[form_data.Datos_Entidad_Por_La_Que_Declara.Grado_Renta_Mensual|capitalize]]</b-list-group-item>
-                    <!--b-list-group-item v-for="(item,key,index) in form_data" :key="key">[[key]]: [[item]]</b-list-group-item-->
+                    <b-list-group-item v-for="(item,key,index) in form_data" :key="key">[[key]]: [[item]]</b-list-group-item>
                     
                     <b-card no-body class="mb-1" v-if="getDerechos">
                         <b-card-header header-tag="header" class="p-1" role="tab">
@@ -79,13 +79,13 @@ var ParlamentariosForm = {
                                     <h5>[[auto.Marca.nombre|capitalize]] [[auto.Modelo|capitalize]], [[auto.Annio_Fabricacion]]</h5>
                                     Avalúo Fiscal: $[[auto.Avaluo_Fiscal|number]]<br>
                                     Año de inscripción vehículo: [[auto.Annio_Inscripcion]]<br>
-                                    Número de inscripción: [[auto.Numero_Inscripcion]]<br>
+                                    Número de inscripción: [[auto.Numero_Inscripcion|reservado]]<br>
                                 </b-list-group-item>
                             </b-list-group>
                         </b-collapse>
                      </b-card>
                      
-                    <b-card no-body class="mb-1" v-if="form_data.Declara_Bienes_Conyuge">
+                    <b-card no-body class="mb-1" v-if="!(form_data.Datos_del_Declarante.Estado_Civil.id !== 2)">
                         <b-card-header header-tag="header" class="p-1" role="tab">
                             <b-button block href="#" v-b-toggle.Datos_Conyuge variant="info">Datos del Conyuge</b-button>
                         </b-card-header>
@@ -116,7 +116,8 @@ var ParlamentariosForm = {
                                 <b-list-group-item>
                                     <h5>[[pariente.nombre|name]] [[pariente.Apellido_Paterno|capitalize]]</h5>
                                     Parentezco: [[pariente.Parentesco.nombre|capitalize]]<br>
-                                    Fecha de nacimiento: [[pariente.Fecha_Nacimiento|dateOnly]]
+                                    Fecha de nacimiento: [[pariente.Fecha_Nacimiento|dateOnly]]<br>
+                                    RUN: [[pariente.RUN|reservado]]
                                 </b-list-group-item>
                             </b-list-group>
                         </b-collapse>
@@ -149,21 +150,27 @@ var ParlamentariosForm = {
         },
         yesNo: function (value) {
             if (value !== undefined)
-            return ((value === true || value === "Si" || value === "true" || value === "True") ? 'Si' : 'No');
+            return ((value === false || value === "No" || value === "false" || value === "False") ? 'No' : 'Si');
         },
         number: function (value) {
             if (value !== undefined)
-            return parseInt(value, 10).toLocaleString('es')
+            return parseInt(value, 10).toLocaleString('es');
+            if (value === "RESERVADO")
+            return "Reservado";
         },
         name: function (value) {
             if (value !== undefined){
             value = value.toLowerCase().split(' ')
             var name = '';
             for (let i = 0; i < value.length; i++) {
-                name += value[i].charAt(0).toUpperCase() + value[i].slice(1) + ' ';
+                    name += value[i].charAt(0).toUpperCase() + value[i].slice(1) + ' ';
+                }
+                return name;
             }
-            return name;}
         },
+        reservado: function (value) {
+            return (value === "RESERVADO") ? "Reservado" : value;
+        }
     },
     computed: {
         get_editable(){
