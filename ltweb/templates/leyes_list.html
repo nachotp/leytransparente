@@ -14,7 +14,28 @@
         <h2>Leyes disponibles</h2>
     </b-col>
     <b-col>
-        <b-button size="lg" variant="primary" href="{% url 'Subir Ley' %}" class="mb-3 float-right"><i class="fas fa-file-upload"></i> <b>Subir Ley</b></b-button>
+        <b-button v-b-modal.my-modal size="lg" variant="primary" class="mb-3 float-right"><i class="fas fa-file-upload"></i> <b>Subir Ley</b></b-button>
+        <b-modal id="my-modal" title="Subir Ley">
+
+
+
+
+            <form name='load_file_form' method='POST' action="{% url 'Subir Ley' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <h4>
+                        Subir XML de la ley
+                        <p>
+                        <br>
+
+                        <input type='file' name='uploaded_file' class='button'>
+
+                        </p>
+                    </h4>
+                    <input type="submit" value="Subir XML">
+                </form>
+
+
+        </b-modal>
     </b-col>
 </b-row>
     <div class="container" style="max-width: 1450px">

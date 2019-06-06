@@ -10,11 +10,7 @@
   <link type="text/css" rel="stylesheet" href="{%  static "lib/bootstrap-vue/bootstrap.min.css" %}"/>
   <link type="text/css" rel="stylesheet" href="{%  static "lib/bootstrap-vue/bootstrap-vue.min.css" %}"/>
   {% block head_end %}{% endblock %}
-  <script>
-    {% block vue_dependencies %}
-      const DEPS = {};
-  {% endblock %}
-  </script>
+
 </head>
 
 <body >
@@ -35,6 +31,12 @@
   {% block body_end %}
     {# Mostly for scripts that should go after the content and after the vue.js script tag #}
   {% endblock body_end %}
+  <script>
+    {% block vue_dependencies %}
+      const DEPS = {};
+    {% endblock %}
+  </script>
+
     <script>
         window.app = new Vue({
             el: '#app',
