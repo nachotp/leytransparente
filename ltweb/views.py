@@ -242,6 +242,16 @@ class ConflictoView(TemplateView):
         ctx["nro_ley"] = ley
         ctx["nombre_ley"] = tags_ley["nombre"]
         ctx["desc_ley"] = tags_ley["resumen"]
-        ctx["conflictos"] = confd.conflicto_patrimonio(list(tag_set))
-        print("Conflictos encontrados: "+ str(len(ctx["conflictos"])))
+        high = []
+        low = []
+        conflictos = confd.conflicto_patrimonio(list(tag_set))
+        ctx["conflictos"] = conflictos
+        for conflicto in conflictos:
+            if(conflicto[0] > 109):
+                high.append(conflicto)
+            else:
+                low.append(conflicto)
+        ctx["high"] = high
+        ctx["low"] = low
+        print("Conflictos encontrados: "+ str(len(conflictos)))
         return ctx
