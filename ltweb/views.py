@@ -148,7 +148,16 @@ class SubirLeyView(View):
 
             lista_tags = []
 
-            for tag in soup.findAll("materia"):
+            materias = ""
+            if (len(soup.findAll("materia")) > 0):
+                materias = "materia"
+            elif (len(soup.findAll("materias"))):
+                materias = "materias"
+            elif (len(soup.findAll("Materia"))):
+                materias = "Materias"
+            elif (len(soup.findAll("Materias"))):
+                materias = "Materias"
+            for tag in soup.findAll(materias):
                 lista_tags.append(tag.text.strip())  # almacenar los tags en una lista
 
             if(len(soup.findAll("url")) > 0):
@@ -156,10 +165,12 @@ class SubirLeyView(View):
             else:
                 url_ley=""
 
-            if (len(soup.findAll("Resumen")) > 0):
+            if (len(soup.findAll("resumen")) > 0):
+                resumen = soup.findAll("resumen")[0].text
+            elif (len(soup.findAll("Resumen")) > 0):
                 resumen = soup.findAll("Resumen")[0].text
             else:
-                resumen = ""
+                resumen = "Resumen no disponible"
 
             dic["numero"] = numero
             dic["nombre"] = nombre
