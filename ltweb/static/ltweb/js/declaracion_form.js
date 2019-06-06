@@ -1,9 +1,150 @@
-window.Vue = Vue;
-
 var ParlamentariosForm = {
-    template: '#ParlamentariosForm',
+    template: `
+    <div class="container">
+            <b-card no-body>
+                <b-card-body>
+                    <b-card-title><h2>[[get_nombre]]</h2></b-card-title>
+                    <b-card-sub-title class="mb-2"><h4>[[get_cargo|capitalize]]</h4></b-card-sub-title>
+                    <b-card-text>
+                        <h6>Asume el cargo : [[get_fechacargo]]<br>
+                        Región: [[get_region|capitalize]]<br>
+                        Comuna: [[get_comuna|capitalize]]</h6>
+                    </b-card-text>
+                </b-card-body>
+
+                <b-list-group flush>
+                    <b-list-group-item>Profesión: [[get_profesion|capitalize]]</b-list-group-item>
+                    <b-list-group-item>Estado Civil: [[get_estadoc|capitalize]]</b-list-group-item>
+                    <b-list-group-item>Regimen Patrimonial: [[get_regimenp|capitalize]] </b-list-group-item>
+                </b-list-group>
+            </b-card>
+            <p></p>
+            <b-card no-body>
+                <b-card-body>
+                    <b-card-title><h2>Declaración de patrimonio</h2></b-card-title>
+                    <b-card-sub-title class="mb-2"><h4>Fecha de declaración: [[get_fechadecla]]</h4></b-card-sub-title>
+                </b-card-body>
+
+                <b-list-group flush>
+                    <b-list-group-item>Tipo de declaración: [[form_data.Tipo_Declaracion.nombre|capitalize]]</b-list-group-item>
+                    <b-list-group-item>Region: [[form_data.Datos_Entidad_Por_La_Que_Declara.Region_Desempeno_Chile.nombre|capitalize]]</b-list-group-item>
+                    <b-list-group-item>Comuna: [[form_data.Datos_Entidad_Por_La_Que_Declara.Comuna_Desempeno_Chile.nombre|capitalize]]</b-list-group-item>
+                    <b-list-group-item>Renta Mensual: [[form_data.Datos_Entidad_Por_La_Que_Declara.Grado_Renta_Mensual|capitalize]]</b-list-group-item>
+                    <b-card no-body class="mb-1">
+                        <b-card-header header-tag="header" class="p-1" role="tab">
+                            <b-button block href="#" v-b-toggle.accordion-1 variant="info">Accordion 1</b-button>
+                        </b-card-header>
+                        <b-collapse id="accordion-1"accordion="my-accordion" role="tabpanel">
+                            <b-card-body>
+                                <b-card-text>I start opened because <code>visible</code> is <code>true</code></b-card-text>
+                            </b-card-body>
+                        </b-collapse>
+                     </b-card>
+
+                </b-list-group>
+            </b-card>
+
+            <table  class="table table-striped table-bordered compact" id="dip_table" cellspacing="0">
+                <thead>
+                    <tr>
+                        <td><b>Atributo</b></td>
+                        <td><b>Valor</b></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if declaracion.Nombre %}
+                    <tr>
+                    <td>Nombre Diptuado</td>
+                    <td>[[form_data.Nombre]]</td>
+                    </tr>
+                    {% endif %}
+
+                    <tr>
+                    <td>Id declaración</td>
+                    <td>[[form_data.Id_Declaracion]]</td>
+                    </tr>
+
+                    <tr>
+                    <td>Fecha de la declaración</td>
+                    <td></td>
+                    </tr>
+
+                    <tr>
+                    <td>Tipo de la declaración, ID</td>
+                    <td>[[form_data.Tipo_Declaracion.id]]</td>
+                    </tr>
+
+                    <tr>
+                    <td>Tipo de la declaración, Nombre</td>
+                    <td>[[form_data.Tipo_Declaracion.nombre]]</td>
+                    </tr>
+
+                    <tr>
+                    <td>Region</td>
+                    <td>[[form_data.Region]]</td>
+                    </tr>
+
+                    <tr>
+                    <td>Comuna</td>
+                    <td>[[form_data.Comuna]]</td>
+                    </tr>
+
+                    <tr>
+                    <td>Datos del declarante</td>
+                    <td>[[form_data.Datos_del_Declarante]]</td>
+                    </tr>
+
+                    <tr>
+                    <td>Datos del conyuge</td>
+                    <td>[[form_data.Datos_del_Conyuge]]</td>
+                    </tr>
+
+                    <tr>
+                    <td>¿Declara bienes del conyuge?</td>
+                    <td>[[form_data.Declara_Bienes_Conyuge]]</td>
+                    </tr>
+
+                    <tr>
+                    <td>Datos de la entidad por la que declara</td>
+                    <td>[[form_data.Datos_Entidad_Por_La_Que_Declara]]</td>
+                    </tr>
+
+                    <tr>
+                    <td>Datos Parientes</td>
+                    <td>[[form_data.Datos_Parientes]]</td>
+                    </tr>
+
+                    <tr>
+                    <td>Bienes inmuebles situados en Chile</td>
+                    <td>[[form_data.Bienes_Inmuebles_Situados_En_Chile]]</td>
+                    </tr>
+
+                    <tr>
+                    <td>Vehiculos motorizados</td>
+                    <td>[[form_data.Vehiculos_Motorizados]]</td>
+                    </tr>
+
+                    <tr>
+                    <td>Naves o artefactos Navales</td>
+                    <td>[[form_data.Naves_Artefactos_Navales]]</td>
+                    </tr>
+
+                    <tr>
+                    <td>Derechos o acciones en Chile</td>
+                    <td>[[form_data.Derechos_Acciones_Chile]]</td>
+                    </tr>
+
+                    <tr>
+                    <td>Pasivos</td>
+                    <td>[[form_data.Pasivos]]</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    `,
     delimiters: ['[[', ']]'],
-    data: {
+    data: function() {
+        return {}
     },
     created: function() {
         this.$store.state.form_data = JSON.parse(document.getElementsByTagName('body')[0].getAttribute('data') || '{}');
