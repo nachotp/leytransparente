@@ -216,17 +216,20 @@ class ConflictoView(TemplateView):
         ctx = super().get_context_data()
         ley = self.kwargs['ley']
         print(f"Buscando Ley {ley}")
-        tags_ley = self.leyes.find_one({"numero": ley}, {"tags": 1})
+        tags_ley = self.leyes.find_one({"numero": ley}, {"tags": 1,"nombre": 1, "resumen": 1})
         print("Buscando tags:")
         tag_set = set({})
         if tags_ley is not None:
             for tag in tags_ley["tags"]:
-                print(tag)
                 tags = self.cats.find_one({"tags": tag.upper()}, {"tags": 1})
                 if tags is not None:
                     for cat_tag in tags["tags"]:
                         tag_set.add(cat_tag)
         print("Revisando declaraciones")
+        print(tag_set)
+        ctx["nro_ley"] = ley
+        ctx["nombre_ley"] = tags_ley["nombre"]
+        ctx["desc_ley"] = tags_ley["resumen"]
         ctx["conflictos"] = confd.conflicto_patrimonio(list(tag_set))
         print("Conflictos encontrados: "+ str(len(ctx["conflictos"])))
         return ctx

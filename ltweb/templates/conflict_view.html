@@ -5,8 +5,8 @@
 <div>
         <div>
 <b-card-group deck>
+    Ley {{nro_ley}} - {{desc_ley}}  -  {{nombre_ley}}
     {% for diputado in conflictos %}
-            {{diputado}}
             {% if diputado.0 > 109 %}
             <b-card bg-variant="Light" title= "{{ diputado.1 }}" header= "Conflicto " header-text-variant="white" header-bg-variant="danger"> 
              {% else %}
@@ -15,8 +15,10 @@
                 <b-card-text>
                     <b-list-group flush>
                             <b-list-group-item><b>Nombre Razon Social : </b>{{diputado.3.Nombre_Razon_Social}}</b-list-group-item>
-                            <b-list-group-item><b>Nombre Razon Social : </b>{{diputado.3.Nombre_Razon_Social}}</b-list-group-item>
                         </b-list-group>
+                        <div class="bg-light text-dark text-center">
+                                <b>{{diputado.3.Tiene_Calidad_Controlador}}</b> tiene calidad de controlador
+                              </div>
               </b-card-text>
           
               <b-button href="{% url 'Ver Declaracion' %}?id={{ diputado.2 }}" variant="primary">Ver declaracion</b-button>
