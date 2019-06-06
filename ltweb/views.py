@@ -68,7 +68,7 @@ class SubirDeclaracionView(View):
                                     "Meta":True})
         
         if query == None: # inserta automaticamente porque no existe nadie.
-            self.mycol.insert(dic)
+            x=self.mycol.insert(dic)
 
         else: # actualiza el registri por los datos contenidos en el JSON
             if(dic["Fecha_de_la_Declaracion"] > query["Fecha_de_la_Declaracion"]):
