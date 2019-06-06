@@ -8,7 +8,7 @@
   {% load static %}
   <link rel="stylesheet" href="{% static "lib/fontawesome-free-5.6.3-web/css/all.css" %}">
   <link type="text/css" rel="stylesheet" href="{%  static "lib/bootstrap-vue/bootstrap.min.css" %}"/>
-  <link type="text/css" rel="stylesheet" href="{%  static "lib/bootstrap-vue/bootstrap-vue.css" %}"/>
+  <link type="text/css" rel="stylesheet" href="{%  static "lib/bootstrap-vue/bootstrap-vue.min.css" %}"/>
   {% block head_end %}{% endblock %}
 </head>
 
@@ -24,7 +24,7 @@
 
   <script type="text/javascript" src="{% static "lib/vue/vue.js" %}"></script>
   <script src="{% static "lib/bootstrap-vue/polyfill.min.js" %}"></script>
-  <script src="{% static "lib/bootstrap-vue/bootstrap-vue.js" %}"></script>
+  <script src="{% static "lib/bootstrap-vue/bootstrap-vue.min.js" %}"></script>
   <script type="text/javascript" src="{% static "lib/vue-resource/vue-resource.js" %}"></script>
   <script>
       window.app = new Vue({
