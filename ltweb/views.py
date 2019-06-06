@@ -1,5 +1,4 @@
 import json
-
 from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import TemplateView
@@ -14,7 +13,7 @@ class HomeView(TemplateView):
     template_name = "home.html"
 
 
-class EditarDeclaracion(TemplateView):
+class ViewDeclaracion(TemplateView):
     template_name = "ver.html"
     myclient = MongoClient("mongodb+srv://admin:leytransparente@leytransparente-m6y51.mongodb.net/test?retryWrites"
                            "=true&w=majority")
@@ -24,7 +23,7 @@ class EditarDeclaracion(TemplateView):
     def get_context_data(self, **kwargs):
         # Eso es get, para que sea más seguro, usar POST
         ctx = super().get_context_data()
-        ctx['id'] = self.request.GET.get('id', None)
+        ctx['id'] = self.kwargs['id']
         
         query = self.mycol.find_one({"_id": ObjectId(ctx['id'])})
         query.pop('_id')

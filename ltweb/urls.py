@@ -7,6 +7,6 @@ urlpatterns = [
     path(r'leyes', views.LeyesListView.as_view(), name='Lista Leyes'),
     path(r'declaracion/', views.SubirDeclaracionView.as_view(), name='Subir declaracion'),
     path(r'diputados/', views.DiputadosListView.as_view(), name='Lista Diputados'),
-    path(r'ver/<str:id>', views.EditarDeclaracion.as_view(), name='Ver Declaracion'),
+    path(r'ver/<str:id>', views.ViewDeclaracion.as_view(), name='Ver Declaracion'),
     path(r'conflicto/<str:ley>', views.ConflictoView.as_view(), name='Conflictos')
 ]
