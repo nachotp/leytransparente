@@ -5,18 +5,15 @@ var ParlamentariosForm = {
                 <b-card-body>
                     <b-card-title><h2>[[get_nombre]]</h2></b-card-title>
                     <b-card-sub-title class="mb-2"><h4>[[get_cargo|capitalize]]</h4></b-card-sub-title>
-                    <b-card-text>
-                        <h6>Asume el cargo : [[get_fechacargo]]<br>
+                    <b-card-text>Asume el cargo : [[get_fechacargo]]<br>
                         Región: [[get_region|capitalize]]<br>
-                        Comuna: [[get_comuna|capitalize]]<br>
-                        </h6>
-                    </b-card-text>
+                        Comuna: [[get_comuna|capitalize]]</b-card-text>
                 </b-card-body>
 
                 <b-list-group flush>
-                    <b-list-group-item>Profesión: [[get_profesion|capitalize]]</b-list-group-item>
-                    <b-list-group-item>Estado Civil: [[get_estadoc|capitalize]]</b-list-group-item>
-                    <b-list-group-item>Regimen Patrimonial: [[get_regimenp|capitalize]] </b-list-group-item>
+                    <b-list-group-item>Profesión: [[get_profesion|capitalize]]<br>
+                    Estado Civil: [[get_estadoc|capitalize]]<br>
+                    Regimen Patrimonial: [[get_regimenp|capitalize]] </b-list-group-item>
                 </b-list-group>
             </b-card>
             <p></p>
@@ -27,17 +24,17 @@ var ParlamentariosForm = {
                 </b-card-body>
 
                 <b-list-group flush>
-                    <b-list-group-item>Tipo de declaración: [[form_data.Tipo_Declaracion.nombre|capitalize]]</b-list-group-item>
-                    <b-list-group-item>Region: [[form_data.Datos_Entidad_Por_La_Que_Declara.Region_Desempeno_Chile.nombre|capitalize]]</b-list-group-item>
-                    <b-list-group-item>Comuna: [[form_data.Datos_Entidad_Por_La_Que_Declara.Comuna_Desempeno_Chile.nombre|capitalize]]</b-list-group-item>
-                    <b-list-group-item>Renta Mensual: [[form_data.Datos_Entidad_Por_La_Que_Declara.Grado_Renta_Mensual|capitalize]]</b-list-group-item>
+                    <b-list-group-item>Tipo de declaración: [[form_data.Tipo_Declaracion.nombre|capitalize]]<br>
+                    Region: [[form_data.Datos_Entidad_Por_La_Que_Declara.Region_Desempeno_Chile.nombre|capitalize]]<br>
+                    Comuna: [[form_data.Datos_Entidad_Por_La_Que_Declara.Comuna_Desempeno_Chile.nombre|capitalize]]<br>
+                    Renta Mensual: [[form_data.Datos_Entidad_Por_La_Que_Declara.Grado_Renta_Mensual|capitalize]]</b-list-group-item>
                     <!--b-list-group-item v-for="(item,key,index) in form_data">[[key]]: [[item]]</b-list-group-item-->
                     
                     <b-card no-body class="mb-1">
                         <b-card-header header-tag="header" class="p-1" role="tab">
                             <b-button block href="#" v-b-toggle.Derechos_o_acciones variant="info">Derechos o acciones en Chile</b-button>
                         </b-card-header>
-                        <b-collapse id="Derechos_o_acciones" accordion="my-accordion" role="tabpanel">
+                        <b-collapse id="Derechos_o_acciones" accordion="AccDerechos" role="tabpanel">
                             <b-list-group flush v-for="(derecho,index) in getDerechos" :key="index">
                                 <b-list-group-item>
                                     <h5>[[derecho.Nombre_Razon_Social|capitalize]]</h5>
@@ -47,6 +44,26 @@ var ParlamentariosForm = {
                                     Rubro: [[derecho.Giro_Registrado_SII|capitalize]]<br>
                                     Fecha de adquisición: [[derecho.Fecha_Adquisicion|dateOnly]]<br>
                                     ¿Calidad de Controlador?: [[derecho.Tiene_Calidad_Controlador|yesNo]]
+                                </b-list-group-item>
+                            </b-list-group>
+                        </b-collapse>
+                     </b-card>
+                     
+                    <b-card no-body class="mb-1">
+                        <b-card-header header-tag="header" class="p-1" role="tab">
+                            <b-button block href="#" v-b-toggle.Bienes_Inmuebles_Situados_En_Chile variant="info">Bienes inmuebles situados en Chile</b-button>
+                        </b-card-header>
+                        <b-collapse id="Bienes_Inmuebles_Situados_En_Chile" accordion="AccBienes" role="tabpanel">
+                            <b-list-group flush v-for="(bien,index) in getBienesChile" :key="index">
+                                <b-list-group-item>
+                                    <h5>
+                                    [[bien.Direccion|capitalize|capitalize]], [[bien.Comuna.nombre|capitalize]], Región [[bien.Region.nombre|capitalize]]<br></h5>
+                                    Forma de la propiedad: [[bien.Forma_Propiedad.nombre|capitalize]]<br>
+                                    Conservador bienes raices: [[bien.Conservador_Bienes_Raices.nombre|capitalize]]<br>
+                                    Avalúo Fiscal: $[[bien.Avaluo_Fiscal|number]]<br>
+                                    ¿Es su domicilio?: [[bien.Es_Su_Domicilio|yesNo]]<br>
+                                    Año del inmueble: [[bien.Annio|number]]<br>
+                                    Fecha de adquisición: [[bien.Fecha_Adquisicion|dateOnly]]<br>
                                 </b-list-group-item>
                             </b-list-group>
                         </b-collapse>
@@ -74,7 +91,10 @@ var ParlamentariosForm = {
         },
         yesNo: function (value) {
             return (value || value === "Si") ? 'Si' : 'No'
-        }
+        },
+        number: function (value) {
+            return parseInt(value,10).toLocaleString('es')
+        },
     },
     computed: {
         get_editable(){
@@ -91,9 +111,10 @@ var ParlamentariosForm = {
         },
         get_nombre(){
             var names = this.$store.state.form_data.Datos_del_Declarante.nombre.toLowerCase().split(' ')
-            var name = names[0].charAt(0).toUpperCase() + names[0].slice(1) + ' ' +
-                names[1].charAt(0).toUpperCase() + names[1].slice(1);
-
+            var name = '';
+            for (let i = 0; i < names.length; i++) {
+                name += names[i].charAt(0).toUpperCase() + names[i].slice(1) + ' ';
+            }
             var ApellidoP = this.$store.state.form_data.Datos_del_Declarante.Apellido_Paterno.toLowerCase();
             ApellidoP = ApellidoP.charAt(0).toUpperCase() + ApellidoP.slice(1);
 
@@ -135,5 +156,8 @@ var ParlamentariosForm = {
         getFechaAdquisicionDerecho(){
             return this.$store.state.form_data.Derechos_Acciones_Chile.Fecha_Adquisicion;
         },
+        getBienesChile(){
+            return this.$store.state.form_data.Bienes_Inmuebles_Situados_En_Chile;
+        }
     },
 };
