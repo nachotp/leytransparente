@@ -30,13 +30,13 @@ var ParlamentariosForm = {
                     Renta Mensual: [[form_data.Datos_Entidad_Por_La_Que_Declara.Grado_Renta_Mensual|capitalize]]</b-list-group-item>
                     <!--b-list-group-item v-for="(item,key,index) in form_data" :key="key">[[key]]: [[item]]</b-list-group-item-->
                     
-                    <b-card no-body class="mb-1">
+                    <b-card no-body class="mb-1" v-if="getDerechos">
                         <b-card-header header-tag="header" class="p-1" role="tab">
                             <b-button block href="#" v-b-toggle.Derechos_o_acciones variant="info">Derechos o acciones en Chile</b-button>
                         </b-card-header>
                         <b-collapse id="Derechos_o_acciones" accordion="AccDerechos" role="tabpanel">
-                            <b-list-group flush v-for="(derecho,index) in getDerechos" :key="index">
-                                <b-list-group-item>
+                            <b-list-group >
+                                <b-list-group-item flush v-for="(derecho,index) in getDerechos" :key="index">
                                     <h5>[[derecho.Nombre_Razon_Social|capitalize]]</h5>
                                     Tipo: [[derecho.Titulo_Derecho_Accion.nombre|capitalize]]<br>
                                     Porcentaje de pertenencia: [[derecho.Cantidad_Porcentaje]]%<br>
@@ -49,13 +49,13 @@ var ParlamentariosForm = {
                         </b-collapse>
                      </b-card>
                      
-                    <b-card no-body class="mb-1">
-                        <b-card-header header-tag="header" class="p-1" role="tab">
+                    <b-card no-body class="mb-1" v-if="getBienesChile">
+                        <b-card-header header-tag="header" class="p-1" role="tab" >
                             <b-button block href="#" v-b-toggle.Bienes_Inmuebles_Situados_En_Chile variant="info">Bienes inmuebles situados en Chile</b-button>
                         </b-card-header>
                         <b-collapse id="Bienes_Inmuebles_Situados_En_Chile" accordion="AccBienes" role="tabpanel">
-                            <b-list-group flush v-for="(bien,index) in getBienesChile" :key="index">
-                                <b-list-group-item>
+                            <b-list-group flush >
+                                <b-list-group-item v-for="(bien,index) in getBienesChile" :key="index">
                                     <h5>
                                     [[bien.Direccion|capitalize|capitalize]], [[bien.Comuna.nombre|capitalize]], Región [[bien.Region.nombre|capitalize]]<br></h5>
                                     Forma de la propiedad: [[bien.Forma_Propiedad.nombre|capitalize]]<br>
@@ -69,7 +69,7 @@ var ParlamentariosForm = {
                         </b-collapse>
                      </b-card>
                      
-                    <b-card no-body class="mb-1">
+                    <b-card no-body class="mb-1" v-if="getVehiculos">
                         <b-card-header header-tag="header" class="p-1" role="tab">
                             <b-button block href="#" v-b-toggle.Vehiculos_motorizados variant="info">Vehículos motorizados</b-button>
                         </b-card-header>
@@ -85,7 +85,7 @@ var ParlamentariosForm = {
                         </b-collapse>
                      </b-card>
                      
-                    <b-card no-body class="mb-1">
+                    <b-card no-body class="mb-1" v-if="form_data.Declara_Bienes_Conyuge">
                         <b-card-header header-tag="header" class="p-1" role="tab">
                             <b-button block href="#" v-b-toggle.Datos_Conyuge variant="info">Datos del Conyuge</b-button>
                         </b-card-header>
@@ -107,7 +107,7 @@ var ParlamentariosForm = {
                         </b-collapse>
                      </b-card>
                      
-                    <b-card no-body class="mb-1">
+                    <b-card no-body class="mb-1" v-if="form_data.Datos_Parientes">
                         <b-card-header header-tag="header" class="p-1" role="tab">
                             <b-button block href="#" v-b-toggle.Parientes variant="info">Parientes</b-button>
                         </b-card-header>
@@ -136,9 +136,10 @@ var ParlamentariosForm = {
     store: declaracion_data,
     filters: {
         capitalize: function (value) {
-            if (value !== undefined)
+            if (value !== undefined){
                 value = value.toString().toLowerCase();
                 return value.charAt(0).toUpperCase() + value.slice(1);
+            }
         },
         dateOnly: function (value) {
             if (value !== undefined)
@@ -147,18 +148,21 @@ var ParlamentariosForm = {
                 return "No hay información";
         },
         yesNo: function (value) {
-            return (value || value === "Si") ? 'Si' : 'No'
+            if (value !== undefined)
+            return ((value === true || value === "Si" || value === "true" || value === "True") ? 'Si' : 'No');
         },
         number: function (value) {
+            if (value !== undefined)
             return parseInt(value, 10).toLocaleString('es')
         },
         name: function (value) {
+            if (value !== undefined){
             value = value.toLowerCase().split(' ')
             var name = '';
             for (let i = 0; i < value.length; i++) {
                 name += value[i].charAt(0).toUpperCase() + value[i].slice(1) + ' ';
             }
-            return name;
+            return name;}
         },
     },
     computed: {

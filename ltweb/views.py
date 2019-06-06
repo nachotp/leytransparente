@@ -27,7 +27,6 @@ class ViewDeclaracion(TemplateView):
         
         query = self.mycol.find_one({"_id": ObjectId(ctx['id'])})
         query.pop('_id')
-        ctx['json'] = query
         ctx['declaracion'] = json.dumps(query)
         
         return ctx
