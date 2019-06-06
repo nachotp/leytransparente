@@ -8,8 +8,13 @@
   {% load static %}
   <link rel="stylesheet" href="{% static "lib/fontawesome-free-5.6.3-web/css/all.css" %}">
   <link type="text/css" rel="stylesheet" href="{%  static "lib/bootstrap-vue/bootstrap.min.css" %}"/>
-  <link type="text/css" rel="stylesheet" href="{%  static "lib/bootstrap-vue/bootstrap-vue.css" %}"/>
+  <link type="text/css" rel="stylesheet" href="{%  static "lib/bootstrap-vue/bootstrap-vue.min.css" %}"/>
   {% block head_end %}{% endblock %}
+  <script>
+    {% block vue_dependencies %}
+      const DEPS = {};
+  {% endblock %}
+  </script>
 </head>
 
 <body >
@@ -24,18 +29,20 @@
 
   <script type="text/javascript" src="{% static "lib/vue/vue.js" %}"></script>
   <script src="{% static "lib/bootstrap-vue/polyfill.min.js" %}"></script>
-  <script src="{% static "lib/bootstrap-vue/bootstrap-vue.js" %}"></script>
+  <script src="{% static "lib/bootstrap-vue/bootstrap-vue.min.js" %}"></script>
   <script type="text/javascript" src="{% static "lib/vue-resource/vue-resource.js" %}"></script>
-  <script>
-      window.app = new Vue({
-        el: '#app',
-        data: {},
-        computed: {}
-      })
-    </script>
+
   {% block body_end %}
     {# Mostly for scripts that should go after the content and after the vue.js script tag #}
   {% endblock body_end %}
+    <script>
+        window.app = new Vue({
+            el: '#app',
+            data: {},
+            computed: {},
+            components: DEPS
+        })
+    </script>
 </body>
 
 </html>
