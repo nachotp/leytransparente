@@ -6,11 +6,14 @@
         <div>
 <b-card-group deck>
     {% for diputado in conflictos %}
-            <b-card bg-variant="Light" title= "{{ diputado.1 }}" header= "Conflicto {{forloop.counter}}" header-text-variant="white" header-bg-variant="dark"> 
-              <b-card-text>
+            {% if diputado.0 > 109 %}
+            <b-card bg-variant="Light" title= "{{ diputado.1 }}" header= "Conflicto " header-text-variant="white" header-bg-variant="danger"> 
+             {% else %}
+             <b-card bg-variant="Light" title= "{{ diputado.1 }}" header= "Conflicto Leve" header-text-variant="white" header-bg-variant="warning"> 
+             {% endif %}
+                <b-card-text>
                     <b-list-group flush>
                             <b-list-group-item><b>Nombre Razon Social : </b>{{diputado.3.Nombre_Razon_Social}}</b-list-group-item>
-                            <b-list-group-item><b>Score : </b>{{ diputado.0 }} </b-list-group-item>
                         </b-list-group>
               </b-card-text>
           

@@ -28,8 +28,10 @@ def conflicto_patrimonio(kwrds):
     print(query is not None)
     matches = []
     for person in query:
-        nombre = person["Datos_del_Declarante"]["Apellido_Paterno"] + " " + person["Datos_del_Declarante"][
-            "Apellido_Materno"] + " " + person["Datos_del_Declarante"]["nombre"]
+        name = ""
+        for nombre in person["Datos_del_Declarante"]["nombre"].split():
+            name += nombre.lower().capitalize() + " "
+        nombre =  name + person["Datos_del_Declarante"]["Apellido_Paterno"].lower().capitalize() + " " + person["Datos_del_Declarante"]["Apellido_Materno"].lower().capitalize()
         idec = person["_id"]
 
         # TODO: Le estamos agregando distintos scores para una misma persona ?
