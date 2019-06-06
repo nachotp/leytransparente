@@ -15,7 +15,7 @@ class HomeView(TemplateView):
 
 
 class EditarDeclaracion(TemplateView):
-    template_name = "editar.html"
+    template_name = "ver.html"
     myclient = MongoClient("mongodb+srv://admin:leytransparente@leytransparente-m6y51.mongodb.net/test?retryWrites"
                            "=true&w=majority")
     mydb = myclient["leytransparente"]
@@ -28,6 +28,7 @@ class EditarDeclaracion(TemplateView):
         
         query = self.mycol.find_one({"_id": ObjectId(ctx['id'])})
         query.pop('_id')
+        ctx['json'] = query
         ctx['declaracion'] = json.dumps(query)
         
         return ctx

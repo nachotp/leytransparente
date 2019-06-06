@@ -31,17 +31,18 @@
   <script src="{% static "lib/bootstrap-vue/polyfill.min.js" %}"></script>
   <script src="{% static "lib/bootstrap-vue/bootstrap-vue.min.js" %}"></script>
   <script type="text/javascript" src="{% static "lib/vue-resource/vue-resource.js" %}"></script>
-  <script>
-      window.app = new Vue({
-        el: '#app',
-        data: {},
-        computed: {},
-        components: DEPS
-      })
-    </script>
+
   {% block body_end %}
     {# Mostly for scripts that should go after the content and after the vue.js script tag #}
   {% endblock body_end %}
+    <script>
+        window.app = new Vue({
+            el: '#app',
+            data: {},
+            computed: {},
+            components: DEPS
+        })
+    </script>
 </body>
 
 </html>

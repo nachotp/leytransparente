@@ -1,10 +1,9 @@
 window.Vue = Vue;
 
-var ParlamentariosForm = new Vue({
-    el: '#ParlamentariosForm',
+var ParlamentariosForm = {
+    template: '#ParlamentariosForm',
     delimiters: ['[[', ']]'],
-    components: {
-
+    data: {
     },
     created: function() {
         this.$store.state.form_data = JSON.parse(document.getElementsByTagName('body')[0].getAttribute('data') || '{}');
@@ -17,14 +16,17 @@ var ParlamentariosForm = new Vue({
         },
     },
     computed: {
-        editable(){
-            return this.$store.state.editable
+        get_editable(){
+            return this.$store.state.editable;
         },
         form_data(){
-            return this.$store.state.form_data
+            return this.$store.state.form_data;
         },
         form_base(){
-            return this.$store.state.form_base.template
+            return this.$store.state.form_base.template;
+        },
+        get_state(){
+            return this.$store.state;
         },
         get_nombre(){
             var names = this.$store.state.form_data.Datos_del_Declarante.nombre.toLowerCase().split(' ')
@@ -67,4 +69,4 @@ var ParlamentariosForm = new Vue({
             return this.$store.state.form_data.Fecha_de_la_Declaracion.split(' ')[0];
         }
     },
-});
+};
