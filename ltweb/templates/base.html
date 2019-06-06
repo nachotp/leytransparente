@@ -10,6 +10,11 @@
   <link type="text/css" rel="stylesheet" href="{%  static "lib/bootstrap-vue/bootstrap.min.css" %}"/>
   <link type="text/css" rel="stylesheet" href="{%  static "lib/bootstrap-vue/bootstrap-vue.min.css" %}"/>
   {% block head_end %}{% endblock %}
+  <script>
+    {% block vue_dependencies %}
+      const DEPS = {};
+  {% endblock %}
+  </script>
 </head>
 
 <body >
@@ -30,7 +35,8 @@
       window.app = new Vue({
         el: '#app',
         data: {},
-        computed: {}
+        computed: {},
+        components: DEPS
       })
     </script>
   {% block body_end %}
