@@ -15,17 +15,22 @@
     </b-col>
     <b-col>
         <b-button v-b-modal.my-modal size="lg" variant="primary" class="mb-3 float-right"><i class="fas fa-file-upload"></i> <b>Subir Declaracion</b></b-button>
-        <b-modal id="my-modal" title="Subir Declaración">
-            <form name='load_file_form' method='POST' action="{% url 'Subir declaracion' %}" enctype="multipart/form-data">
-                {% csrf_token %}
-                <h4>
-                    Subir JSON del diputado
-                    <p>
-                    <input type='file' name='uploaded_file' class='button'>
 
-                    </p>
-                </h4>
-                <input type="submit" value="Subir Json">
+        <b-modal id="my-modal" title="Nueva Declaración de Patrimonio" hide-footer>
+            <form name='load_file_form' method='POST' action="{% url 'Subir Ley' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <h5>Subir JSON de la declaración de patrimonios</h5>
+                    <p>Subir una nueva declaración de patrimonios para un parlamentario ya ingresado actualizará la declaración existente para futuros análisis de conflictos de interés.</p>
+                        <b-form-file
+                          name='uploaded_file'
+                          placeholder="Elegir archivo..."
+                          drop-placeholder="Arrastrar archivo aquí..."
+                          browse-text="Examinar"
+                          class="my-3"
+
+                        ></b-form-file>
+
+                <b-button block type="submit" variant="primary"><i class="fas fa-file-upload"></i> Subir Archivo</b-button>
             </form>
         </b-modal>
     </b-col>
