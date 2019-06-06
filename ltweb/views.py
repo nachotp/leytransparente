@@ -229,6 +229,8 @@ class ConflictoView(TemplateView):
         ley = self.kwargs['ley']
         print(f"Buscando Ley {ley}")
         tags_ley = self.leyes.find_one({"numero": ley}, {"tags": 1,"nombre": 1, "resumen": 1})
+        if(tags_ley == None):
+            return ctx
         print("Buscando tags:")
         tag_set = set({})
         if tags_ley is not None:
@@ -238,7 +240,6 @@ class ConflictoView(TemplateView):
                     for cat_tag in tags["tags"]:
                         tag_set.add(cat_tag)
         print("Revisando declaraciones")
-        print(tag_set)
         ctx["nro_ley"] = ley
         ctx["nombre_ley"] = tags_ley["nombre"]
         ctx["desc_ley"] = tags_ley["resumen"]
