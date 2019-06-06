@@ -17,7 +17,7 @@
         <b-button v-b-modal.my-modal size="lg" variant="primary" class="mb-3 float-right"><i class="fas fa-file-upload"></i> <b>Subir Declaracion</b></b-button>
 
         <b-modal id="my-modal" title="Nueva Declaración de Patrimonio" hide-footer>
-            <form name='load_file_form' method='POST' action="{% url 'Subir Ley' %}" enctype="multipart/form-data">
+            <form name='load_file_form' method='POST' action="{% url 'Subir declaracion' %}" enctype="multipart/form-data">
                     {% csrf_token %}
                     <h5>Subir JSON de la declaración de patrimonios</h5>
                     <p>Subir una nueva declaración de patrimonios para un parlamentario ya ingresado actualizará la declaración existente para futuros análisis de conflictos de interés.</p>
