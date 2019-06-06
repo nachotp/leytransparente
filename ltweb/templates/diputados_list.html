@@ -14,7 +14,20 @@
         <h2>Declaraciones de Diputados</h2>
     </b-col>
     <b-col>
-        <b-button size="lg" variant="primary" href="{% url 'Subir declaracion' %}" class="mb-3 float-right"><i class="fas fa-file-upload"></i> <b>Subir Declaracion</b></b-button>
+        <b-button v-b-modal.my-modal size="lg" variant="primary" class="mb-3 float-right"><i class="fas fa-file-upload"></i> <b>Subir Declaracion</b></b-button>
+        <b-modal id="my-modal" title="Subir Declaración">
+            <form name='load_file_form' method='POST' action="{% url 'Subir declaracion' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <h4>
+                    Subir JSON del diputado
+                    <p>
+                    <input type='file' name='uploaded_file' class='button'>
+
+                    </p>
+                </h4>
+                <input type="submit" value="Subir Json">
+            </form>
+        </b-modal>
     </b-col>
 </b-row>
     <div class="container" style="max-width: 1450px">
@@ -54,6 +67,7 @@
 
 {% block body_end %}
 <script>
+
 $(document).ready(function() {
     var table = "#dip_table";
     console.log('creating table '+table);
@@ -63,7 +77,6 @@ $(document).ready(function() {
         orderCellsTop: true,
         "order": [[ 0, "desc" ]],
         "paging":         true,
-
 
     });
 });
