@@ -22,7 +22,7 @@
                     <h4>Conflictos</h4>
                         {% for diputado in high%}
                             <b-card bg-variant="Light" header= " " header-text-variant="white" header-bg-variant="danger"> 
-                                <a class="" href="{% url 'Ver Declaracion' %}?id={{ diputado.2 }}"><h4>{{ diputado.1 }}</h4></a>
+                                <a class="" href="{% url 'Ver Declaracion' id=diputado.2 %}"><h4>{{ diputado.1 }}</h4></a>
                                 <b-card-text>
                                     <b-list-group flush>
                                         <b-list-group-item><b>Nombre Razon Social : </b>{{diputado.3.Nombre_Razon_Social}}</b-list-group-item>
@@ -41,7 +41,7 @@
                 <h4>Conflictos Leves</h4>
                     {% for diputado in low%}
                         <b-card bg-variant="Light"  header= " " header-text-variant="white" header-bg-variant="warning"> 
-                                <a class="" href="{% url 'Ver Declaracion' %}?id={{ diputado.2 }}"><h4>{{ diputado.1 }}</h4></a>
+                                <a class="" href="{% url 'Ver Declaracion' id=diputado.2 %}"><h4>{{ diputado.1 }}</h4></a>
                             <b-card-text>
                                     <b-list-group flush>
                                         <b-list-group-item><b>Razón Social : </b>{{diputado.3.Nombre_Razon_Social}}</b-list-group-item>
