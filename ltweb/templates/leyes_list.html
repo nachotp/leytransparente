@@ -15,26 +15,23 @@
     </b-col>
     <b-col>
         <b-button v-b-modal.my-modal size="lg" variant="primary" class="mb-3 float-right"><i class="fas fa-file-upload"></i> <b>Subir Ley</b></b-button>
-        <b-modal id="my-modal" title="Subir Ley">
 
-
-
-
+        <b-modal id="my-modal" title="Nuevo Proyecto de Ley" hide-footer>
             <form name='load_file_form' method='POST' action="{% url 'Subir Ley' %}" enctype="multipart/form-data">
                     {% csrf_token %}
-                    <h4>
-                        Subir XML de la ley
-                        <p>
-                        <br>
+                    <h5>Subir XML de la Ley</h5>
+                    <p>Subir un nuevo proyecto de ley iniciará el proceso de detección de conflictos de interés.</p>
+                        <b-form-file
+                          name='uploaded_file'
+                          placeholder="Elegir archivo..."
+                          drop-placeholder="Arrastrar archivo aquí..."
+                          browse-text="Examinar"
+                          class="my-3"
 
-                        <input type='file' name='uploaded_file' class='button'>
+                        ></b-form-file>
 
-                        </p>
-                    </h4>
-                    <input type="submit" value="Subir XML">
-                </form>
-
-
+                <b-button block type="submit" variant="primary"><i class="fas fa-file-upload"></i> Subir Archivo</b-button>
+            </form>
         </b-modal>
     </b-col>
 </b-row>
