@@ -16,7 +16,7 @@
 {% if conflictos %}
 <b-container class="bv-example-row">  
     <b-row>  
-            <b-col>
+            <b-col class = ml-auto>
                 <h4>Conflictos</h4>
                     {% for diputado in high%}
                         <b-card bg-variant="Light" header= " " header-text-variant="white" header-bg-variant="danger"> 
@@ -32,6 +32,7 @@
                                 </div>
                             </b-card-text>
                         </b-card>
+                        <br>
                     {% endfor %}
             </b-col>
             <b-col>
@@ -50,6 +51,7 @@
                                     </div>
                                 </b-card-text>
                         </b-card>
+                        <br>
                     {% endfor %}
             </b-col>
     </b-row>
