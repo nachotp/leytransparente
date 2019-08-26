@@ -17,7 +17,7 @@ var ParlamentariosForm = {
                 </b-list-group>
             </b-card>
             <p></p>
-            <b-card no-body>
+            <!--b-card no-body>
                 <b-card-body>
                     <b-card-title><h2>Declaración de patrimonio</h2></b-card-title>
                     <b-card-sub-title class="mb-2"><h4>Fecha de declaración: [[get_fechadecla]]</h4></b-card-sub-title>
@@ -28,7 +28,8 @@ var ParlamentariosForm = {
                     Region: [[form_data.Datos_Entidad_Por_La_Que_Declara.Region_Desempeno_Chile.nombre|capitalize]]<br>
                     Comuna: [[form_data.Datos_Entidad_Por_La_Que_Declara.Comuna_Desempeno_Chile.nombre|capitalize]]<br>
                     Renta Mensual: [[form_data.Datos_Entidad_Por_La_Que_Declara.Grado_Renta_Mensual|capitalize]]</b-list-group-item>
-                    <!--b-list-group-item v-for="(item,key,index) in form_data" :key="key">[[key]]: [[item]]</b-list-group-item-->
+                    <b-list-group-item v-for="(item,key,index) in form_data" :key="key">[[key]]: [[item]]</1--b-list-group-item>
+                    
                     
                     <b-card no-body class="mb-1" v-if="getDerechos">
                         <b-card-header header-tag="header" class="p-1" role="tab">
@@ -124,7 +125,71 @@ var ParlamentariosForm = {
                      </b-card>
 
                 </b-list-group>
-            </b-card>
+            </b-card-->
+            
+            <b-container class="bv-example-row">
+                <b-row align-v="center" class="text-center">
+                
+                    <b-col cols="6" auto v-if="getBienesChile">
+                        <b-card no-body class="mb-1">
+                            <b-card-title class="mb-1"><h4>Bienes inmuebles situados en Chile</h4></b-card-title>
+                            <b-list-group-item>
+                                Cantidad de bienes: [[ getBienesChile.length ]]<br>
+                                </b-list-group-item>
+                            
+                            <b-button v-b-modal.ModalBienesChile>Más info</b-button>
+                            
+                            <b-modal id="ModalBienesChile" title="Bienes en Chile">
+                            
+                                <b-list-group flush >
+                                    <b-list-group-item v-for="(bien,index) in getBienesChile" :key="index">
+                                        <h5>[[bien.Direccion|capitalize|capitalize]], [[bien.Comuna.nombre|capitalize]], Región [[bien.Region.nombre|capitalize]]</h5>
+                                        Forma de la propiedad: [[bien.Forma_Propiedad.nombre|capitalize]]<br>
+                                        Conservador bienes raices: [[bien.Conservador_Bienes_Raices.nombre|capitalize]]<br>
+                                        Avalúo Fiscal: $[[bien.Avaluo_Fiscal|number]]<br>
+                                        ¿Es su domicilio?: [[bien.Es_Su_Domicilio|yesNo]]<br>
+                                        Año del inmueble: [[bien.Annio|number]]<br>
+                                        Fecha de adquisición: [[bien.Fecha_Adquisicion|dateOnly]]<br>
+                                    </b-list-group-item>
+                                </b-list-group>
+                                
+                            </b-modal>
+                        </b-card>
+                    </b-col>
+                    
+                    <b-col cols="6" v-if="getDerechos">
+                        <b-card no-body class="mb-1">
+                            <b-card-title class="mb-1"><h5>Derechos o acciones en Chile</h5></b-card-title>
+                            <b-list-group-item>
+                                Cantidad de derechos o acciones: [[ getDerechos.length ]]<br>
+                            </b-list-group-item>
+                            
+                            <b-button v-b-modal.ModalDerechos>Más info</b-button>
+                            
+                            <b-modal id="ModalDerechos" title="Derechos o acciones en Chile">
+                            
+                                <b-list-group flush>
+                                    <b-list-group-item v-for="(derecho,index) in getDerechos" :key="index">
+                                        <h5>[[derecho.Nombre_Razon_Social|capitalize]]</h5>
+                                        Tipo: [[derecho.Titulo_Derecho_Accion.nombre|capitalize]]<br>
+                                        Porcentaje de pertenencia: [[derecho.Cantidad_Porcentaje]]%<br>
+                                        Rut: [[derecho.RUT]]<br>
+                                        Rubro: [[derecho.Giro_Registrado_SII|capitalize]]<br>
+                                        Fecha de adquisición: [[derecho.Fecha_Adquisicion|dateOnly]]<br>
+                                        ¿Calidad de Controlador?: [[derecho.Tiene_Calidad_Controlador|yesNo]]
+                                    </b-list-group-item>
+                                </b-list-group>
+                                
+                            </b-modal>
+                        </b-card>               
+                    </b-col>
+                    
+                    <b-col cols="6" class="ml-md-auto" v-if="getVehiculos">1 of 3</b-col>
+                    <b-col cols="6" class="ml-md-auto" v-if="!(form_data.Datos_del_Declarante.Estado_Civil.id !== 2)">2 of 3</b-col>
+                    <b-col cols="6" class="ml-md-auto" v-if="form_data.Datos_Parientes">3 of 3</b-col>
+                </b-row>
+            </b-container>
+            
         </div>
     `,
     delimiters: ['[[', ']]'],
