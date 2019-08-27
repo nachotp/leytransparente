@@ -190,7 +190,7 @@ var ParlamentariosForm = {
                 </b-row>
             </b-container>
             
-        </div>
+        </div>a
     `,
     delimiters: ['[[', ']]'],
     data: function() {
