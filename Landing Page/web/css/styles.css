@@ -1716,7 +1716,7 @@ a:hover.back-to-top {
 
 	/* Extra Pages */
 	.ex-header {
-		padding-top: 11rem;
+		padding-top: 12rem;
 		padding-bottom: 9rem;
 	}
 
@@ -1986,7 +1986,7 @@ a:hover.back-to-top {
 
 	/* Extra Pages */
 	.ex-header {
-		background: url('../images/ex-header-background.jpg') center center no-repeat;
+		background: url('../images/ex-header-background.jpg') center center;
 		background-size: cover;
 	}
 
