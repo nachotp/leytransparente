@@ -1,7 +1,7 @@
 const ParlamentariosForm = {
     template: `
     <div class="container mw-75">
-            <b-card no-body>
+            <b-card no-body class>
                 <b-card-body>
                     <b-card-title><h2>[[get_nombre]]</h2></b-card-title>
                     <b-card-sub-title class="mb-2"><h4>[[get_cargo|capitalize]]</h4></b-card-sub-title>
@@ -16,29 +16,101 @@ const ParlamentariosForm = {
                     Regimen Patrimonial: [[get_regimenp|capitalize]] </b-list-group-item>
                 </b-list-group>
             </b-card>
-            <p></p>
 <!--            <b-list-group-item v-for="(item,key,index) in form_data" :key="key">[[key]]: [[item]]</b-list-group-item>-->
-            <!--b-card no-body>
-                <b-card-body>
-                    <b-card-title><h2>Declaración de patrimonio</h2></b-card-title>
-                    <b-card-sub-title class="mb-2"><h4>Fecha de declaración: [[get_fechadecla]]</h4></b-card-sub-title>
-                </b-card-body>
-
-                <b-list-group flush>
-                    <b-list-group-item>Tipo de declaración: [[form_data.Tipo_Declaracion.nombre|capitalize]]<br>
-                    Region: [[form_data.Datos_Entidad_Por_La_Que_Declara.Region_Desempeno_Chile.nombre|capitalize]]<br>
-                    Comuna: [[form_data.Datos_Entidad_Por_La_Que_Declara.Comuna_Desempeno_Chile.nombre|capitalize]]<br>
-                    Renta Mensual: [[form_data.Datos_Entidad_Por_La_Que_Declara.Grado_Renta_Mensual|capitalize]]</b-list-group-item>
-                    <b-list-group-item v-for="(item,key,index) in form_data" :key="key">[[key]]: [[item]]</b-list-group-item>
+        
+            <b-row
+            align-h="center"
+            class="text-center mw-100"
+            style="margin-left: 0px;
+            margin-right: 0px;">
+            
+                <b-col md="6" class="mt-4 mb-4">
+                    <b-card no-body>
                     
-                    
-                    <b-card no-body class="mb-1" v-if="getDerechos">
-                        <b-card-header header-tag="header" class="p-1" role="tab">
-                            <b-button block href="#" v-b-toggle.Derechos_o_acciones variant="info">Derechos o acciones en Chile</b-button>
-                        </b-card-header>
-                        <b-collapse id="Derechos_o_acciones" accordion="AccDerechos" role="tabpanel">
-                            <b-list-group >
-                                <b-list-group-item flush v-for="(derecho,index) in getDerechos" :key="index">
+                        <b-card-title class="mb-1 mt-1"><h4>Bienes inmuebles situados en Chile</h4></b-card-title>
+                        <b-list-group-item>
+                            <div v-if="getBienesChile">Cantidad de bienes: [[ getBienesChile.length ]]<br>
+                            Avalúo Fiscal total: $ [[AvaluoTotal(getBienesChile)|number]]</div>
+                            <div v-else>No hay información</div>
+                        </b-list-group-item>
+                        
+                        <b-button v-if="getBienesChile" variant="dark" v-b-modal.ModalBienesChile>Más info</b-button>
+                        <b-button v-else variant="dark" disabled>Más info</b-button>
+                        
+                        <b-modal id="ModalBienesChile" scrollable size="lg" title="Bienes en Chile">
+                        
+                            <b-list-group flush >
+                                <b-list-group-item v-for="(bien,index) in getBienesChile" :key="index">
+                                    <h5>[[bien.Direccion|capitalize|capitalize]], [[bien.Comuna.nombre|capitalize]], Región [[bien.Region.nombre|capitalize]]</h5>
+                                    Forma de la propiedad: [[bien.Forma_Propiedad.nombre|capitalize]]<br>
+                                    Conservador bienes raices: [[bien.Conservador_Bienes_Raices.nombre|capitalize]]<br>
+                                    Avalúo Fiscal: $[[bien.Avaluo_Fiscal|number]]<br>
+                                    ¿Es su domicilio?: [[bien.Es_Su_Domicilio|yesNo]]<br>
+                                    Año del inmueble: [[bien.Annio|number]]<br>
+                                    Fecha de adquisición: [[bien.Fecha_Adquisicion|dateOnly]]<br>
+                                </b-list-group-item>
+                            </b-list-group>
+                            
+                            <template slot="modal-footer" slot-scope="{ok}">
+                                <b-button size="lg" variant="dark" @click="ok()">
+                                    Cerrar
+                                </b-button>
+                            </template>
+                        </b-modal>
+                        
+                    </b-card>
+                </b-col>
+                
+                <b-col md="6" class="mt-4 mb-4">
+                
+                    <b-card no-body>
+                        <b-card-title class="mb-1 mt-1"><h4>Vehiculos motorizados</h4></b-card-title>
+                        <b-list-group-item>
+                            <div v-if="getVehiculos">Cantidad de vehículos: [[ getVehiculos.length ]]<br>
+                            Avalúo Fiscal total: $ [[AvaluoTotal(getVehiculos)|number]]</div>
+                            <div v-else>No hay información</div>
+                        </b-list-group-item>
+                        
+                        <b-button v-if="getVehiculos" variant="dark" v-b-modal.ModalVehiculos>Más info</b-button>
+                        <b-button v-else variant="dark" disabled>Más info</b-button>
+                        
+                        <b-modal id="ModalVehiculos" scrollable size="lg" title="Vehiculos motorizados">
+                        
+                            <b-list-group flush>
+                                <b-list-group-item v-for="(auto, index) in getVehiculos" :key="index">
+                                    <h5>[[auto.Marca.nombre|capitalize]] [[auto.Modelo|capitalize]], [[auto.Annio_Fabricacion]]</h5>
+                                    Avalúo Fiscal: $[[auto.Avaluo_Fiscal|number]]<br>
+                                    Año de inscripción vehículo: [[auto.Annio_Inscripcion]]<br>
+                                    Número de inscripción: [[auto.Numero_Inscripcion|reservado]]<br>
+                                </b-list-group-item>
+                            </b-list-group>
+                            
+                            <template slot="modal-footer" slot-scope="{ok}">
+                                <b-button size="lg" variant="dark" @click="ok()">
+                                    Cerrar
+                                </b-button>
+                            </template>
+                            
+                        </b-modal>
+                    </b-card> 
+                </b-col>
+                
+                <b-col md="6" class="mb-4">
+                
+                    <b-card no-body>
+                        <b-card-title class="mb-1 mt-1"><h4>Derechos o acciones en Chile</h4></b-card-title>
+                        <b-list-group-item>
+                            <div v-if="getDerechos">Cantidad de derechos o acciones: [[ getDerechos.length ]]</div>
+                            <div v-else>No hay información</div>
+                        </b-list-group-item>
+                        
+                        <b-button v-if="getDerechos" variant="dark" v-b-modal.ModalDerechos>Más info</b-button>
+                        <b-button v-else variant="dark" disabled>Más info</b-button>
+                        
+                        <b-modal id="ModalDerechos" scrollable size="lg" title="Derechos o acciones en Chile">
+                        
+                            <b-list-group flush>
+                                <b-list-group-item v-for="(derecho,index) in getDerechos" :key="index">
                                     <h5>[[derecho.Nombre_Razon_Social|capitalize]]</h5>
                                     Tipo: [[derecho.Titulo_Derecho_Accion.nombre|capitalize]]<br>
                                     Porcentaje de pertenencia: [[derecho.Cantidad_Porcentaje]]%<br>
@@ -48,260 +120,92 @@ const ParlamentariosForm = {
                                     ¿Calidad de Controlador?: [[derecho.Tiene_Calidad_Controlador|yesNo]]
                                 </b-list-group-item>
                             </b-list-group>
-                        </b-collapse>
-                     </b-card>
-                     
-                    <b-card no-body class="mb-1" v-if="getBienesChile">
-                        <b-card-header header-tag="header" class="p-1" role="tab" >
-                            <b-button block href="#" v-b-toggle.Bienes_Inmuebles_Situados_En_Chile variant="info">Bienes inmuebles situados en Chile</b-button>
-                        </b-card-header>
-                        <b-collapse id="Bienes_Inmuebles_Situados_En_Chile" accordion="AccBienes" role="tabpanel">
-                            <b-list-group flush >
-                                <b-list-group-item v-for="(bien,index) in getBienesChile" :key="index">
-                                    <h5>
-                                    [[bien.Direccion|capitalize|capitalize]], [[bien.Comuna.nombre|capitalize]], Región [[bien.Region.nombre|capitalize]]<br></h5>
-                                    Forma de la propiedad: [[bien.Forma_Propiedad.nombre|capitalize]]<br>
-                                    Conservador bienes raices: [[bien.Conservador_Bienes_Raices.nombre|capitalize]]<br>
-                                    Avalúo Fiscal: $[[bien.Avaluo_Fiscal|number]]<br>
-                                    ¿Es su domicilio?: [[bien.Es_Su_Domicilio|yesNo]]<br>
-                                    Año del inmueble: [[bien.Annio|number]]<br>
-                                    Fecha de adquisición: [[bien.Fecha_Adquisicion|dateOnly]]<br>
-                                </b-list-group-item>
-                            </b-list-group>
-                        </b-collapse>
-                     </b-card>
-                     
-                    <b-card no-body class="mb-1" v-if="getVehiculos">
-                        <b-card-header header-tag="header" class="p-1" role="tab">
-                            <b-button block href="#" v-b-toggle.Vehiculos_motorizados variant="info">Vehículos motorizados</b-button>
-                        </b-card-header>
-                        <b-collapse id="Vehiculos_motorizados" accordion="VehiculosMotorizados" role="tabpanel">
-                            <b-list-group flush v-for="(auto, index) in getVehiculos" :key="index">
-                                <b-list-group-item>
-                                    <h5>[[auto.Marca.nombre|capitalize]] [[auto.Modelo|capitalize]], [[auto.Annio_Fabricacion]]</h5>
-                                    Avalúo Fiscal: $[[auto.Avaluo_Fiscal|number]]<br>
-                                    Año de inscripción vehículo: [[auto.Annio_Inscripcion]]<br>
-                                    Número de inscripción: [[auto.Numero_Inscripcion|reservado]]<br>
-                                </b-list-group-item>
-                            </b-list-group>
-                        </b-collapse>
-                     </b-card>
-                     
-                    <b-card no-body class="mb-1" v-if="!(form_data.Datos_del_Declarante.Estado_Civil.id !== 2)">
-                        <b-card-header header-tag="header" class="p-1" role="tab">
-                            <b-button block href="#" v-b-toggle.Datos_Conyuge variant="info">Datos del Conyuge</b-button>
-                        </b-card-header>
-                        <b-collapse id="Datos_Conyuge" accordion="DatosConyuge" role="tabpanel">
+                            
+                            <template slot="modal-footer" slot-scope="{ok}">
+                                <b-button size="lg" variant="dark" @click="ok()">
+                                    Cerrar
+                                </b-button>
+                            </template>
+                            
+                        </b-modal>
+                    </b-card>
+                    </b-card>
+                
+                </b-col>
+                <b-col md="6" class="mb-4">
+                
+                    <b-card no-body>
+                        <b-card-title class="mb-1 mt-1"><h4>Datos de Parientes</h4></b-card-title>
+                        <b-list-group-item>
+                            <div v-if="form_data.Datos_Parientes">Cantidad de parientes: [[ form_data.Datos_Parientes.length ]]</div>
+                            <div v-else>No hay información</div>
+                        </b-list-group-item>
+                        
+                        <b-button v-if="form_data.Datos_Parientes" variant="dark" v-b-modal.ModalParientes>Más info</b-button>
+                        <b-button v-else variant="dark" disabled>Más info</b-button>
+                        
+                        <b-modal id="ModalParientes" scrollable size="lg" title="Vehiculos motorizados">
+                        
                             <b-list-group flush>
-                                <b-list-group-item>
-                                    <div v-for="actividad in form_data.Actividades_Profesionales_Conyuge">
-                                    <h5>[[get_nombreConyuge]]</h5>
-                                    <b-list-group-item>
-                                    Tipo de actividad: [[actividad.Tipo_Actividad.nombre|capitalize]]<br>
-                                    Rubro: [[actividad.Rubro.nombre|capitalize]]<br>
-                                    Fecha de inicio: [[actividad.Fecha_Inicio|dateOnly]]<br>
-                                    Clasificación: [[actividad.Clasificacion.nombre|capitalize]]<br>
-                                    Nombre Razón Social: [[actividad.Nombre_Razon_Social|capitalize]]
-                                    </b-list-group-item>
-                                    </div>
-                                </b-list-group-item>
-                            </b-list-group>
-                        </b-collapse>
-                     </b-card>
-                     
-                    <b-card no-body class="mb-1" v-if="form_data.Datos_Parientes">
-                        <b-card-header header-tag="header" class="p-1" role="tab">
-                            <b-button block href="#" v-b-toggle.Parientes variant="info">Parientes</b-button>
-                        </b-card-header>
-                        <b-collapse id="Parientes" accordion="Parientes" role="tabpanel">
-                            <b-list-group flush v-for="(pariente, index) in form_data.Datos_Parientes" :key="index">
-                                <b-list-group-item>
+                                <b-list-group-item v-for="(pariente, index) in form_data.Datos_Parientes" :key="index">
                                     <h5>[[pariente.nombre|name]] [[pariente.Apellido_Paterno|capitalize]]</h5>
                                     Parentezco: [[pariente.Parentesco.nombre|capitalize]]<br>
                                     Fecha de nacimiento: [[pariente.Fecha_Nacimiento|dateOnly]]<br>
                                     RUN: [[pariente.RUN|reservado]]
                                 </b-list-group-item>
                             </b-list-group>
-                        </b-collapse>
-                     </b-card>
-
-                </b-list-group>
-            </b-card-->
-            
-            <b-container>
-                <b-row align-v="center" class="text-center mw-100">
+                            
+                            <template slot="modal-footer" slot-scope="{ok}">
+                                <b-button size="lg" variant="dark" @click="ok()">
+                                    Cerrar
+                                </b-button>
+                            </template>
+                            
+                        </b-modal>
+                    </b-card>
+                    
+                </b-col>
                 
-                    <b-col cols="6" class="mt-2 mb-4" auto v-if="getBienesChile">
-                        <b-card no-body>
-                            <b-card-title class="mb-1"><h4>Bienes inmuebles situados en Chile</h4></b-card-title>
-                            <b-list-group-item>
-                                Cantidad de bienes: [[ getBienesChile.length ]]<br>
-                                <hello-world></hello-world>
-                            </b-list-group-item>
-                            
-                            <b-button variant="dark" v-b-modal.ModalBienesChile>Más info</b-button>
-                            
-                            <b-modal id="ModalBienesChile" scrollable size="lg" title="Bienes en Chile">
-                            
-                                <b-list-group flush >
-                                    <b-list-group-item v-for="(bien,index) in getBienesChile" :key="index">
-                                        <h5>[[bien.Direccion|capitalize|capitalize]], [[bien.Comuna.nombre|capitalize]], Región [[bien.Region.nombre|capitalize]]</h5>
-                                        Forma de la propiedad: [[bien.Forma_Propiedad.nombre|capitalize]]<br>
-                                        Conservador bienes raices: [[bien.Conservador_Bienes_Raices.nombre|capitalize]]<br>
-                                        Avalúo Fiscal: $[[bien.Avaluo_Fiscal|number]]<br>
-                                        ¿Es su domicilio?: [[bien.Es_Su_Domicilio|yesNo]]<br>
-                                        Año del inmueble: [[bien.Annio|number]]<br>
-                                        Fecha de adquisición: [[bien.Fecha_Adquisicion|dateOnly]]<br>
-                                    </b-list-group-item>
-                                </b-list-group>
-                                
-                                <template slot="modal-footer" slot-scope="{ok}">
-                                    <b-button size="lg" variant="dark" @click="ok()">
-                                        Cerrar
-                                    </b-button>
-                                </template>
-                                
-                            </b-modal>
-                        </b-card>
-                    </b-col>
-                    
-                    <b-col cols="6" class="mt-2 mb-4" v-if="getDerechos">
-                        <b-card no-body class="mb-1">
-                            <b-card-title class="mb-1"><h4>Derechos o acciones en Chile</h4></b-card-title>
-                            <b-list-group-item>
-                                Cantidad de derechos o acciones: [[ getDerechos.length ]]<br>
-                            </b-list-group-item>
-                            
-                            <b-button variant="dark" v-b-modal.ModalDerechos>Más info</b-button>
-                            
-                            <b-modal id="ModalDerechos" scrollable size="lg" title="Derechos o acciones en Chile">
-                            
-                                <b-list-group flush>
-                                    <b-list-group-item v-for="(derecho,index) in getDerechos" :key="index">
-                                        <h5>[[derecho.Nombre_Razon_Social|capitalize]]</h5>
-                                        Tipo: [[derecho.Titulo_Derecho_Accion.nombre|capitalize]]<br>
-                                        Porcentaje de pertenencia: [[derecho.Cantidad_Porcentaje]]%<br>
-                                        Rut: [[derecho.RUT]]<br>
-                                        Rubro: [[derecho.Giro_Registrado_SII|capitalize]]<br>
-                                        Fecha de adquisición: [[derecho.Fecha_Adquisicion|dateOnly]]<br>
-                                        ¿Calidad de Controlador?: [[derecho.Tiene_Calidad_Controlador|yesNo]]
-                                    </b-list-group-item>
-                                </b-list-group>
-                                
-                                <template slot="modal-footer" slot-scope="{ok}">
-                                    <b-button size="lg" variant="dark" @click="ok()">
-                                        Cerrar
-                                    </b-button>
-                                </template>
-                                
-                            </b-modal>
-                        </b-card>               
-                    </b-col>
-                    
-                    <b-col cols="6" class="mb-4" v-if="getVehiculos">
-                    
-                        <b-card no-body class="mb-1">
-                            <b-card-title class="mb-1"><h4>Vehiculos motorizados</h4></b-card-title>
-                            <b-list-group-item>
-                                Cantidad de vehículos: [[ getVehiculos.length ]]<br>
-                            </b-list-group-item>
-                            
-                            <b-button variant="dark" v-b-modal.ModalVehiculos>Más info</b-button>
-                            
-                            <b-modal id="ModalVehiculos" scrollable size="lg" title="Vehiculos motorizados">
-                            
-                                <b-list-group flush>
-                                    <b-list-group-item v-for="(auto, index) in getVehiculos" :key="index">
-                                        <h5>[[auto.Marca.nombre|capitalize]] [[auto.Modelo|capitalize]], [[auto.Annio_Fabricacion]]</h5>
-                                        Avalúo Fiscal: $[[auto.Avaluo_Fiscal|number]]<br>
-                                        Año de inscripción vehículo: [[auto.Annio_Inscripcion]]<br>
-                                        Número de inscripción: [[auto.Numero_Inscripcion|reservado]]<br>
-                                    </b-list-group-item>
-                                </b-list-group>
-                                
-                                <template slot="modal-footer" slot-scope="{ok}">
-                                    <b-button size="lg" variant="dark" @click="ok()">
-                                        Cerrar
-                                    </b-button>
-                                </template>
-                                
-                            </b-modal>
-                        </b-card> 
-                    
-                    </b-col>
-                    <b-col cols="6" class="mb-4" v-if="form_data.Datos_Parientes">
-                    
-                        <b-card no-body class="mb-1">
-                            <b-card-title class="mb-1"><h4>Datos de Parientes</h4></b-card-title>
-                            <b-list-group-item>
-                                Cantidad de parientes: [[ form_data.Datos_Parientes.length ]]<br>
-                            </b-list-group-item>
-                            
-                            <b-button variant="dark" v-b-modal.ModalParientes>Más info</b-button>
-                            
-                            <b-modal id="ModalParientes" scrollable size="lg" title="Vehiculos motorizados">
-                            
-                                <b-list-group flush>
-                                    <b-list-group-item v-for="(pariente, index) in form_data.Datos_Parientes" :key="index">
-                                        <h5>[[pariente.nombre|name]] [[pariente.Apellido_Paterno|capitalize]]</h5>
-                                        Parentezco: [[pariente.Parentesco.nombre|capitalize]]<br>
-                                        Fecha de nacimiento: [[pariente.Fecha_Nacimiento|dateOnly]]<br>
-                                        RUN: [[pariente.RUN|reservado]]
-                                    </b-list-group-item>
-                                </b-list-group>
-                                
-                                <template slot="modal-footer" slot-scope="{ok}">
-                                    <b-button size="lg" variant="dark" @click="ok()">
-                                        Cerrar
-                                    </b-button>
-                                </template>
-                                
-                            </b-modal>
-                        </b-card>
+                <b-col md="6" class="mb-4">
+                
+                    <b-card no-body class="mb-1 mt-1">
+                        <b-card-title class="mb-1"><h4>Datos del conyuge</h4></b-card-title>
+                        <b-list-group-item>
+                            <div v-if="!(form_data.Datos_del_Declarante.Estado_Civil.id !== 2)">Nombre: [[ get_nombreConyuge ]]</div>
+                            <div v-else>No hay información</div>
+                        </b-list-group-item>
                         
-                    </b-col>
-                    
-                    <b-col cols="6" class="mb-4" v-if="!(form_data.Datos_del_Declarante.Estado_Civil.id !== 2)">
-                    
-                        <b-card no-body class="mb-1">
-                            <b-card-title class="mb-1"><h4>Datos del conyuge</h4></b-card-title>
-                            <b-list-group-item>
-                                Nombre: [[ get_nombreConyuge ]]<br>
-                            </b-list-group-item>
+                        <b-button v-if="form_data.Declara_Bienes_Conyuge !== 'false'" variant="dark" v-b-modal.ModalConyuge>Más info</b-button>
+                        <b-button v-else variant="dark" disabled> No declara información adicional </b-button>
+                        
+                        <b-modal id="ModalConyuge" scrollable size="lg" title="Datos del conyuge">
                             
-                            <b-button v-if="form_data.Declara_Bienes_Conyuge !== 'false'" variant="dark" v-b-modal.ModalConyuge>Más info</b-button>
-                            <b-button v-else variant="dark" disabled> No declara información adicional </b-button>
+                            <b-list-group flush>
+                                <div v-for="actividad in form_data.Actividades_Profesionales_Conyuge">
+                                <h5>[[get_nombreConyuge]]</h5>
+                                <b-list-group-item>
+                                Tipo de actividad: [[actividad.Tipo_Actividad.nombre|capitalize]]<br>
+                                Rubro: [[actividad.Rubro.nombre|capitalize]]<br>
+                                Fecha de inicio: [[actividad.Fecha_Inicio|dateOnly]]<br>
+                                Clasificación: [[actividad.Clasificacion.nombre|capitalize]]<br>
+                                Nombre Razón Social: [[actividad.Nombre_Razon_Social|capitalize]]
+                                </b-list-group-item>
+                                </div>
+                            </b-list-group>
                             
-                            <b-modal id="ModalConyuge" scrollable size="lg" title="Datos del conyuge">
-                                
-                                <b-list-group flush>
-                                    <div v-for="actividad in form_data.Actividades_Profesionales_Conyuge">
-                                    <h5>[[get_nombreConyuge]]</h5>
-                                    <b-list-group-item>
-                                    Tipo de actividad: [[actividad.Tipo_Actividad.nombre|capitalize]]<br>
-                                    Rubro: [[actividad.Rubro.nombre|capitalize]]<br>
-                                    Fecha de inicio: [[actividad.Fecha_Inicio|dateOnly]]<br>
-                                    Clasificación: [[actividad.Clasificacion.nombre|capitalize]]<br>
-                                    Nombre Razón Social: [[actividad.Nombre_Razon_Social|capitalize]]
-                                    </b-list-group-item>
-                                    </div>
-                                </b-list-group>
-                                
-                                <template slot="modal-footer" slot-scope="{ok}">
-                                    <b-button size="lg" variant="dark" @click="ok()">
-                                        Cerrar
-                                    </b-button>
-                                </template>
-                                
-                            </b-modal>
-                        </b-card>
-                    
-                    </b-col>
-                </b-row>
-            </b-container>
+                            <template slot="modal-footer" slot-scope="{ok}">
+                                <b-button size="lg" variant="dark" @click="ok()">
+                                    Cerrar
+                                </b-button>
+                            </template>
+                            
+                        </b-modal>
+                    </b-card>
+                
+                </b-col>
+            </b-row>
         </div>
     `,
-
 
     delimiters: ['[[', ']]'],
     created: function() {
@@ -424,6 +328,15 @@ const ParlamentariosForm = {
         },
         getVehiculos(){
             return this.$store.state.form_data.Vehiculos_Motorizados;
+        }
+    },
+    methods:{
+        AvaluoTotal: function(lista) {
+            var Avaluo = 0;
+            for (const elem of lista ){
+                Avaluo += parseInt(elem.Avaluo_Fiscal, 10)
+            }
+            return Avaluo
         }
     },
 };
