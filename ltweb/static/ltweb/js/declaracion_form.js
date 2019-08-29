@@ -1,7 +1,7 @@
 const ParlamentariosForm = {
     template: `
     <div class="container mw-75">
-            <b-card no-body class>
+            <b-card no-body class="mb-4">
                 <b-card-body>
                     <b-card-title><h2>[[get_nombre]]</h2></b-card-title>
                     <b-card-sub-title class="mb-2"><h4>[[get_cargo|capitalize]]</h4></b-card-sub-title>
@@ -24,7 +24,7 @@ const ParlamentariosForm = {
             style="margin-left: 0px;
             margin-right: 0px;">
             
-                <b-col md="6" class="mt-4 mb-4">
+                <b-col v-bind="multipleCols" :style="leftPad">
                     <b-card no-body>
                     
                         <b-card-title class="mb-1 mt-1"><h4>Bienes inmuebles situados en Chile</h4></b-card-title>
@@ -61,7 +61,7 @@ const ParlamentariosForm = {
                     </b-card>
                 </b-col>
                 
-                <b-col md="6" class="mt-4 mb-4">
+                <b-col v-bind="multipleCols" :style="rightPad">
                 
                     <b-card no-body>
                         <b-card-title class="mb-1 mt-1"><h4>Vehiculos motorizados</h4></b-card-title>
@@ -95,7 +95,7 @@ const ParlamentariosForm = {
                     </b-card> 
                 </b-col>
                 
-                <b-col md="6" class="mb-4">
+                <b-col v-bind="multipleCols" :style="leftPad">
                 
                     <b-card no-body>
                         <b-card-title class="mb-1 mt-1"><h4>Derechos o acciones en Chile</h4></b-card-title>
@@ -132,7 +132,7 @@ const ParlamentariosForm = {
                     </b-card>
                 
                 </b-col>
-                <b-col md="6" class="mb-4">
+                <b-col v-bind="multipleCols" :style="rightPad">
                 
                     <b-card no-body>
                         <b-card-title class="mb-1 mt-1"><h4>Datos de Parientes</h4></b-card-title>
@@ -166,7 +166,7 @@ const ParlamentariosForm = {
                     
                 </b-col>
                 
-                <b-col md="6" class="mb-4">
+                <b-col v-bind="multipleCols">
                 
                     <b-card no-body class="mb-1 mt-1">
                         <b-card-title class="mb-1"><h4>Datos del conyuge</h4></b-card-title>
@@ -206,7 +206,20 @@ const ParlamentariosForm = {
             </b-row>
         </div>
     `,
-
+    data() {
+        return{
+            leftPad:{
+                'padding-left': "0px"
+            },
+            rightPad:{
+                'padding-right': "0px"
+            },
+            multipleCols: {
+                class: 'mb-4',
+                cols: '6',
+            }
+        }
+    },
     delimiters: ['[[', ']]'],
     created: function() {
         this.$store.state.form_data = JSON.parse(document.getElementsByTagName('body')[0].getAttribute('data') || '{}');
