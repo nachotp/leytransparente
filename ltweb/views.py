@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 from bson.objectid import ObjectId
 
 from ltweb import conflict_detection as confd
+from ltweb import conn as conn
 
 
 class HomeView(TemplateView):
@@ -81,10 +82,12 @@ class SubirDeclaracionView(View):
 
 
 class DiputadosListView(TemplateView):
-    myclient = MongoClient("mongodb+srv://admin:leytransparente@leytransparente-m6y51.mongodb.net/test?retryWrites"
-                           "=true&w=majority")
-    mydb = myclient["leytransparente"]
-    mycol = mydb["declaraciones"]
+    coneccion = conn.connection()
+    #myclient = MongoClient("mongodb+srv://admin:leytransparente@leytransparente-m6y51.mongodb.net/test?retryWrites"
+    #                       "=true&w=majority")
+    #mydb = myclient["leytransparente"]
+    #mycol = mydb["declaraciones"]
+    mycol = coneccion["decl"]
     template_name = 'diputados_list.html'
 
     def get_context_data(self, **kwargs):
