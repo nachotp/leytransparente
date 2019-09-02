@@ -224,6 +224,7 @@ class ConflictoView(TemplateView):
     decl = mydb["declaraciones"]
     leyes = mydb["leyes"]
     cats = mydb["categorias"]
+    confl = mydb["conflictos"]
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data()
@@ -248,12 +249,33 @@ class ConflictoView(TemplateView):
         low = []
         conflictos = confd.conflicto_patrimonio(list(tag_set))
         ctx["conflictos"] = conflictos
+        # Creacion de la lista que almacena diccionarios a insertar en la collecion de conflictos
+        diclist=[]
+
         for conflicto in conflictos:
+            dic = {}
+            dic["Ley"] = ley
+            dic["id_declaracion"] = conflicto[2]
+
+            dic["razon"] = conflicto[3]
+            dic["nombre"] = conflicto[1]
             if(conflicto[0] > 109):
                 high.append(conflicto)
+                dic["grado"] = "grave"
             else:
                 low.append(conflicto)
+                dic["grado"] = "leve"
+            diclist.append(dic)
+        x = self.confl.insert_many(diclist)
         ctx["high"] = high
         ctx["low"] = low
         print("Conflictos encontrados: "+ str(len(conflictos)))
+
+        #dic={}
+        #dic["Ley"] = ley
+        #dic["id_declaracion"] = conflicto[2]
+        #dic["grado"] =
+        #dic["razon"] = conflicto[3]
+        #dic["nombre"] = conflicto[1]
+
         return ctx

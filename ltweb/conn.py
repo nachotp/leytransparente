@@ -8,4 +8,5 @@ def connection():
     coll["decl"] = mydb["declaraciones"]
     coll["leyes"] = mydb["leyes"]
     coll["cats"] = mydb["categorias"]
+    coll["confl"] = mydb["conflictos"]
     return coll

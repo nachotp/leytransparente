@@ -20,6 +20,7 @@ def conflicto_patrimonio(kwrds):
     mydb = myclient["leytransparente"]
     mycol = mydb["declaraciones"]
 
+
     query = mycol.find(
         {"Meta": True, "Derechos_Acciones_Chile": {"$elemMatch": {"Giro_Registrado_SII": {"$in": kwrds}}}},
         {"_id": 1, "Id_Declaracion": 1, "Datos_del_Declarante": 1,
@@ -42,5 +43,6 @@ def conflicto_patrimonio(kwrds):
             scr = score(porc, cont)
             matches.append((scr, nombre, idec, emp))
     matches.sort(reverse=True)
+
 
     return matches
