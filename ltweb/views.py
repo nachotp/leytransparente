@@ -7,8 +7,7 @@ from bs4 import BeautifulSoup
 from bson.objectid import ObjectId
 
 from ltweb import conflict_detection as confd
-from ltweb import conn as conn
-
+from .conn import DBconnection
 
 class HomeView(TemplateView):
     template_name = "home.html"
@@ -16,10 +15,8 @@ class HomeView(TemplateView):
 
 class ViewDeclaracion(TemplateView):
     template_name = "ver.html"
-    myclient = MongoClient("mongodb+srv://admin:leytransparente@leytransparente-m6y51.mongodb.net/test?retryWrites"
-                           "=true&w=majority")
-    mydb = myclient["leytransparente"]
-    mycol = mydb["declaraciones"]
+    conn = DBconnection()
+    mycol = conn.get_collection("declaraciones")
 
     def get_context_data(self, **kwargs):
         # Eso es get, para que sea más seguro, usar POST
@@ -36,10 +33,8 @@ class ViewDeclaracion(TemplateView):
 class SubirDeclaracionView(View):
     context = {}
     initial = {'key': 'value'}
-    myclient = MongoClient("mongodb+srv://admin:leytransparente@leytransparente-m6y51.mongodb.net/test?retryWrites"
-                           "=true&w=majority")
-    mydb = myclient["leytransparente"]
-    mycol = mydb["declaraciones"]
+    conn = DBconnection()
+    mycol = conn.get_collection("declaraciones")
     template_name = 'declaracion_form.html'
 
     def get(self, request, *args, **kwargs):
@@ -82,12 +77,9 @@ class SubirDeclaracionView(View):
 
 
 class DiputadosListView(TemplateView):
-    coneccion = conn.connection()
-    #myclient = MongoClient("mongodb+srv://admin:leytransparente@leytransparente-m6y51.mongodb.net/test?retryWrites"
-    #                       "=true&w=majority")
-    #mydb = myclient["leytransparente"]
-    #mycol = mydb["declaraciones"]
-    mycol = coneccion["decl"]
+    conn = DBconnection()
+    mycol = conn.get_collection("declaraciones")
+
     template_name = 'diputados_list.html'
 
     def get_context_data(self, **kwargs):
@@ -111,10 +103,8 @@ class DiputadosListView(TemplateView):
 class SubirLeyView(View):
     context = {}
     initial = {'key': 'value'}
-    myclient = MongoClient("mongodb+srv://admin:leytransparente@leytransparente-m6y51.mongodb.net/test?retryWrites"
-                           "=true&w=majority")
-    mydb = myclient["leytransparente"]
-    mycol = mydb["leyes"]
+    conn = DBconnection()
+    mycol = conn.get_collection("leyes")
     template_name = 'ley_form.html'
 
     def get(self, request, *args, **kwargs):
@@ -192,12 +182,8 @@ class SubirLeyView(View):
 
 
 class LeyesListView(TemplateView):
-    #myclient = MongoClient("mongodb+srv://admin:leytransparente@leytransparente-m6y51.mongodb.net/test?retryWrites"
-    #                       "=true&w=majority")
-    #mydb = myclient["leytransparente"]
-    #mycol = mydb["leyes"]
-    con = conn.connection()
-    mycol = con["leyes"]
+    conn = DBconnection()
+    mycol = conn.get_collection("leyes")
 
     template_name = 'leyes_list.html'
 
@@ -221,19 +207,11 @@ class LeyesListView(TemplateView):
 
 class ConflictoView(TemplateView):
     template_name = "conflict_view.html"
-    #myclient = MongoClient("mongodb+srv://admin:leytransparente@leytransparente-m6y51.mongodb.net/test?retryWrites"
-    #                       "=true&w=majority")
-    #mydb = myclient["leytransparente"]
-    #decl = mydb["declaraciones"]
-    #leyes = mydb["leyes"]
-    #cats = mydb["categorias"]
-    #confl = mydb["conflictos"]
-
-    con = conn.connection()
-    decl = con["decl"]
-    leyes = con["leyes"]
-    cats = con["cats"]
-    confl = con["confl"]
+    conn = DBconnection()
+    decl = conn.get_collection("declaraciones")
+    leyes = conn.get_collection("leyes")
+    cats = conn.get_collection("categorias")
+    confl = conn.get_collection("conflictos")
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data()
@@ -289,10 +267,11 @@ class ConflictoView(TemplateView):
 
         return ctx
 
+
 class ConflictoListView(TemplateView):
     template_name = 'conflictos_list.html'
-    con = conn.connection()
-    confl = con["confl"]
+    conn = DBconnection()
+    confl = conn.get_collection("conflictos")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
