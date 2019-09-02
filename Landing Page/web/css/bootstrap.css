@@ -67,6 +67,7 @@ body {
   outline: 0 !important;
 }
 
+
 hr {
   box-sizing: content-box;
   height: 0;
@@ -114,6 +115,19 @@ ul ol {
   margin-bottom: 0;
 }
 
+.align-items-center {
+  -ms-flex-align: center!important;
+  align-items: center!important;
+}
+.d-flex {
+  display: -ms-flexbox!important;
+  display: flex!important;
+}
+.vcenter {
+  display: inline-block;
+  vertical-align: middle;
+  float: none;
+}
 dt {
   font-weight: 700;
 }
@@ -558,6 +572,8 @@ pre code {
     max-width: 540px;
   }
 }
+
+
 
 @media (min-width: 768px) {
   .container {

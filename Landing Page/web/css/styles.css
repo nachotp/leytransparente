@@ -656,6 +656,7 @@ input[type='checkbox'] {
 
 .navbar-custom .nav-item .nav-link {
 	padding: 0.625rem 0.75rem 0.625rem 0.75rem;
+	font-size: larger;
 	color: #393939;
 	text-decoration: none;
 	transition: all 0.2s ease;
@@ -1155,7 +1156,6 @@ input[type='checkbox'] {
 /*     11. Video     */
 /*********************/
 .basic-3 {
-	padding-top: 6.875rem;
 	padding-bottom: 6.125rem;
 }
 
@@ -1408,7 +1408,6 @@ input[type='checkbox'] {
 .form-2 {
 	padding-top: 7rem;
 	padding-bottom: 6.25rem;
-	background: url('../images/contact-background.jpg') center center no-repeat;
 	background-size: cover; 
 }
 
@@ -1717,7 +1716,7 @@ a:hover.back-to-top {
 	/* Extra Pages */
 	.ex-header {
 		padding-top: 12rem;
-		padding-bottom: 9rem;
+		padding-bottom: 12rem;
 	}
 
 	.ex-basic-2 .text-container.dark {
@@ -1806,7 +1805,7 @@ a:hover.back-to-top {
 	.navbar-custom .fa-stack {
 		margin-bottom: 0.1875rem;
 		margin-left: 0.25rem;
-		font-size: 0.75rem;
+		font-size: 0.95rem;
 	}
 	
 	.navbar-custom .fa-stack-2x {
