@@ -192,10 +192,13 @@ class SubirLeyView(View):
 
 
 class LeyesListView(TemplateView):
-    myclient = MongoClient("mongodb+srv://admin:leytransparente@leytransparente-m6y51.mongodb.net/test?retryWrites"
-                           "=true&w=majority")
-    mydb = myclient["leytransparente"]
-    mycol = mydb["leyes"]
+    #myclient = MongoClient("mongodb+srv://admin:leytransparente@leytransparente-m6y51.mongodb.net/test?retryWrites"
+    #                       "=true&w=majority")
+    #mydb = myclient["leytransparente"]
+    #mycol = mydb["leyes"]
+    con = conn.connection()
+    mycol = con["leyes"]
+
     template_name = 'leyes_list.html'
 
     def get_context_data(self, **kwargs):
@@ -218,13 +221,19 @@ class LeyesListView(TemplateView):
 
 class ConflictoView(TemplateView):
     template_name = "conflict_view.html"
-    myclient = MongoClient("mongodb+srv://admin:leytransparente@leytransparente-m6y51.mongodb.net/test?retryWrites"
-                           "=true&w=majority")
-    mydb = myclient["leytransparente"]
-    decl = mydb["declaraciones"]
-    leyes = mydb["leyes"]
-    cats = mydb["categorias"]
-    confl = mydb["conflictos"]
+    #myclient = MongoClient("mongodb+srv://admin:leytransparente@leytransparente-m6y51.mongodb.net/test?retryWrites"
+    #                       "=true&w=majority")
+    #mydb = myclient["leytransparente"]
+    #decl = mydb["declaraciones"]
+    #leyes = mydb["leyes"]
+    #cats = mydb["categorias"]
+    #confl = mydb["conflictos"]
+
+    con = conn.connection()
+    decl = con["decl"]
+    leyes = con["leyes"]
+    cats = con["cats"]
+    confl = con["confl"]
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data()
@@ -279,3 +288,16 @@ class ConflictoView(TemplateView):
         #dic["nombre"] = conflicto[1]
 
         return ctx
+
+class ConflictoListView(TemplateView):
+    template_name = 'conflictos_list.html'
+    con = conn.connection()
+    confl = con["confl"]
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        query = self.confl.find()
+
+
+        return context
