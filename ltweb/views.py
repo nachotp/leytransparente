@@ -298,6 +298,18 @@ class ConflictoListView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         query = self.confl.find()
+        data = []
 
+        for conf in query:
+            dic = {
+                'id': conf["id_declaracion"],
+                'ley': conf["Ley"],
+                'nombre': conf["nombre"],
+                'razon': conf["razon"]["Nombre_Razon_Social"],
+                'grado': conf["grado"]
+            }
+            data.append(dic)
 
+        print(data)
+        context["conflictos"] = data
         return context
