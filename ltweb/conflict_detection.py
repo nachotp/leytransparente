@@ -1,7 +1,7 @@
 from pymongo import *
 # import json
 from math import pow
-
+from .conn import DBconnection
 
 def score(porc, cont):
     scr = 0
@@ -15,10 +15,8 @@ def score(porc, cont):
 
 
 def conflicto_patrimonio(kwrds):
-    myclient = MongoClient("mongodb+srv://admin:leytransparente@leytransparente-m6y51.mongodb.net/test?retryWrites"
-                           "=true&w=majority")
-    mydb = myclient["leytransparente"]
-    mycol = mydb["declaraciones"]
+    myclient = DBconnection()
+    mycol = myclient.get_collection("declaraciones")
 
 
     query = mycol.find(
