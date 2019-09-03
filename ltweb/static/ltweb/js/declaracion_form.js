@@ -222,7 +222,7 @@ const ParlamentariosForm = {
     },
     delimiters: ['[[', ']]'],
     created: function() {
-        this.$store.state.form_data = JSON.parse(document.getElementsByTagName('body')[0].getAttribute('data') || '{}');
+        this.$store.state.form_data = JSON.parse(declaraciones || '{}');
     },
     store: declaracion_data,
     filters: {
