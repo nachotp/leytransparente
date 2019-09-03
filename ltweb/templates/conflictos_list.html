@@ -1,34 +1,73 @@
 {% extends 'base.html' %}
+{% load static %}
+{% block head_end %}
+  <link rel="stylesheet" href="{% static 'lib/DataTables/dataTables.bootstrap4.min.css' %}">
+  <script type="text/javascript" charset="utf8" src="{% static 'lib/DataTables/jquery-3.3.1.min.js' %}"></script>
+  <script type="text/javascript" charset="utf8" src="{% static 'lib/DataTables/jquery.dataTables.min.js' %}"></script>
+  <script type="text/javascript" charset="utf8" src="{% static 'lib/DataTables/dataTables.bootstrap4.min.js' %}"></script>
+  <script type="text/javascript" charset="utf8" src="{% static 'lib/DataTables/Spanish.js' %}"></script>
+{% endblock %}
 
 {% block content %}
 
 {% if conflictos %}
-    <b-container class="bv-example-row">  
-        <b-row>  
-                <b-col class = ml-auto>
-                    <h4>Conflictos Existentes</h4>
-                        {% for conflicto in conflictos%}
-                            <b-card bg-variant="Light" header= " " header-text-variant="white" header-bg-variant="danger"> 
-                                <a class="" href="{% url 'Ver Declaracion' id=conflicto.id_parlamentario %}"><h4>{{ conflicto.parlamentario }}</h4></a>
-                                <a class=""><h4>{{ conflicto.partido }}</h4></a>
-                                <b-card-text>
-                                    <b-list-group flush>
-                                        <b-list-group-item><b>Ley Nº : </b>{{conflicto.ley}}</b-list-group-item>
-                                        <b-list-group-item><b>Nombre de Ley : </b>{{conflicto.nombre_ley}}</b-list-group-item>
-                                        <b-list-group-item><b>Motivo : </b>{{conflicto.prov_conf}}</b-list-group-item>
-                                        <b-list-group-item><b>Patrimonio en conflicto : </b>{{conflicto.motivo}}</b-list-group-item>
-                                        <b-list-group-item><b>Grado de Conflicto : </b>{{conflicto.grado}}</b-list-group-item>
-                                    </b-list-group>
+
+    <div>
+      <b-dropdown id="dropdown-1" text="Dropdown Button" class="m-md-2">
+        <b-dropdown-item>Alejandro</b-dropdown-item>
+        <b-dropdown-item>Second Action</b-dropdown-item>
+        <b-dropdown-item>Third Action</b-dropdown-item>
+        <b-dropdown-divider></b-dropdown-divider>
+        <b-dropdown-item active>Active action</b-dropdown-item>
+        <b-dropdown-item disabled>Disabled action</b-dropdown-item>
+      </b-dropdown>
+    </div>
+    <div>
+        <b-container class="bv-example-row">
+                <b-row>
+                        <b-col class = ml-auto>
+                            <h4>Conflictos Existentes</h4>
+                                {% for conflicto in conflictos%}
+                                    <b-card bg-variant="Light" header= " " header-text-variant="white" header-bg-variant="danger" id="myDIV">
+                                        <a class="" href="{% url 'Ver Declaracion' id=conflicto.id_parlamentario %}"><h4>{{ conflicto.parlamentario }}</h4></a>
+                                        <a class=""><h4>{{ conflicto.partido }}</h4></a>
+                                        <b-card-text>
+                                            <b-list-group flush>
+                                                <b-list-group-item><b>Ley Nº : </b>{{conflicto.ley}}</b-list-group-item>
+                                                <b-list-group-item><b>Nombre de Ley : </b>{{conflicto.nombre_ley}}</b-list-group-item>
+                                                <b-list-group-item><b>Motivo : </b>{{conflicto.prov_conf}}</b-list-group-item>
+                                                <b-list-group-item><b>Patrimonio en conflicto : </b>{{conflicto.motivo}}</b-list-group-item>
+                                                <b-list-group-item><b>Grado de Conflicto : </b>{{conflicto.grado}}</b-list-group-item>
+                                            </b-list-group>
+                                            <br>
+                                        </b-card-text>
+                                    </b-card>
                                     <br>
-                                </b-card-text>
-                            </b-card>
-                            <br>
-                        {% endfor %}
-                </b-col>
-    </b-row>
-</b-container>
+                                {% endfor %}
+                        </b-col>
+            </b-row>
+        </b-container>
+    </div>
+
 
 {% else %}
     <h1>No se han encontrado conflictos de interes.</h1>
 {% endif %}
+{% endblock %}
+
+{% block body_end %}
+<script>
+
+$(document).ready(function() {
+    $(".dropdown-item").on("click", function() {
+        var value = $(this).text().toLowerCase();
+        alert(value);
+        $("#myDIV *").filter(function() {
+            //console.log($(this).toggle($(this).text()))
+          $(this).toggle($(this).child().toLowerCase().indexOf(value) > -1)
+        });
+    });
+});
+
+</script>
 {% endblock %}
