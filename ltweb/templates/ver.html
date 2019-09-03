@@ -7,7 +7,6 @@
     <script src="{% static 'lib/vuex/vuex.js' %}"></script>
     <script src="{% static 'ltweb/js/declaracion_store.js' %}"></script>
     <script src="{% static 'ltweb/js/declaracion_form.js' %}"></script>
-    <script>var declaraciones = '{{ declaracion|safe }}';</script>
 
 {% endblock %}
 
@@ -24,9 +23,7 @@
 
 {% block content %}
 
-<body>
-
-
+<body data="{{ declaracion }}">
 
     <parlamentarios-form></parlamentarios-form>
 
