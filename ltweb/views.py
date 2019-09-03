@@ -281,14 +281,21 @@ class ConflictoListView(TemplateView):
 
         for conf in query:
             dic = {
-                'id': conf["id_declaracion"],
-                'ley': conf["Ley"],
-                'nombre': conf["nombre"],
-                'razon': conf["razon"]["Nombre_Razon_Social"],
-                'grado': conf["grado"]
+                'ley': conf["ley"],
+                'nombre_ley': conf["nombre_ley"],
+                'id_parlamentario': conf["id_declaracion"],
+                'parlamentario': conf["parlamentario"],
+                'partido': conf["partido"],
+                'grado': conf["grado"],
+                'prov_conf': conf["razon"]["prov_conf"],
+                'motivo': conf["razon"]["motivo"]
             }
+
+            if(conf["pariente"] != None):
+                dic["pariente"] = conf["pariente"]
+
             data.append(dic)
 
-        print(data)
+        #print(data)
         context["conflictos"] = data
         return context

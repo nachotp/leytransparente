@@ -9,12 +9,15 @@
                     <h4>Conflictos Existentes</h4>
                         {% for conflicto in conflictos%}
                             <b-card bg-variant="Light" header= " " header-text-variant="white" header-bg-variant="danger"> 
-                                <a class="" href="{% url 'Ver Declaracion' id=conflicto.id %}"><h4>{{ conflicto.nombre }}</h4></a>
+                                <a class="" href="{% url 'Ver Declaracion' id=conflicto.id_parlamentario %}"><h4>{{ conflicto.parlamentario }}</h4></a>
+                                <a class=""><h4>{{ conflicto.partido }}</h4></a>
                                 <b-card-text>
                                     <b-list-group flush>
-                                        <b-list-group-item><b>Ley : </b>{{conflicto.ley}}</b-list-group-item>
-                                        <b-list-group-item><b>Razón : </b>{{conflicto.razon}}</b-list-group-item>
-                                        <b-list-group-item><b>Grado de Conflicto : </b>{{conflicto.grado}}%</b-list-group-item>
+                                        <b-list-group-item><b>Ley Nº : </b>{{conflicto.ley}}</b-list-group-item>
+                                        <b-list-group-item><b>Nombre de Ley : </b>{{conflicto.nombre_ley}}</b-list-group-item>
+                                        <b-list-group-item><b>Motivo : </b>{{conflicto.prov_conf}}</b-list-group-item>
+                                        <b-list-group-item><b>Patrimonio en conflicto : </b>{{conflicto.motivo}}</b-list-group-item>
+                                        <b-list-group-item><b>Grado de Conflicto : </b>{{conflicto.grado}}</b-list-group-item>
                                     </b-list-group>
                                     <br>
                                 </b-card-text>
