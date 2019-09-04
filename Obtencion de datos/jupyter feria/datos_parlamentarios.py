@@ -20,7 +20,27 @@ def update_meta():
     mycol.update_many({}, {"$unset": {"Meta": None}})
 
 def partido():
-    
+    myclient = pymongo.MongoClient(
+        "mongodb+srv://admin:leytransparente@leytransparente-m6y51.mongodb.net/test?retryWrites"
+        "=true&w=majority")
+    mydb = myclient["leytransparente"]
+
+    mycol = mydb["prueba_chris"]
+
+    url = "https://www.camara.cl/camara/diputados.aspx"
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, "html.parser")
+
+    tabla_diputados = soup.findAll("li", {"class": "alturaDiputado"})
+
+    a = tabla_diputados[0].find("h5").find("a") #tag donde esta el nombre
+    name = a.text.strip().split("\n")[1].strip().upper() #"NOMBRE APELLIDO"
+
+    b = tabla_diputados[0].findAll("li")[-1].find("a").get_text() #tag donde esta el partido
+    partido = b.strip().split("\n")[1].strip() #sigal del partido PS por ejemplo
+
+    mycol.update_one({"Datos_del_Declarante.nombre": {"$regex": ".*"+name.split(" ")[0]+".*"}}, {"meta.partido": partido})
+
 
 def cargar_info():
     myclient = pymongo.MongoClient("mongodb+srv://admin:leytransparente@leytransparente-m6y51.mongodb.net/test?retryWrites"
@@ -126,4 +146,5 @@ def cargar_actualizaciones():
 #cargar_info()
 #actual()
 #cargar_actualizaciones()
-update_meta()
+#update_meta()
+partido()
