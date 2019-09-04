@@ -65,10 +65,11 @@ class SubirDeclaracionView(View):
         query = self.mycol.find_one({"Datos_del_Declarante.nombre":dic["Datos_del_Declarante"]["nombre"], 
                                     "Datos_del_Declarante.Apellido_Paterno":dic["Datos_del_Declarante"]["Apellido_Paterno"], 
                                     "Datos_del_Declarante.Apellido_Materno":dic["Datos_del_Declarante"]["Apellido_Materno"],
-                                    "Meta":True})
+                                    "meta.actual":True})
         
         if query == None: # inserta automaticamente porque no existe nadie.
             print("no habia declaracion previa de este diputado")
+            dic["partido"] = 'null'
         #    x=self.mycol.insert(dic)
 
         else: # actualiza el registri por los datos contenidos en el JSON
@@ -76,7 +77,8 @@ class SubirDeclaracionView(View):
                 self.mycol.update({"Datos_del_Declarante.nombre":dic["Datos_del_Declarante"]["nombre"], 
                                     "Datos_del_Declarante.Apellido_Paterno":dic["Datos_del_Declarante"]["Apellido_Paterno"], 
                                     "Datos_del_Declarante.Apellido_Materno":dic["Datos_del_Declarante"]["Apellido_Materno"],
-                                    "Meta":True}, { "$set": {"Meta": False}})
+                                    "meta.actual":True}, { "$set": {"meta": False}})
+                dic["partido"]=query["partido"]
         x = self.mycol.insert(dic)
 
         return redirect('Ver Declaracion', id=x)
