@@ -20,4 +20,3 @@ class DBconnection:
         """
         assert (coll in self.dbconn.list_collection_names()), "Collection not in Database."
         return self.dbconn[coll]
-
