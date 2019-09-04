@@ -1,7 +1,7 @@
 const ParlamentariosForm = {
     template: `
     <div class="container mw-75">
-            <b-card no-body class="mb-4">
+            <b-card no-body class="mb-1">
                 <b-card-body>
                     <b-card-title><h2>[[get_nombre]]</h2></b-card-title>
                     <b-card-sub-title class="mb-2"><h4>[[get_cargo|capitalize]]</h4></b-card-sub-title>
@@ -25,10 +25,10 @@ const ParlamentariosForm = {
             margin-right: 0px;">
             
                 <b-col v-bind="multipleCols" :style="leftPad">
-                    <b-card no-body>
+                    <b-card no-body class="h-100">
                     
                         <b-card-title class="mb-1 mt-1"><h4>Bienes inmuebles situados en Chile</h4></b-card-title>
-                        <b-list-group-item>
+                        <b-list-group-item v-bind="listGroupItem">
                             <div v-if="getBienesChile">Cantidad de bienes: [[ getBienesChile.length ]]<br>
                             Avalúo Fiscal total: $ [[AvaluoTotal(getBienesChile)|number]]</div>
                             <div v-else>No hay información</div>
@@ -37,7 +37,7 @@ const ParlamentariosForm = {
                         <b-button v-if="getBienesChile" variant="dark" v-b-modal.ModalBienesChile>Más info</b-button>
                         <b-button v-else variant="dark" disabled>Más info</b-button>
                         
-                        <b-modal id="ModalBienesChile" scrollable size="lg" title="Bienes en Chile">
+                        <b-modal id="ModalBienesChile" centered scrollable size="lg" title="Bienes en Chile">
                         
                             <b-list-group flush >
                                 <b-list-group-item v-for="(bien,index) in getBienesChile" :key="index">
@@ -63,9 +63,9 @@ const ParlamentariosForm = {
                 
                 <b-col v-bind="multipleCols" :style="rightPad">
                 
-                    <b-card no-body>
+                    <b-card no-body class="h-100">
                         <b-card-title class="mb-1 mt-1"><h4>Vehiculos motorizados</h4></b-card-title>
-                        <b-list-group-item>
+                        <b-list-group-item v-bind="listGroupItem">
                             <div v-if="getVehiculos">Cantidad de vehículos: [[ getVehiculos.length ]]<br>
                             Avalúo Fiscal total: $ [[AvaluoTotal(getVehiculos)|number]]</div>
                             <div v-else>No hay información</div>
@@ -74,7 +74,7 @@ const ParlamentariosForm = {
                         <b-button v-if="getVehiculos" variant="dark" v-b-modal.ModalVehiculos>Más info</b-button>
                         <b-button v-else variant="dark" disabled>Más info</b-button>
                         
-                        <b-modal id="ModalVehiculos" scrollable size="lg" title="Vehiculos motorizados">
+                        <b-modal id="ModalVehiculos" centered scrollable size="lg" title="Vehiculos motorizados">
                         
                             <b-list-group flush>
                                 <b-list-group-item v-for="(auto, index) in getVehiculos" :key="index">
@@ -97,9 +97,9 @@ const ParlamentariosForm = {
                 
                 <b-col v-bind="multipleCols" :style="leftPad">
                 
-                    <b-card no-body>
+                    <b-card no-body class="h-100">
                         <b-card-title class="mb-1 mt-1"><h4>Derechos o acciones en Chile</h4></b-card-title>
-                        <b-list-group-item>
+                        <b-list-group-item v-bind="listGroupItem">
                             <div v-if="getDerechos">Cantidad de derechos o acciones: [[ getDerechos.length ]]</div>
                             <div v-else>No hay información</div>
                         </b-list-group-item>
@@ -107,7 +107,7 @@ const ParlamentariosForm = {
                         <b-button v-if="getDerechos" variant="dark" v-b-modal.ModalDerechos>Más info</b-button>
                         <b-button v-else variant="dark" disabled>Más info</b-button>
                         
-                        <b-modal id="ModalDerechos" scrollable size="lg" title="Derechos o acciones en Chile">
+                        <b-modal id="ModalDerechos" centered scrollable size="lg" title="Derechos o acciones en Chile">
                         
                             <b-list-group flush>
                                 <b-list-group-item v-for="(derecho,index) in getDerechos" :key="index">
@@ -134,9 +134,9 @@ const ParlamentariosForm = {
                 </b-col>
                 <b-col v-bind="multipleCols" :style="rightPad">
                 
-                    <b-card no-body>
+                    <b-card no-body class="h-100">
                         <b-card-title class="mb-1 mt-1"><h4>Datos de Parientes</h4></b-card-title>
-                        <b-list-group-item>
+                        <b-list-group-item v-bind="listGroupItem">
                             <div v-if="form_data.Datos_Parientes">Cantidad de parientes: [[ form_data.Datos_Parientes.length ]]</div>
                             <div v-else>No hay información</div>
                         </b-list-group-item>
@@ -144,7 +144,7 @@ const ParlamentariosForm = {
                         <b-button v-if="form_data.Datos_Parientes" variant="dark" v-b-modal.ModalParientes>Más info</b-button>
                         <b-button v-else variant="dark" disabled>Más info</b-button>
                         
-                        <b-modal id="ModalParientes" scrollable size="lg" title="Vehiculos motorizados">
+                        <b-modal id="ModalParientes" centered scrollable size="lg" title="Vehiculos motorizados">
                         
                             <b-list-group flush>
                                 <b-list-group-item v-for="(pariente, index) in form_data.Datos_Parientes" :key="index">
@@ -168,9 +168,9 @@ const ParlamentariosForm = {
                 
                 <b-col v-bind="multipleCols">
                 
-                    <b-card no-body class="mb-1 mt-1">
+                    <b-card no-body class="mb-1 mt-1 h-100">
                         <b-card-title class="mb-1"><h4>Datos del conyuge</h4></b-card-title>
-                        <b-list-group-item>
+                        <b-list-group-item v-bind="listGroupItem">
                             <div v-if="!(form_data.Datos_del_Declarante.Estado_Civil.id !== 2)">Nombre: [[ get_nombreConyuge ]]</div>
                             <div v-else>No hay información</div>
                         </b-list-group-item>
@@ -178,7 +178,7 @@ const ParlamentariosForm = {
                         <b-button v-if="form_data.Declara_Bienes_Conyuge !== 'false'" variant="dark" v-b-modal.ModalConyuge>Más info</b-button>
                         <b-button v-else variant="dark" disabled> No declara información adicional </b-button>
                         
-                        <b-modal id="ModalConyuge" scrollable size="lg" title="Datos del conyuge">
+                        <b-modal id="ModalConyuge" centered size="lg" scrollable title="Datos del conyuge">
                             
                             <b-list-group flush>
                                 <div v-for="actividad in form_data.Actividades_Profesionales_Conyuge">
@@ -215,13 +215,28 @@ const ParlamentariosForm = {
                 'padding-right': "0px"
             },
             multipleCols: {
-                class: 'mb-4',
+                class: 'mt-4',
                 cols: '6',
-            }
+            },
+            listGroupItem:{
+                class: 'h-100',
+                style:{
+                    'display': 'flex',
+                    'justify-content': 'center',
+                    'align-items': 'center',
+                }
+            },
+            modalStyle:{
+                style: {
+                    'padding-top': '0px',
+                    'padding-bottom': '0px',
+                },
+            },
         }
     },
     delimiters: ['[[', ']]'],
     created: function() {
+        //this.$store.state.form_data = JSON.parse(declaraciones || '{}');
         this.$store.state.form_data = JSON.parse(document.getElementsByTagName('body')[0].getAttribute('data') || '{}');
     },
     store: declaracion_data,
