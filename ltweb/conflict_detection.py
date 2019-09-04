@@ -3,6 +3,7 @@ from .conn import DBconnection
 from gensim.models import KeyedVectors
 import numpy as np
 from numpy.linalg import norm
+from django.conf import settings
 from nltk.tag import StanfordPOSTagger
 import os
 
@@ -10,7 +11,18 @@ import os
 class EmbeddingPredictor:
 
     def __init__(self, filename='fasttext-esp.bin', lim=500000):
-        self.we = KeyedVectors.load_word2vec_format(filename, binary=True, limit=lim)
+        if "JAVAHOME" not in os.environ:
+            assert ("JAVA_HOME" in os.environ), "JAVA must be installed and accesible from path."
+            os.environ['JAVAHOME'] = str(os.environ['JAVA_HOME'])
+
+        tools_dir = settings.TOOLS_DIR
+
+        self.we = KeyedVectors.load_word2vec_format(os.path.join(tools_dir, filename), binary=True, limit=lim)
+
+        modelfile = os.path.join(tools_dir, "spanish.tagger")
+        jarfile = os.path.join(tools_dir, "stanford-postagger.jar")
+
+        self.tagger = StanfordPOSTagger(model_filename=modelfile, path_to_jar=jarfile)
 
     def to_vector(self, texto):
         tokens = texto.split()
@@ -31,21 +43,16 @@ class EmbeddingPredictor:
         sim = vec_1 @ vec_2
         return sim
 
-def extract_nouns(self, text, route):
-    java_path = route
-    os.environ['JAVAHOME'] = java_path
-    para = text.lower()
-    stanford_dir = TOOLS_DIR
-    modelfile = stanford_dir+"\\spanish.tagger"
-    jarfile=stanford_dir+"\\stanford-postagger.jar"
-    tagger=StanfordPOSTagger(model_filename=modelfile, path_to_jar=jarfile)
-    tags = tagger.tag(para.split())
-    nouns = []
-    for tag in tags:
-        if tag[1][0] == "n" and tag[0] not in nouns:
-            nouns.append(tag[0])
-    nouns = ' '.join(list(set(nouns)))
-    return nouns
+    def extract_nouns(self, text):
+        para = text.lower()
+        tags = self.tagger.tag(para.split())
+        nouns = []
+        for tag in tags:
+            if tag[1][0] == "n" and tag[0] not in nouns:
+                nouns.append(tag[0])
+        nouns = ' '.join(list(set(nouns)))
+        return nouns
+
 
 def score(porc, cont):
     scr = 0
@@ -61,16 +68,21 @@ def score(porc, cont):
 def conflicto_embedding(tags):
     myclient = DBconnection()
     mycol = myclient.get_collection("declaraciones")
+    print("BD Conectada")
 
     wp = EmbeddingPredictor()
     print("Embeddings Cargados")
 
     query = mycol.find(
-        {"Meta": True},
+        {"Meta": True, "Derechos_Acciones_Chile": {"$exists": True}},
         {"_id": 1, "Id_Declaracion": 1, "Datos_del_Declarante": 1, "Derechos_Acciones_Chile": 1}
     )
 
     print("Declaraciones cargadas")
+
+    # VECTOR LEY
+
+    print("Ley vectorizada")
 
     matches = []
     for person in query:
@@ -78,12 +90,14 @@ def conflicto_embedding(tags):
         for nombre in person["Datos_del_Declarante"]["nombre"].split():
             name += nombre.lower().capitalize() + " "
         nombre = name + person["Datos_del_Declarante"]["Apellido_Paterno"].lower().capitalize() + " " + \
-                 person["Datos_del_Declarante"]["Apellido_Materno"].lower().capitalize()
+            person["Datos_del_Declarante"]["Apellido_Materno"].lower().capitalize()
         idec = person["_id"]
 
         for emp in person["Derechos_Acciones_Chile"]:
             porc = float(emp["Cantidad_Porcentaje"])
             cont = emp["Tiene_Calidad_Controlador"]
+            giro = emp["Giro_Registrado_SII"]
+
             # razon = emp["Nombre_Razon_Social"]
             scr = score(porc, cont)
             matches.append((scr, nombre, idec, emp))
@@ -104,7 +118,8 @@ def conflicto_patrimonio(kwrds):
         name = ""
         for nombre in person["Datos_del_Declarante"]["nombre"].split():
             name += nombre.lower().capitalize() + " "
-        nombre = name + person["Datos_del_Declarante"]["Apellido_Paterno"].lower().capitalize() + " " + person["Datos_del_Declarante"]["Apellido_Materno"].lower().capitalize()
+        nombre = name + person["Datos_del_Declarante"]["Apellido_Paterno"].lower().capitalize() + " " + \
+                 person["Datos_del_Declarante"]["Apellido_Materno"].lower().capitalize()
         idec = person["_id"]
 
         # TODO: Le estamos agregando distintos scores para una misma persona ?
