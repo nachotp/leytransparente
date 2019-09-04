@@ -3,29 +3,26 @@
     <TiposNumeros>
       <TipoNumero>
         <Tipo>Ley</Tipo>
-        <Numero>123456</Numero>
+        <Numero>654321</Numero>
       </TipoNumero>
     </TiposNumeros>
     <Organismos>
-      <Organismo>MINISTERIO DE JUEGOS Y ENTRETENCION</Organismo>
-      <Organismo>SUBSECRETARIA DE PS4 Y PC</Organismo>
+      <Organismo>MINISTERIO DE ENERGIA</Organismo>
+      <Organismo>SUBSECRETARIA DE ELECTRICIDAD</Organismo>
     </Organismos>
   </Identificador>
   <Metadatos>
-    <TituloNorma>LEGALIZACION DE VENTA Y DISTRIBUCION DE VIDEO-JUEGO SIN IMPORTAR LAS RESTRICCIONES DE EDAD</TituloNorma>
+    <TituloNorma>REGULACION DE MEDIDORES INTELIGENTES ACORDE A LA LEY 21.076</TituloNorma>
     <Materias>
-      <Materia>Ocio</Materia>
-      <Materia>Video-Juegos</Materia>
-      <Materia>Juegos</Materia>
-      <Materia>Consolas</Materia>
-      <Materia>Play Station</Materia>
-      <Materia>Xbox</Materia>
-      <Materia>Microsoft</Materia>
-      <Materia>Restriccion de edad</Materia>
+      <Materia>Electricidad</Materia>
+      <Materia>Energia</Materia>
+      <Materia>Medidores Inteligentes</Materia>
+      <Materia>Enel</Materia>
+      <Materia>Enel Distribucion</Materia>
     </Materias>
     <NumeroFuente>41767</NumeroFuente>
     <Resumenes>
-      <Resumen idioma="Espa&#241;ol">La presente ley otorga el permiso a cualquier tienda oficial o independiente de la venta y/o distribucion de video-juego a cualquier usuarios sin importar las restricciones que pueda presentar le producto.</Resumen>
+      <Resumen idioma="Espa&#241;ol">La presente ley busca regular la instalacion de los nuevos sistemas de medicion inteligente, para que todas las casas posean el suyo segun la ley.</Resumen>
     </Resumenes>
     <CategoriasNorma>
       <CategoriaNorma>Publicidad y venta de inmuebles</CategoriaNorma>
