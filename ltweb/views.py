@@ -210,60 +210,48 @@ class ConflictoView(TemplateView):
     conn = DBconnection()
     decl = conn.get_collection("declaraciones")
     leyes = conn.get_collection("leyes")
-    cats = conn.get_collection("categorias")
     confl = conn.get_collection("conflictos")
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data()
         ley = self.kwargs['ley']
         print(f"Buscando Ley {ley}")
-        tags_ley = self.leyes.find_one({"numero": ley}, {"tags": 1,"nombre": 1, "resumen": 1})
-        if(tags_ley == None):
+        tags_ley = self.leyes.find_one({"numero": ley}, {"tags": 1, "nombre": 1, "resumen": 1})
+
+        if tags_ley is None:
             return ctx
-        print("Buscando tags:")
-        tag_set = set({})
-        if tags_ley is not None:
-            for tag in tags_ley["tags"]:
-                tags = self.cats.find_one({"tags": tag.upper()}, {"tags": 1})
-                if tags is not None:
-                    for cat_tag in tags["tags"]:
-                        tag_set.add(cat_tag)
+
         print("Revisando declaraciones")
         ctx["nro_ley"] = ley
         ctx["nombre_ley"] = tags_ley["nombre"]
         ctx["desc_ley"] = tags_ley["resumen"]
         high = []
         low = []
-        conflictos = confd.conflicto_patrimonio(list(tag_set))
+        conflictos = confd.conflicto_embedding(list(tags_ley["tags"]))
         ctx["conflictos"] = conflictos
+
         # Creacion de la lista que almacena diccionarios a insertar en la collecion de conflictos
-        diclist=[]
+        diclist = []
 
         for conflicto in conflictos:
-            dic = {}
-            dic["Ley"] = ley
-            dic["id_declaracion"] = conflicto[2]
+            dic = {"Ley": ley,
+                   "id_declaracion": conflicto[3],
+                   "razon": conflicto[4],
+                   "nombre": conflicto[2]
+                   }
 
-            dic["razon"] = conflicto[3]
-            dic["nombre"] = conflicto[1]
-            if(conflicto[0] > 109):
+            if conflicto[0] > 0.6:
                 high.append(conflicto)
                 dic["grado"] = "grave"
             else:
                 low.append(conflicto)
                 dic["grado"] = "leve"
             diclist.append(dic)
-        x = self.confl.insert_many(diclist)
+
+        # self.confl.insert_many(diclist)
         ctx["high"] = high
         ctx["low"] = low
-        print("Conflictos encontrados: "+ str(len(conflictos)))
-
-        #dic={}
-        #dic["Ley"] = ley
-        #dic["id_declaracion"] = conflicto[2]
-        #dic["grado"] =
-        #dic["razon"] = conflicto[3]
-        #dic["nombre"] = conflicto[1]
+        print("Conflictos encontrados: " + str(len(conflictos)))
 
         return ctx
 

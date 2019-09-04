@@ -7,7 +7,7 @@ from django.conf import settings
 from nltk.tag import StanfordPOSTagger
 import string
 import os
-
+import operator
 
 class EmbeddingPredictor:
 
@@ -35,8 +35,7 @@ class EmbeddingPredictor:
                 act += word + " "
                 vec += self.we[word]
 
-        print(f"Vectorized: {act}")
-        return vec / norm(vec)
+        return vec / norm(vec) if norm(vec) > 0 else np.zeros(300)
 
     @staticmethod
     def similarity(vec_1, vec_2):
@@ -110,10 +109,12 @@ def conflicto_embedding(tags):
             giro_vec = wp.to_vector(giro)
             cos_sim = wp.similarity(giro_vec, vector_ley)
 
-            if cos_sim > 0.5:
+            if cos_sim > 0.55:
                 scr = score(porc, cont)
                 matches.append((cos_sim, scr, nombre, idec, emp))
-        matches.sort(reverse=True)
+
+    matches.sort(key=operator.itemgetter(0, 1), reverse=True)
+
     return matches
 
 
