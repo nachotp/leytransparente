@@ -3,3 +3,11 @@
     justify-content: center;
     align-items: center;
 }
+
+.nav-menu{
+    padding-top:1em;
+
+}
+.nav-menu-item{
+    padding-right: 1em;
+}
