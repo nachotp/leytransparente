@@ -283,7 +283,7 @@ class ConflictoListView(TemplateView):
             dic = {
                 "ley": conf["ley"],
                 "nombre_ley": conf["nombre_ley"],
-                "id_parlamentario": conf["id_declaracion"],
+                "id_parlamentario": str(conf["id_declaracion"]),
                 "parlamentario": conf["parlamentario"],
                 "partido": conf["partido"],
                 "grado": conf["grado"],
