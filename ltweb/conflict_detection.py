@@ -80,7 +80,9 @@ def conflicto_embedding(tags):
 
     print("Declaraciones cargadas")
 
-    # VECTOR LEY
+    tags = ' '.join(tags)
+    sust = wp.extract_nouns(tags)
+    vector = wp.to_vector(sust)
 
     print("Ley vectorizada")
 
