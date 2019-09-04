@@ -258,7 +258,7 @@ class ConflictoView(TemplateView):
                 low.append(conflicto)
                 dic["grado"] = "leve"
             diclist.append(dic)
-        x = self.confl.insert_many(diclist)
+        #x = self.confl.insert_many(diclist)
         ctx["high"] = high
         ctx["low"] = low
         print("Conflictos encontrados: "+ str(len(conflictos)))

@@ -20,7 +20,7 @@ def conflicto_patrimonio(kwrds):
 
 
     query = mycol.find(
-        {"Meta": True, "Derechos_Acciones_Chile": {"$elemMatch": {"Giro_Registrado_SII": {"$in": kwrds}}}},
+        {"meta.actual": True, "Derechos_Acciones_Chile": {"$elemMatch": {"Giro_Registrado_SII": {"$in": kwrds}}}},
         {"_id": 1, "Id_Declaracion": 1, "Datos_del_Declarante": 1,
          "Derechos_Acciones_Chile": {"$elemMatch": {"Giro_Registrado_SII": {"$in": kwrds}}}}
     )
