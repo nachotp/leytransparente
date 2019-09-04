@@ -5,6 +5,7 @@ import numpy as np
 from numpy.linalg import norm
 from django.conf import settings
 from nltk.tag import StanfordPOSTagger
+import string
 import os
 
 
@@ -24,7 +25,7 @@ class EmbeddingPredictor:
 
         self.tagger = StanfordPOSTagger(model_filename=modelfile, path_to_jar=jarfile)
 
-    def to_vector(self, texto):
+    def to_vector(self, texto: str):
         tokens = texto.split()
         vec = np.zeros(300)
         act = ""
@@ -37,9 +38,8 @@ class EmbeddingPredictor:
         print(f"Vectorized: {act}")
         return vec / norm(vec)
 
-    def similarity(self, texto_1, texto_2):
-        vec_1 = self.to_vector(texto_1)
-        vec_2 = self.to_vector(texto_2)
+    @staticmethod
+    def similarity(vec_1, vec_2):
         sim = vec_1 @ vec_2
         return sim
 
@@ -56,12 +56,13 @@ class EmbeddingPredictor:
 
 def score(porc, cont):
     scr = 0
+    porc = porc if porc < 100 else 100
     if cont == "SI":
         scr = 10000
     if porc <= 50:
         scr += pow(2, (porc / 17.48))
     else:
-        scr += pow(5, (porc / 17.48))
+        scr += pow(3, (porc / 17.48))
     return scr
 
 
@@ -82,7 +83,7 @@ def conflicto_embedding(tags):
 
     tags = ' '.join(tags)
     sust = wp.extract_nouns(tags)
-    vector = wp.to_vector(sust)
+    vector_ley = wp.to_vector(sust)
 
     print("Ley vectorizada")
 
@@ -96,13 +97,24 @@ def conflicto_embedding(tags):
         idec = person["_id"]
 
         for emp in person["Derechos_Acciones_Chile"]:
+
             porc = float(emp["Cantidad_Porcentaje"])
             cont = emp["Tiene_Calidad_Controlador"]
-            giro = emp["Giro_Registrado_SII"]
+            giro = emp["Giro_Registrado_SII"] if "Giro_Registrado_SII" in emp else ""
+            razon = emp["Nombre_Razon_Social"]
 
-            # razon = emp["Nombre_Razon_Social"]
-            scr = score(porc, cont)
-            matches.append((scr, nombre, idec, emp))
+            giro = giro.lower().translate(str.maketrans('', '', string.punctuation))
+            razon = razon.lower().translate(str.maketrans('', '', string.punctuation))
+
+            # giro_vec = wp.to_vector(wp.extract_nouns(giro.lower()))
+            giro_vec = wp.to_vector(giro)
+            cos_sim = wp.similarity(giro_vec, vector_ley)
+
+            if cos_sim > 0.5:
+                scr = score(porc, cont)
+                matches.append((cos_sim, scr, nombre, idec, emp))
+        matches.sort(reverse=True)
+    return matches
 
 
 def conflicto_patrimonio(kwrds):
