@@ -281,14 +281,14 @@ class ConflictoListView(TemplateView):
 
         for conf in query:
             dic = {
-                'ley': conf["ley"],
-                'nombre_ley': conf["nombre_ley"],
-                'id_parlamentario': conf["id_declaracion"],
-                'parlamentario': conf["parlamentario"],
-                'partido': conf["partido"],
-                'grado': conf["grado"],
-                'prov_conf': conf["razon"]["prov_conf"],
-                'motivo': conf["razon"]["motivo"]
+                "ley": conf["ley"],
+                "nombre_ley": conf["nombre_ley"],
+                "id_parlamentario": conf["id_declaracion"],
+                "parlamentario": conf["parlamentario"],
+                "partido": conf["partido"],
+                "grado": conf["grado"],
+                "prov_conf": conf["razon"]["prov_conf"],
+                "motivo": conf["razon"]["motivo"]
             }
 
             if(conf["pariente"] != None):
