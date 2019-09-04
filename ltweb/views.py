@@ -55,22 +55,25 @@ class SubirDeclaracionView(View):
                 contador += 1
 
         dic = json.loads(L)
-        dic["Meta"] = True
+        dic["meta"] = {}
+        dic["meta"]["actual"]=True
 
         query = self.mycol.find_one({"Datos_del_Declarante.nombre":dic["Datos_del_Declarante"]["nombre"], 
                                     "Datos_del_Declarante.Apellido_Paterno":dic["Datos_del_Declarante"]["Apellido_Paterno"], 
                                     "Datos_del_Declarante.Apellido_Materno":dic["Datos_del_Declarante"]["Apellido_Materno"],
-                                    "Meta":True})
+                                    "meta.actual":True})
         
         if query == None: # inserta automaticamente porque no existe nadie.
+            dic["partido"] = 'null'
             x=self.mycol.insert(dic)
 
         else: # actualiza el registri por los datos contenidos en el JSON
-            if(dic["Fecha_de_la_Declaracion"] > query["Fecha_de_la_Declaracion"]):
+            if(dic["Fecha_de_la_Declaracion"] >= query["Fecha_de_la_Declaracion"]):
                 self.mycol.update({"Datos_del_Declarante.nombre":dic["Datos_del_Declarante"]["nombre"], 
                                     "Datos_del_Declarante.Apellido_Paterno":dic["Datos_del_Declarante"]["Apellido_Paterno"], 
                                     "Datos_del_Declarante.Apellido_Materno":dic["Datos_del_Declarante"]["Apellido_Materno"],
-                                    "Meta":True}, { "$set": {"Meta": False}})
+                                    "meta.actual":True}, { "$set": {"meta.actual": False}})
+                dic["partido"] = query["partido"]
                 x = self.mycol.insert(dic)
 
         return redirect('Ver Declaracion', id=x)
@@ -85,15 +88,17 @@ class DiputadosListView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        query = self.mycol.find({"Meta":True}, {"_id":1, "Datos_del_Declarante.nombre":1, "Datos_del_Declarante.Apellido_Paterno":1, "Datos_del_Declarante.Apellido_Materno":1,"Fecha_de_la_Declaracion":1})
+        query = self.mycol.find({"meta.actual":True}, {"_id":1, "Datos_del_Declarante.nombre":1, "Datos_del_Declarante.Apellido_Paterno":1, "Datos_del_Declarante.Apellido_Materno":1,"Fecha_de_la_Declaracion":1, "partido":1})
         data = []
         
         for par in query:
+            #print(par)
             dic = {'id':par["_id"],
                     'nombres': par['Datos_del_Declarante']['nombre'],
                    'apellido_paterno': par['Datos_del_Declarante']['Apellido_Paterno'],
                    'apellido_materno': par['Datos_del_Declarante']['Apellido_Materno'],
-                   'fecha_declaracion': par['Fecha_de_la_Declaracion'][8:10]+"/"+par['Fecha_de_la_Declaracion'][5:7]+"/"+par['Fecha_de_la_Declaracion'][:4]}
+                   'fecha_declaracion': par['Fecha_de_la_Declaracion'][8:10]+"/"+par['Fecha_de_la_Declaracion'][5:7]+"/"+par['Fecha_de_la_Declaracion'][:4],
+                   'partido': par['partido']}
             data.append(dic)
 
         context['diputados'] = data
@@ -248,7 +253,8 @@ class ConflictoView(TemplateView):
                 dic["grado"] = "leve"
             diclist.append(dic)
 
-        # self.confl.insert_many(diclist)
+        #x = self.confl.insert_many(diclist)
+
         ctx["high"] = high
         ctx["low"] = low
         print("Conflictos encontrados: " + str(len(conflictos)))
@@ -269,14 +275,14 @@ class ConflictoListView(TemplateView):
 
         for conf in query:
             dic = {
-                'ley': conf["ley"],
-                'nombre_ley': conf["nombre_ley"],
-                'id_parlamentario': conf["id_declaracion"],
-                'parlamentario': conf["parlamentario"],
-                'partido': conf["partido"],
-                'grado': conf["grado"],
-                'prov_conf': conf["razon"]["prov_conf"],
-                'motivo': conf["razon"]["motivo"]
+                "ley": conf["ley"],
+                "nombre_ley": conf["nombre_ley"],
+                "id_parlamentario": str(conf["id_declaracion"]),
+                "parlamentario": conf["parlamentario"],
+                "partido": conf["partido"],
+                "grado": conf["grado"],
+                "prov_conf": conf["razon"]["prov_conf"],
+                "motivo": conf["razon"]["motivo"]
             }
 
             if(conf["pariente"] != None):
@@ -285,5 +291,6 @@ class ConflictoListView(TemplateView):
             data.append(dic)
 
         #print(data)
-        context["conflictos"] = data
+        context["conflictos"] = json.dumps(data)
+        print(context["conflictos"])
         return context
