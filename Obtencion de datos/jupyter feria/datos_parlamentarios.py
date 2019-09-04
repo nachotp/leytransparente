@@ -14,7 +14,7 @@ def update_meta():
         "=true&w=majority")
     mydb = myclient["leytransparente"]
 
-    mycol = mydb["prueba_chris"]
+    mycol = mydb["declaraciones"]
 
     mycol.update_many({"Meta":True}, {"$set": {"meta.actual": True , "partido":None}})
     mycol.update_many({"Meta": False}, {"$set": {"meta.actual": False , "partido":None}})
@@ -26,7 +26,7 @@ def partido():
         "=true&w=majority")
     mydb = myclient["leytransparente"]
 
-    mycol = mydb["prueba_chris"]
+    mycol = mydb["declaraciones"]
 
     url = "https://www.camara.cl/camara/diputados.aspx"
     response = requests.get(url)
@@ -36,12 +36,16 @@ def partido():
 
     for diputado in tabla_diputados:
         a = diputado.find("h5").find("a")  # tag donde esta el nombre
-        name = a.text.strip().split("\n")[1].strip().upper()  # "NOMBRE APELLIDO"
+        name = a.text.strip().split(".")[1].strip().upper()  # "NOMBRE APELLIDO"
+        if len(name.split(" ")) > 2:
+            lista_ids = buscar(name.split(" ")[0] + " " + name.split(" ")[1], name.split(" ")[2]) #para nombres compuestos
+        else:
+            lista_ids = buscar(name.split(" ")[0], name.split(" ")[1])
 
         b = diputado.findAll("li")[-1].find("a").get_text()  # tag donde esta el partido
         partido = b.strip().split("\n")[1].strip()  # sigal del partido PS por ejemplo
 
-        lista_ids = buscar(name.split(" ")[0], name.split(" ")[1])
+
         if len(lista_ids) > 0:
             for id in lista_ids:
                 mycol.update_one({"_id": id}, {"$set": {"partido": partido}})
@@ -67,13 +71,13 @@ def buscar(nombre,apellido):
         "=true&w=majority")
     mydb = myclient["leytransparente"]
 
-    mycol = mydb["prueba_chris"]
+    mycol = mydb["declaraciones"]
     ids = []
     encontrado = mycol.find({'Datos_del_Declarante.Apellido_Paterno': {'$regex': apellido}, "Datos_del_Declarante.nombre":{'$regex': nombre}})
     for document in encontrado:
         #print(document["_id"])
         ids.append(document["_id"])
-    print(ids)
+    print(nombre, apellido, len(ids))
     return ids
 
 
@@ -85,8 +89,8 @@ def cargar_info():
 
     mycol = mydb["prueba_chris"]
 
-    #diputados = open("E:\Proyects\leytransparente\Obtencion de datos\Tagging de leyes\JsonInfoProbidad.json", encoding="utf-8") En Windows
-    diputados = open("/Users/christophergilbertcarroza/Git Projects/leytransparente/Obtencion de datos/Tagging de leyes/JsonInfoProbidad.json", encoding = "utf-8") #En Mac
+    diputados = open("E:\Proyects\leytransparente\Obtencion de datos\Tagging de leyes\JsonInfoProbidad.json", encoding="utf-8") #En Windows
+    #diputados = open("/Users/christophergilbertcarroza/Git Projects/leytransparente/Obtencion de datos/Tagging de leyes/JsonInfoProbidad.json", encoding = "utf-8") #En Mac
     data = json.load(diputados)
     largos =[]
     #f = open("declaraciones.txt", "w")
@@ -149,11 +153,11 @@ def cargar_actualizaciones():
 
     mycol = mydb["prueba_chris"]
 
-    #diputados = open("E:\Proyects\leytransparente\Obtencion de datos\Tagging de leyes\JsonInfoProbidadAct.json",
-     #                encoding="utf-8")
-    diputados = open(
-        "/Users/christophergilbertcarroza/Git Projects/leytransparente/Obtencion de datos/Tagging de leyes/JsonInfoProbidadAct.json",
-        encoding="utf-8")  # En Mac
+    diputados = open("E:\Proyects\leytransparente\Obtencion de datos\Tagging de leyes\JsonInfoProbidadAct.json",
+                     encoding="utf-8")
+    #diputados = open(
+     #   "/Users/christophergilbertcarroza/Git Projects/leytransparente/Obtencion de datos/Tagging de leyes/JsonInfoProbidadAct.json",
+      #  encoding="utf-8")  # En Mac
     data = json.load(diputados)
     daata = {}
     daata["declaraciones"] = []
@@ -182,6 +186,6 @@ def cargar_actualizaciones():
 #cargar_info()
 #actual()
 #cargar_actualizaciones()
-update_meta()
+#update_meta()
 partido()
 #buscar('RICARDO','CELIS')
