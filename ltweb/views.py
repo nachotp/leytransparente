@@ -59,7 +59,8 @@ class SubirDeclaracionView(View):
                 contador += 1
 
         dic = json.loads(L)
-        dic["Meta"] = True
+        dic["meta"] = {}
+        dic["meta"]["actual"] = True
 
         query = self.mycol.find_one({"Datos_del_Declarante.nombre":dic["Datos_del_Declarante"]["nombre"], 
                                     "Datos_del_Declarante.Apellido_Paterno":dic["Datos_del_Declarante"]["Apellido_Paterno"], 
