@@ -1,13 +1,14 @@
 from math import pow
 from .conn import DBconnection
 from gensim.models import KeyedVectors
-import numpy as np
 from numpy.linalg import norm
 from django.conf import settings
 from nltk.tag import StanfordPOSTagger
 import string
 import os
 import operator
+import numpy as np
+
 
 class EmbeddingPredictor:
 
@@ -29,11 +30,14 @@ class EmbeddingPredictor:
         tokens = texto.split()
         vec = np.zeros(300)
         act = ""
+        ranks = []
         for word in tokens:
             # si la palabra está la acumulamos
             if word in self.we:
                 act += word + " "
-                vec += self.we[word]
+                rank = self.we.wv.vocab[word].index
+                vec += self.we[word] * np.log(rank)
+                ranks.append(rank)
 
         return vec / norm(vec) if norm(vec) > 0 else np.zeros(300)
 
@@ -74,19 +78,18 @@ def conflicto_embedding(tags):
     print("Embeddings Cargados")
 
     query = mycol.find(
-        {"Meta": True, "Derechos_Acciones_Chile": {"$exists": True}},
+        {"meta.actual": True, "Derechos_Acciones_Chile": {"$exists": True}},
         {"_id": 1, "Id_Declaracion": 1, "Datos_del_Declarante": 1, "Derechos_Acciones_Chile": 1}
     )
-
-    print("Declaraciones cargadas")
 
     tags = ' '.join(tags)
     sust = wp.extract_nouns(tags)
     vector_ley = wp.to_vector(sust)
 
-    print("Ley vectorizada")
+    print(f"Ley vectorizada {sust}")
 
     matches = []
+    prematch = []
     for person in query:
         name = ""
         for nombre in person["Datos_del_Declarante"]["nombre"].split():
@@ -109,7 +112,34 @@ def conflicto_embedding(tags):
             giro_vec = wp.to_vector(giro)
             cos_sim = wp.similarity(giro_vec, vector_ley)
 
-            if cos_sim > 0.55:
+            if cos_sim > 0.57:
+                prematch.append(person)
+
+    for person in prematch:
+        name = ""
+        for nombre in person["Datos_del_Declarante"]["nombre"].split():
+            name += nombre.lower().capitalize() + " "
+        nombre = name + person["Datos_del_Declarante"]["Apellido_Paterno"].lower().capitalize() + " " + \
+            person["Datos_del_Declarante"]["Apellido_Materno"].lower().capitalize()
+        idec = person["_id"]
+
+        for emp in person["Derechos_Acciones_Chile"]:
+
+            porc = float(emp["Cantidad_Porcentaje"])
+            cont = emp["Tiene_Calidad_Controlador"]
+            giro = emp["Giro_Registrado_SII"] if "Giro_Registrado_SII" in emp else ""
+            razon = emp["Nombre_Razon_Social"]
+
+            giro = giro.lower().translate(str.maketrans('', '', string.punctuation))
+            giro = wp.extract_nouns(giro)
+            razon = razon.lower().translate(str.maketrans('', '', string.punctuation))
+            print(giro)
+            # giro_vec = wp.to_vector(wp.extract_nouns(giro.lower()))
+            giro_vec = wp.to_vector(giro+" "+razon)
+            cos_sim = wp.similarity(giro_vec, vector_ley)
+
+            if cos_sim > 0.5:
+                print(razon, giro)
                 scr = score(porc, cont)
                 matches.append((cos_sim, scr, nombre, idec, emp))
 
