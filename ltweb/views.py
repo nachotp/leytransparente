@@ -296,6 +296,6 @@ class ConflictoListView(TemplateView):
 
             data.append(dic)
 
-        #print(data)
-        context["conflictos"] = data
+        print(data)
+        context["conflictos"] = json.dumps(data)
         return context
