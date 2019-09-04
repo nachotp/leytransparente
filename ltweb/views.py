@@ -81,7 +81,7 @@ class SubirDeclaracionView(View):
 
 class DiputadosListView(TemplateView):
     conn = DBconnection()
-    mycol = conn.get_collection("prueba_chris")
+    mycol = conn.get_collection("declaraciones")
 
     template_name = 'diputados_list.html'
 
