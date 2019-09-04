@@ -35,8 +35,8 @@ def extract_nouns(self, text, route):
     java_path = route
     os.environ['JAVAHOME'] = java_path
     para = text.lower()
-    stanford_dir = ".\\stanford-postagger-full-2018-10-16"
-    modelfile = stanford_dir+"\\models\\spanish.tagger"
+    stanford_dir = TOOLS_DIR
+    modelfile = stanford_dir+"\\spanish.tagger"
     jarfile=stanford_dir+"\\stanford-postagger.jar"
     tagger=StanfordPOSTagger(model_filename=modelfile, path_to_jar=jarfile)
     tags = tagger.tag(para.split())
