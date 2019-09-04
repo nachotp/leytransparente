@@ -35,8 +35,8 @@ class EmbeddingPredictor:
             # si la palabra está la acumulamos
             if word in self.we:
                 act += word + " "
-                rank = self.we.wv.vocab[word].index
-                vec += self.we[word] * np.log(rank)
+                rank = 1 + self.we.wv.vocab[word].index
+                vec += self.we[word] * np.sqrt(rank)
                 ranks.append(rank)
 
         return vec / norm(vec) if norm(vec) > 0 else np.zeros(300)
@@ -86,10 +86,12 @@ def conflicto_embedding(tags):
     sust = wp.extract_nouns(tags)
     vector_ley = wp.to_vector(sust)
 
-    print(f"Ley vectorizada {sust}")
+    print(f"Ley vectorizada: {sust}")
 
     matches = []
     prematch = []
+
+    print("Revisando pre-candidatos")
     for person in query:
         name = ""
         for nombre in person["Datos_del_Declarante"]["nombre"].split():
@@ -112,9 +114,10 @@ def conflicto_embedding(tags):
             giro_vec = wp.to_vector(giro)
             cos_sim = wp.similarity(giro_vec, vector_ley)
 
-            if cos_sim > 0.57:
+            if cos_sim > 0.55:
                 prematch.append(person)
 
+    print("Filtrando candidatos")
     for person in prematch:
         name = ""
         for nombre in person["Datos_del_Declarante"]["nombre"].split():
@@ -131,15 +134,14 @@ def conflicto_embedding(tags):
             razon = emp["Nombre_Razon_Social"]
 
             giro = giro.lower().translate(str.maketrans('', '', string.punctuation))
-            giro = wp.extract_nouns(giro)
-            razon = razon.lower().translate(str.maketrans('', '', string.punctuation))
             print(giro)
+            # giro = wp.extract_nouns(giro)
+            #   razon = razon.lower().translate(str.maketrans('', '', string.punctuation))
             # giro_vec = wp.to_vector(wp.extract_nouns(giro.lower()))
-            giro_vec = wp.to_vector(giro+" "+razon)
+            giro_vec = wp.to_vector(giro)
             cos_sim = wp.similarity(giro_vec, vector_ley)
-
+            print(giro, ">", cos_sim)
             if cos_sim > 0.5:
-                print(razon, giro)
                 scr = score(porc, cont)
                 matches.append((cos_sim, scr, nombre, idec, emp))
 
