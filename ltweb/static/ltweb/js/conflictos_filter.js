@@ -45,11 +45,11 @@ const conflictosVue = {
                     <h4>[[conflicto.partido]]</h4>
                     <b-card-text>
                         <b-list-group flush>
-                            <b-list-group-item><b>Ley Nº : </b>[[conflicto.ley]]</b-list-group-item>
-                            <b-list-group-item><b>Nombre de Ley : </b>[[conflicto.nombre_ley|capitalize]]</b-list-group-item>
-                            <b-list-group-item><b>Motivo : </b>[[conflicto.prov_conf|capitalize]]</b-list-group-item>
-                            <b-list-group-item><b>Patrimonio en conflicto : </b>[[conflicto.motivo|capitalize]]</b-list-group-item>
-                            <b-list-group-item><b>Grado de Conflicto : </b>[[conflicto.grado|capitalize]]</b-list-group-item>
+                            <b-list-group-item v-bind="listItem"><b>Ley Nº : </b>[[conflicto.ley]]</b-list-group-item>
+                            <b-list-group-item v-bind="listItem"><b>Nombre de Ley : </b>[[conflicto.nombre_ley|capitalize]]</b-list-group-item>
+                            <b-list-group-item v-bind="listItem"><b>Motivo : </b>[[conflicto.prov_conf|capitalize]]</b-list-group-item>
+                            <b-list-group-item v-bind="listItem"><b>Patrimonio en conflicto : </b>[[conflicto.motivo|capitalize]]</b-list-group-item>
+                            <b-list-group-item v-bind="listItem"><b>Grado de Conflicto : </b>[[conflicto.grado|capitalize]]</b-list-group-item>
                         </b-list-group>
                     </b-card-text>
                 </b-card-body>
@@ -81,6 +81,11 @@ const conflictosVue = {
                     'display': 'flex',
                     'justify-content': 'center',
                     'align-items': 'center',
+                }
+            },
+            listItem: {
+                style: {
+                    'padding-left': '0px'
                 }
             }
         }
