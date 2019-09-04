@@ -7,6 +7,21 @@ import json
 
 import pymongo
 
+def update_meta():
+    myclient = pymongo.MongoClient(
+        "mongodb+srv://admin:leytransparente@leytransparente-m6y51.mongodb.net/test?retryWrites"
+        "=true&w=majority")
+    mydb = myclient["leytransparente"]
+
+    mycol = mydb["prueba_chris"]
+
+    #mycol.update_many({"Meta":True}, {"$set": {"meta.actual": True , "meta.partido":None}})
+    #mycol.update_many({"Meta": False}, {"$set": {"meta.actual": False , "meta.partido":None}})
+    mycol.update_many({}, {"$unset": {"Meta": None}})
+
+def partido():
+    
+
 def cargar_info():
     myclient = pymongo.MongoClient("mongodb+srv://admin:leytransparente@leytransparente-m6y51.mongodb.net/test?retryWrites"
                 "=true&w=majority")
@@ -14,22 +29,29 @@ def cargar_info():
 
     mycol = mydb["prueba_chris"]
 
-    diputados = open("E:\Proyects\leytransparente\Obtencion de datos\Tagging de leyes\JsonInfoProbidad.json", encoding="utf-8")
+    #diputados = open("E:\Proyects\leytransparente\Obtencion de datos\Tagging de leyes\JsonInfoProbidad.json", encoding="utf-8") En Windows
+    diputados = open("/Users/christophergilbertcarroza/Git Projects/leytransparente/Obtencion de datos/Tagging de leyes/JsonInfoProbidad.json", encoding = "utf-8") #En Mac
     data = json.load(diputados)
     largos =[]
     #f = open("declaraciones.txt", "w")
     daata = {}
     daata["declaraciones"]=[]
     for diputado in data:
-        url_declaracion = diputado["Declaracion"]["value"]
+        #url_declaracion = diputado["Declaracion"]["value"]
+        status = 0
+        while (status != 200):
+            url_declaracion = diputado["Declaracion"]["value"]
+            response = requests.get(url_declaracion)
+            status = response.status_code
+
         response = requests.get(url_declaracion)
         soup = BeautifulSoup(response.text, "html.parser")
         declaracion = soup.findAll("span",{"property" : "dip:jsonCargado"})[0].text
-        print(type(declaracion))
+        #print(type(declaracion))
         declaracion = json.loads(declaracion)
-        print(type(declaracion))
+        #print(type(declaracion))
         x = mycol.insert_one(declaracion)
-    mycol.update_many({}, {"$set": {"Meta": True}})
+    mycol.update_many({}, {"$set": {"Meta.actual": True}})
         #f.write(declaracion)
         #daata["declaraciones"].append(declaracion)
         #print(declaracion)
@@ -71,8 +93,11 @@ def cargar_actualizaciones():
 
     mycol = mydb["prueba_chris"]
 
-    diputados = open("E:\Proyects\leytransparente\Obtencion de datos\Tagging de leyes\JsonInfoProbidadAct.json",
-                     encoding="utf-8")
+    #diputados = open("E:\Proyects\leytransparente\Obtencion de datos\Tagging de leyes\JsonInfoProbidadAct.json",
+     #                encoding="utf-8")
+    diputados = open(
+        "/Users/christophergilbertcarroza/Git Projects/leytransparente/Obtencion de datos/Tagging de leyes/JsonInfoProbidadAct.json",
+        encoding="utf-8")  # En Mac
     data = json.load(diputados)
     daata = {}
     daata["declaraciones"] = []
@@ -100,4 +125,5 @@ def cargar_actualizaciones():
 
 #cargar_info()
 #actual()
-cargar_actualizaciones()
+#cargar_actualizaciones()
+update_meta()
