@@ -65,7 +65,7 @@ class SubirDeclaracionView(View):
         
         if query == None: # inserta automaticamente porque no existe nadie.
             dic["partido"] = 'null'
-            x=self.mycol.insert(dic)
+            #x=self.mycol.insert(dic)
 
         else: # actualiza el registri por los datos contenidos en el JSON
             if(dic["Fecha_de_la_Declaracion"] >= query["Fecha_de_la_Declaracion"]):
@@ -74,7 +74,7 @@ class SubirDeclaracionView(View):
                                     "Datos_del_Declarante.Apellido_Materno":dic["Datos_del_Declarante"]["Apellido_Materno"],
                                     "meta.actual":True}, { "$set": {"meta.actual": False}})
                 dic["partido"] = query["partido"]
-                x = self.mycol.insert(dic)
+        x = self.mycol.insert(dic)
 
         return redirect('Ver Declaracion', id=x)
 
