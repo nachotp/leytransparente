@@ -81,22 +81,24 @@ class SubirDeclaracionView(View):
 
 class DiputadosListView(TemplateView):
     conn = DBconnection()
-    mycol = conn.get_collection("declaraciones")
+    mycol = conn.get_collection("prueba_chris")
 
     template_name = 'diputados_list.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        query = self.mycol.find({"meta.actual":True}, {"_id":1, "Datos_del_Declarante.nombre":1, "Datos_del_Declarante.Apellido_Paterno":1, "Datos_del_Declarante.Apellido_Materno":1,"Fecha_de_la_Declaracion":1})
+        query = self.mycol.find({"meta.actual":True}, {"_id":1, "Datos_del_Declarante.nombre":1, "Datos_del_Declarante.Apellido_Paterno":1, "Datos_del_Declarante.Apellido_Materno":1,"Fecha_de_la_Declaracion":1, "partido":1})
         data = []
         
         for par in query:
+            #print(par)
             dic = {'id':par["_id"],
                     'nombres': par['Datos_del_Declarante']['nombre'],
                    'apellido_paterno': par['Datos_del_Declarante']['Apellido_Paterno'],
                    'apellido_materno': par['Datos_del_Declarante']['Apellido_Materno'],
-                   'fecha_declaracion': par['Fecha_de_la_Declaracion'][8:10]+"/"+par['Fecha_de_la_Declaracion'][5:7]+"/"+par['Fecha_de_la_Declaracion'][:4]}
+                   'fecha_declaracion': par['Fecha_de_la_Declaracion'][8:10]+"/"+par['Fecha_de_la_Declaracion'][5:7]+"/"+par['Fecha_de_la_Declaracion'][:4],
+                   'partido': par['partido']}
             data.append(dic)
 
         context['diputados'] = data
