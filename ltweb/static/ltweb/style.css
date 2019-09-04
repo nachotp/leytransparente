@@ -1,7 +1,6 @@
-.conflictCol {
-    display: flex;
+.conflictViewListItem {
+    padding-left: 0px;
     justify-content: center;
-    align-items: center;
 }
 
 .nav-menu{
