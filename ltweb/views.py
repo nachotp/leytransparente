@@ -67,7 +67,8 @@ class SubirDeclaracionView(View):
                                     "Meta":True})
         
         if query == None: # inserta automaticamente porque no existe nadie.
-            x=self.mycol.insert(dic)
+            print("no habia declaracion previa de este diputado")
+        #    x=self.mycol.insert(dic)
 
         else: # actualiza el registri por los datos contenidos en el JSON
             if(dic["Fecha_de_la_Declaracion"] > query["Fecha_de_la_Declaracion"]):
@@ -75,7 +76,7 @@ class SubirDeclaracionView(View):
                                     "Datos_del_Declarante.Apellido_Paterno":dic["Datos_del_Declarante"]["Apellido_Paterno"], 
                                     "Datos_del_Declarante.Apellido_Materno":dic["Datos_del_Declarante"]["Apellido_Materno"],
                                     "Meta":True}, { "$set": {"Meta": False}})
-                x = self.mycol.insert(dic)
+        x = self.mycol.insert(dic)
 
         return redirect('Ver Declaracion', id=x)
 
