@@ -3,6 +3,8 @@ from .conn import DBconnection
 from gensim.models import KeyedVectors
 import numpy as np
 from numpy.linalg import norm
+from nltk.tag import StanfordPOSTagger
+import os
 
 
 class EmbeddingPredictor:
@@ -29,6 +31,21 @@ class EmbeddingPredictor:
         sim = vec_1 @ vec_2
         return sim
 
+def extract_nouns(self, text, route):
+    java_path = route
+    os.environ['JAVAHOME'] = java_path
+    para = text.lower()
+    stanford_dir = ".\\stanford-postagger-full-2018-10-16"
+    modelfile = stanford_dir+"\\models\\spanish.tagger"
+    jarfile=stanford_dir+"\\stanford-postagger.jar"
+    tagger=StanfordPOSTagger(model_filename=modelfile, path_to_jar=jarfile)
+    tags = tagger.tag(para.split())
+    nouns = []
+    for tag in tags:
+        if tag[1][0] == "n" and tag[0] not in nouns:
+            nouns.append(tag[0])
+    nouns = ' '.join(list(set(nouns)))
+    return nouns
 
 def score(porc, cont):
     scr = 0
