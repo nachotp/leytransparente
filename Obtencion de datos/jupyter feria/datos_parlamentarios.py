@@ -1,5 +1,6 @@
 import requests
 import urllib.request
+import re
 
 from bs4 import BeautifulSoup
 
@@ -15,9 +16,9 @@ def update_meta():
 
     mycol = mydb["prueba_chris"]
 
-    #mycol.update_many({"Meta":True}, {"$set": {"meta.actual": True , "meta.partido":None}})
-    #mycol.update_many({"Meta": False}, {"$set": {"meta.actual": False , "meta.partido":None}})
-    mycol.update_many({}, {"$unset": {"Meta": None}})
+    mycol.update_many({"Meta":True}, {"$set": {"meta.actual": True , "partido":None}})
+    mycol.update_many({"Meta": False}, {"$set": {"meta.actual": False , "partido":None}})
+    mycol.update_many({}, {"$unset": {"Meta": 'null'}})
 
 def partido():
     myclient = pymongo.MongoClient(
@@ -33,13 +34,48 @@ def partido():
 
     tabla_diputados = soup.findAll("li", {"class": "alturaDiputado"})
 
-    a = tabla_diputados[0].find("h5").find("a") #tag donde esta el nombre
-    name = a.text.strip().split("\n")[1].strip().upper() #"NOMBRE APELLIDO"
+    for diputado in tabla_diputados:
+        a = diputado.find("h5").find("a")  # tag donde esta el nombre
+        name = a.text.strip().split("\n")[1].strip().upper()  # "NOMBRE APELLIDO"
 
-    b = tabla_diputados[0].findAll("li")[-1].find("a").get_text() #tag donde esta el partido
-    partido = b.strip().split("\n")[1].strip() #sigal del partido PS por ejemplo
+        b = diputado.findAll("li")[-1].find("a").get_text()  # tag donde esta el partido
+        partido = b.strip().split("\n")[1].strip()  # sigal del partido PS por ejemplo
 
-    mycol.update_one({"Datos_del_Declarante.nombre": {"$regex": ".*"+name.split(" ")[0]+".*"}}, {"meta.partido": partido})
+        lista_ids = buscar(name.split(" ")[0], name.split(" ")[1])
+        if len(lista_ids) > 0:
+            for id in lista_ids:
+                mycol.update_one({"_id": id}, {"$set": {"partido": partido}})
+
+    #a = tabla_diputados[0].find("h5").find("a") #tag donde esta el nombre
+    #name = a.text.strip().split("\n")[1].strip().upper() #"NOMBRE APELLIDO"
+
+    #b = tabla_diputados[0].findAll("li")[-1].find("a").get_text() #tag donde esta el partido
+    #partido = b.strip().split("\n")[1].strip() #sigal del partido PS por ejemplo
+
+    #print(partido)
+    #print(name.split(" ")[0])
+    #print(name.split(" ")[1])
+
+    #lista_ids = buscar(name.split(" ")[0],name.split(" ")[1])
+    #if len(lista_ids) > 0:
+        #for id in lista_ids:
+            #mycol.update_one({"_id": id }, {"$set": {"meta.partido": partido}})
+
+def buscar(nombre,apellido):
+    myclient = pymongo.MongoClient(
+        "mongodb+srv://admin:leytransparente@leytransparente-m6y51.mongodb.net/test?retryWrites"
+        "=true&w=majority")
+    mydb = myclient["leytransparente"]
+
+    mycol = mydb["prueba_chris"]
+    ids = []
+    encontrado = mycol.find({'Datos_del_Declarante.Apellido_Paterno': {'$regex': apellido}, "Datos_del_Declarante.nombre":{'$regex': nombre}})
+    for document in encontrado:
+        #print(document["_id"])
+        ids.append(document["_id"])
+    print(ids)
+    return ids
+
 
 
 def cargar_info():
@@ -146,5 +182,6 @@ def cargar_actualizaciones():
 #cargar_info()
 #actual()
 #cargar_actualizaciones()
-#update_meta()
+update_meta()
 partido()
+#buscar('RICARDO','CELIS')

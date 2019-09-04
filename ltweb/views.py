@@ -55,12 +55,13 @@ class SubirDeclaracionView(View):
                 contador += 1
 
         dic = json.loads(L)
-        dic["Meta"] = True
+        dic["meta"] = {}
+        dic["meta"]["actual"]=True
 
         query = self.mycol.find_one({"Datos_del_Declarante.nombre":dic["Datos_del_Declarante"]["nombre"], 
                                     "Datos_del_Declarante.Apellido_Paterno":dic["Datos_del_Declarante"]["Apellido_Paterno"], 
                                     "Datos_del_Declarante.Apellido_Materno":dic["Datos_del_Declarante"]["Apellido_Materno"],
-                                    "Meta":True})
+                                    "meta.actual":True})
         
         if query == None: # inserta automaticamente porque no existe nadie.
             x=self.mycol.insert(dic)
@@ -70,7 +71,7 @@ class SubirDeclaracionView(View):
                 self.mycol.update({"Datos_del_Declarante.nombre":dic["Datos_del_Declarante"]["nombre"], 
                                     "Datos_del_Declarante.Apellido_Paterno":dic["Datos_del_Declarante"]["Apellido_Paterno"], 
                                     "Datos_del_Declarante.Apellido_Materno":dic["Datos_del_Declarante"]["Apellido_Materno"],
-                                    "Meta":True}, { "$set": {"Meta": False}})
+                                    "meta.actual":True}, { "$set": {"meta.actual": False}})
                 x = self.mycol.insert(dic)
 
         return redirect('Ver Declaracion', id=x)
@@ -85,7 +86,7 @@ class DiputadosListView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        query = self.mycol.find({"Meta":True}, {"_id":1, "Datos_del_Declarante.nombre":1, "Datos_del_Declarante.Apellido_Paterno":1, "Datos_del_Declarante.Apellido_Materno":1,"Fecha_de_la_Declaracion":1})
+        query = self.mycol.find({"meta.actual":True}, {"_id":1, "Datos_del_Declarante.nombre":1, "Datos_del_Declarante.Apellido_Paterno":1, "Datos_del_Declarante.Apellido_Materno":1,"Fecha_de_la_Declaracion":1})
         data = []
         
         for par in query:
