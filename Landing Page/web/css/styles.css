@@ -43,8 +43,7 @@ Colors:
 /******************************/
 /*     01. General Styles     */
 /******************************/
-body,
-html {
+body, html {
     width: 100%;
 	height: 100%;
 }
