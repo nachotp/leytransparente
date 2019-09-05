@@ -5,22 +5,11 @@
 ```python
 client = pymongo.MongoClient("mongodb+srv://admin:leytransparente@leytransparente-m6y51.mongodb.net/test?retryWrites=true&w=majority")
 ```
-## VM Amazon
-To access your instance:
-Locate your private key file (leytransparente.pem). The wizard automatically detects the key you used to launch the instance.
+## Embeddings
 
-Your key must not be publicly viewable for SSH to work. Use this command if needed:
-```bash
-chmod 400 leytransparente.pem
-```
-Connect to your instance using its Public DNS:
-```
-ec2-54-214-127-118.us-west-2.compute.amazonaws.com
-```
-Example:
-```bash
-ssh -i "leytransparente.pem" ubuntu@ec2-54-214-127-118.us-west-2.compute.amazonaws.com
-```
-Please note that in most cases the username above will be correct, however please ensure that you read your AMI usage instructions to ensure that the AMI owner has not changed the default AMI username.
+*Word embeddings* de palabras en español [1] computados con [fastText](https://github.com/facebookresearch/fastText). Hay tres archivos de distintos tamaños. Actualmente usando el 855K
 
-If you need any assistance connecting to your instance, please see our connection documentation.
+- 100K vectores (94 MB): [http://dcc.uchile.cl/~jperez/word-embeddings/fasttext-sbwc.100k.vec.gz](http://dcc.uchile.cl/~jperez/word-embeddings/fasttext-sbwc.100k.vec.gz)
+- 300K vectores (281 MB): [http://dcc.uchile.cl/~jperez/word-embeddings/fasttext-sbwc.300k.vec.gz](http://dcc.uchile.cl/~jperez/word-embeddings/fasttext-sbwc.300k.vec.gz)
+- *855K vectores (801 MB)*: [http://dcc.uchile.cl/~jperez/word-embeddings/fasttext-sbwc.vec.gz](http://dcc.uchile.cl/~jperez/word-embeddings/fasttext-sbwc.vec.gz)
+
