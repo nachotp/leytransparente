@@ -303,7 +303,11 @@ class ConflictoListView(TemplateView):
         data = []
 
         for conf in query:
+            print(conf["ley"])
             url_ley = self.leyes.find_one({"numero": conf["ley"]})
+            if url_ley == None:
+                url_ley={}
+                url_ley["url"]="#"
             dic = {
                 "ley": conf["ley"],
                 "nombre_ley": conf["nombre_ley"],
