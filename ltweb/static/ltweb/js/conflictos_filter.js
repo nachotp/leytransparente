@@ -62,7 +62,7 @@ const conflictosVue = {
                     <b-card-text>
                         <b-list-group flush>
                             <b-list-group-item v-bind="listItem"><b>Ley Nº : </b>
-                            <b-link class="card-link">[[conflicto.ley]]</b-link>
+                            <b-link :href="conflicto.url" class="card-link">[[conflicto.ley]]</b-link>
                             </b-list-group-item>
                             <b-list-group-item v-bind="listItem"><b>Nombre de Ley : </b>[[conflicto.nombre_ley|capitalize]]</b-list-group-item>
                             <b-list-group-item v-bind="listItem"><b>Motivo : </b>[[conflicto.prov_conf|capitalize]]</b-list-group-item>
