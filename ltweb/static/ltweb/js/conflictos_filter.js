@@ -57,7 +57,7 @@ const conflictosVue = {
                 <b-card style="margin-top: 20px;" no-body header=" " :header-bg-variant="conflicto.grado == 'leve' ? 'warning' : 'danger' ">
     
                 <b-card-body style="padding-bottom: 0px; padding-top: 12px">
-                    <a href="/'Ver Declaracion' id=conflicto.id_parlamentario %}"><h4>[[ conflicto.parlamentario ]]</h4></a>
+                    <a :href=" '/ver/' + conflicto.id_parlamentario"><h4>[[ conflicto.parlamentario ]]</h4></a>
                     <h4>[[conflicto.partido]]</h4>
                     <b-card-text>
                         <b-list-group flush>
