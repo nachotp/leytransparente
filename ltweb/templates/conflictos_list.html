@@ -1,30 +1,24 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block body_end %}
+    <script type="text/x-template" id="conflictosVue"></script>
+    <script src="{% static 'lib/vuex/vuex.js' %}"></script>
+    <script src="{% static 'ltweb/js/conflictos_filter.js' %}"></script>
+{% endblock %}
+
+<script>
+{% block vue_dependencies %}
+    const DEPS = {'conflictos-vue': conflictosVue};
+{% endblock %}
+</script>
 
 {% block content %}
 
 {% if conflictos %}
-    <b-container class="bv-example-row">  
-        <b-row>  
-                <b-col class = ml-auto>
-                    <h4>Conflictos Existentes</h4>
-                        {% for conflicto in conflictos%}
-                            <b-card bg-variant="Light" header= " " header-text-variant="white" header-bg-variant="danger"> 
-                                <a class="" href="{% url 'Ver Declaracion' id=conflicto.id %}"><h4>{{ conflicto.nombre }}</h4></a>
-                                <b-card-text>
-                                    <b-list-group flush>
-                                        <b-list-group-item><b>Ley : </b>{{conflicto.ley}}</b-list-group-item>
-                                        <b-list-group-item><b>Razón : </b>{{conflicto.razon}}</b-list-group-item>
-                                        <b-list-group-item><b>Grado de Conflicto : </b>{{conflicto.grado}}%</b-list-group-item>
-                                    </b-list-group>
-                                    <br>
-                                </b-card-text>
-                            </b-card>
-                            <br>
-                        {% endfor %}
-                </b-col>
-    </b-row>
-</b-container>
-
+<body data='{{ conflictos }}'>
+    <conflictos-vue></conflictos-vue>
+</body>
 {% else %}
     <h1>No se han encontrado conflictos de interes.</h1>
 {% endif %}

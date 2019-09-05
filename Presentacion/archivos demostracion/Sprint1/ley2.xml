@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><Norma SchemaVersion="1.0" derogado="no derogado" esTratado="no tratado" fechaVersion="2017-05-26" normaId="1103244" xmlns="http://www.leychile.cl/esquemas" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.leychile.cl/esquemas EsquemaIntercambioNorma-v1-0.xsd">
+  <Identificador fechaPublicacion="2017-05-26">
+    <TiposNumeros>
+      <TipoNumero>
+        <Tipo>Ley</Tipo>
+        <Numero>654321</Numero>
+      </TipoNumero>
+    </TiposNumeros>
+    <Organismos>
+      <Organismo>MINISTERIO DE ENERGIA</Organismo>
+      <Organismo>SUBSECRETARIA DE ELECTRICIDAD</Organismo>
+    </Organismos>
+  </Identificador>
+  <Metadatos>
+    <TituloNorma>REGULACION DE MEDIDORES INTELIGENTES ACORDE A LA LEY 21.076</TituloNorma>
+    <Materias>
+      <Materia>Electricidad</Materia>
+      <Materia>Energia</Materia>
+      <Materia>Medidores Inteligentes</Materia>
+      <Materia>Enel</Materia>
+      <Materia>Enel Distribucion</Materia>
+    </Materias>
+    <NumeroFuente>41767</NumeroFuente>
+    <Resumenes>
+      <Resumen idioma="Espa&#241;ol">La presente ley busca regular la instalacion de los nuevos sistemas de medicion inteligente, para que todas las casas posean el suyo segun la ley.</Resumen>
+    </Resumenes>
+    <CategoriasNorma>
+      <CategoriaNorma>Publicidad y venta de inmuebles</CategoriaNorma>
+    </CategoriasNorma>
+    <Observaciones>
+      <Observacion>CVE 1219443</Observacion>
+    </Observaciones>
+    <Fuente>Diario Oficial</Fuente>
+  </Metadatos>
+  <Encabezado derogado="no derogado" fechaVersion="2017-05-26">
+    <Texto>
+LEY N&#218;M. 21.014
+ 
+EXIGE INCORPORAR A LOS CONTRATOS DE COMPRAVENTA DE INMUEBLES SU SUPERFICIE TOTAL Y &#218;TIL, Y DE TERRAZAS BODEGAS Y ESTACIONAMIENTOS
+ 
+     Teniendo presente que el H. Congreso Nacional ha dado su aprobaci&#243;n al siguiente proyecto de ley originado en moci&#243;n de los H. Diputados se&#241;ores Jos&#233; Antonio Kast Rist, Ignacio Urrutia Bonilla y Felipe Ward Edwards, de las H. Diputadas se&#241;oras Claudia Nogueira Fern&#225;ndez y Marisol Turres Figueroa, las exdiputadas se&#241;oras Mar&#237;a Ang&#233;lica Cristi Marfil y Marta Isasi Barbieri, y los exdiputados se&#241;ores Sergio Correa De la Cerda, Juan Lobos Krause y Dar&#237;o Paya Mira,
+ 
+     Proyecto de ley:</Texto>
+  </Encabezado>
+  <Url>http://www.leychile.cl/Navegar?idNorma=1103244</Url>
+</Norma>
