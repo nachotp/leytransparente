@@ -2,13 +2,13 @@ import json
 from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import TemplateView
-from pymongo import *
 from bs4 import BeautifulSoup
 from bson.objectid import ObjectId
 
 from ltweb import conflict_detection as confd
 from .conn import DBconnection
 from datetime import datetime
+
 
 class HomeView(TemplateView):
     template_name = "home.html"
@@ -23,11 +23,11 @@ class ViewDeclaracion(TemplateView):
         # Eso es get, para que sea más seguro, usar POST
         ctx = super().get_context_data()
         ctx['id'] = self.kwargs['id']
-        
+
         query = self.mycol.find_one({"_id": ObjectId(ctx['id'])})
         query.pop('_id')
         ctx['declaracion'] = json.dumps(query)
-        
+
         return ctx
 
 
@@ -42,7 +42,7 @@ class SubirDeclaracionView(View):
         return render(request, self.template_name, self.context)
 
     def post(self, request, *args, **kwargs):
-        
+
         L = ''
         contador = 0
 
@@ -57,23 +57,27 @@ class SubirDeclaracionView(View):
 
         dic = json.loads(L)
         dic["meta"] = {}
-        dic["meta"]["actual"]=True
+        dic["meta"]["actual"] = True
 
-        query = self.mycol.find_one({"Datos_del_Declarante.nombre":dic["Datos_del_Declarante"]["nombre"], 
-                                    "Datos_del_Declarante.Apellido_Paterno":dic["Datos_del_Declarante"]["Apellido_Paterno"], 
-                                    "Datos_del_Declarante.Apellido_Materno":dic["Datos_del_Declarante"]["Apellido_Materno"],
-                                    "meta.actual":True})
-        
-        if query == None: # inserta automaticamente porque no existe nadie.
+        query = self.mycol.find_one({"Datos_del_Declarante.nombre": dic["Datos_del_Declarante"]["nombre"],
+                                     "Datos_del_Declarante.Apellido_Paterno": dic["Datos_del_Declarante"][
+                                         "Apellido_Paterno"],
+                                     "Datos_del_Declarante.Apellido_Materno": dic["Datos_del_Declarante"][
+                                         "Apellido_Materno"],
+                                     "meta.actual": True})
+
+        if query == None:  # inserta automaticamente porque no existe nadie.
             dic["partido"] = 'null'
-            #x=self.mycol.insert(dic)
+            # x=self.mycol.insert(dic)
 
-        else: # actualiza el registri por los datos contenidos en el JSON
-            if(dic["Fecha_de_la_Declaracion"] >= query["Fecha_de_la_Declaracion"]):
-                self.mycol.update({"Datos_del_Declarante.nombre":dic["Datos_del_Declarante"]["nombre"], 
-                                    "Datos_del_Declarante.Apellido_Paterno":dic["Datos_del_Declarante"]["Apellido_Paterno"], 
-                                    "Datos_del_Declarante.Apellido_Materno":dic["Datos_del_Declarante"]["Apellido_Materno"],
-                                    "meta.actual":True}, { "$set": {"meta.actual": False}})
+        else:  # actualiza el registri por los datos contenidos en el JSON
+            if dic["Fecha_de_la_Declaracion"] >= query["Fecha_de_la_Declaracion"]:
+                self.mycol.update({"Datos_del_Declarante.nombre": dic["Datos_del_Declarante"]["nombre"],
+                                   "Datos_del_Declarante.Apellido_Paterno": dic["Datos_del_Declarante"][
+                                       "Apellido_Paterno"],
+                                   "Datos_del_Declarante.Apellido_Materno": dic["Datos_del_Declarante"][
+                                       "Apellido_Materno"],
+                                   "meta.actual": True}, {"$set": {"meta.actual": False}})
                 dic["partido"] = query["partido"]
         x = self.mycol.insert(dic)
 
@@ -89,16 +93,22 @@ class DiputadosListView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        query = self.mycol.find({"meta.actual":True}, {"_id":1, "Datos_del_Declarante.nombre":1, "Datos_del_Declarante.Apellido_Paterno":1, "Datos_del_Declarante.Apellido_Materno":1,"Fecha_de_la_Declaracion":1, "partido":1})
+        query = self.mycol.find({"meta.actual": True},
+                                {"_id": 1, "Datos_del_Declarante.nombre": 1, "Datos_del_Declarante.Apellido_Paterno": 1,
+                                 "Datos_del_Declarante.Apellido_Materno": 1, "Fecha_de_la_Declaracion": 1,
+                                 "partido": 1})
         data = []
-        
+
         for par in query:
-            #print(par)
-            dic = {'id':par["_id"],
-                    'nombres': par['Datos_del_Declarante']['nombre'],
+            # print(par)
+            dic = {'id': par["_id"],
+                   'nombres': par['Datos_del_Declarante']['nombre'],
                    'apellido_paterno': par['Datos_del_Declarante']['Apellido_Paterno'],
                    'apellido_materno': par['Datos_del_Declarante']['Apellido_Materno'],
-                   'fecha_declaracion': par['Fecha_de_la_Declaracion'][8:10]+"/"+par['Fecha_de_la_Declaracion'][5:7]+"/"+par['Fecha_de_la_Declaracion'][:4],
+                   'fecha_declaracion': par['Fecha_de_la_Declaracion'][8:10] + "/" + par['Fecha_de_la_Declaracion'][
+                                                                                     5:7] + "/" + par[
+                                                                                                      'Fecha_de_la_Declaracion'][
+                                                                                                  :4],
                    'partido': par['partido']}
             data.append(dic)
 
@@ -130,42 +140,43 @@ class SubirLeyView(View):
             else:
                 contador += 1
         """SEGMENTO AGREGADO EN BASE AL TRABAJO DE OBTENCION DE DATOS"""
-        dic={}
+        dic = {}
         soup = BeautifulSoup(L, "html.parser")
 
-        if (len(soup.findAll("tipo")) > 0):
+        if len(soup.findAll("tipo")) > 0:
             tipo = soup.findAll("tipo")[0].text
-        elif (len(soup.findAll("Tipo")) > 0):
+        elif len(soup.findAll("Tipo")) > 0:
             tipo = soup.findAll("Tipo")[0].text
         else:
             tipo = ""
 
-        if (tipo == "Ley"):  # condicion para filtrar decreto, codigo, ley, etc
+        if tipo == "Ley":  # condicion para filtrar decreto, codigo, ley, etc
             numero = soup.findAll("numero")[0].text  # obtener el numero de la ley
             nombre = soup.findAll("titulonorma")[0].text
 
             lista_tags = []
 
             materias = ""
-            if (len(soup.findAll("materia")) > 0):
+            if len(soup.findAll("materia")) > 0:
                 materias = "materia"
-            elif (len(soup.findAll("materias"))):
+            elif len(soup.findAll("materias")):
                 materias = "materias"
-            elif (len(soup.findAll("Materia"))):
+            elif len(soup.findAll("Materia")):
                 materias = "Materias"
-            elif (len(soup.findAll("Materias"))):
+            elif len(soup.findAll("Materias")):
                 materias = "Materias"
             for tag in soup.findAll(materias):
                 lista_tags.append(tag.text.strip())  # almacenar los tags en una lista
 
-            if(len(soup.findAll("url")) > 0):
-                url_ley = soup.findAll("url")[0].text  # guardar la url de la ley para mostrarla en caso que sea necesario
+            if len(soup.findAll("url")) > 0:
+                url_ley = soup.findAll("url")[
+                    0].text  # guardar la url de la ley para mostrarla en caso que sea necesario
             else:
-                url_ley=""
+                url_ley = ""
 
-            if (len(soup.findAll("resumen")) > 0):
+            if len(soup.findAll("resumen")) > 0:
                 resumen = soup.findAll("resumen")[0].text
-            elif (len(soup.findAll("Resumen")) > 0):
+            elif len(soup.findAll("Resumen")) > 0:
                 resumen = soup.findAll("Resumen")[0].text
             else:
                 resumen = "Resumen no disponible"
@@ -183,8 +194,8 @@ class SubirLeyView(View):
                 print("problemas agregando la ley a la base")
 
         """SEGMENTO AGREGADO EN BASE AL TRABAJO DE OBTENCION DE DATOS"""
-        #matches = confd.conflicto_patrimonio(lista_tags)
-        return redirect('Conflictos', ley = numero)
+        # matches = confd.conflicto_patrimonio(lista_tags)
+        return redirect('Conflictos', ley=numero)
 
 
 class LeyesListView(TemplateView):
@@ -203,8 +214,8 @@ class LeyesListView(TemplateView):
             dic = {'numero': par['numero'],
                    'nombre': par['nombre'],
                    'resumen': par['resumen'],
-                   'url' : par["url"],
-                   'tags' : par["tags"]}
+                   'url': par["url"],
+                   'tags': par["tags"]}
             data.append(dic)
 
         context['leyes'] = data
@@ -247,18 +258,17 @@ class ConflictoView(TemplateView):
                    "id_declaracion": conflicto[3],
                    "parlamentario": conflicto[2]
                    }
-            query = self.decl.find_one({"_id":conflicto[3]})
-            dic["partido"]=query["partido"]
+            query = self.decl.find_one({"_id": conflicto[3]})
+            dic["partido"] = query["partido"]
             dic["pariente"] = 'null'
-            dic["meta"]={}
-            dic["meta"]["Fecha"]= datetime.today()
+            dic["meta"] = {}
+            dic["meta"]["Fecha"] = datetime.today()
 
-
-            dic["razon"]={}
+            dic["razon"] = {}
             dic["razon"]["prov_conf"] = "acciones"
             dic["razon"]["motivo"] = conflicto[4]["Nombre_Razon_Social"]
 
-            if conflicto[0] > 0.6:
+            if conflicto[0] * conflicto[1] > 100:
                 high.append(conflicto)
                 dic["grado"] = "grave"
             else:
@@ -269,7 +279,7 @@ class ConflictoView(TemplateView):
                 continue
             diclist.append(dic)
 
-        if (len(diclist)>0):
+        if len(diclist) > 0:
             x = self.confl.insert_many(diclist)
 
         ctx["high"] = high
@@ -302,12 +312,12 @@ class ConflictoListView(TemplateView):
                 "motivo": conf["razon"]["motivo"]
             }
 
-            if(conf["pariente"] != None):
+            if conf["pariente"] is not None:
                 dic["pariente"] = conf["pariente"]
 
             data.append(dic)
 
-        #print(data)
+        # print(data)
         context["conflictos"] = json.dumps(data)
         print(context["conflictos"])
         return context
