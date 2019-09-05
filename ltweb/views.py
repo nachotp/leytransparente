@@ -308,6 +308,9 @@ class ConflictoListView(TemplateView):
             if url_ley == None:
                 url_ley={}
                 url_ley["url"]="#"
+            if conf["partido"] == None:
+                conf["partido"] ="Sin información"
+
             dic = {
                 "ley": conf["ley"],
                 "nombre_ley": conf["nombre_ley"],
