@@ -132,3 +132,4 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (os.path.join("ltweb", 'static'),)
+TOOLS_DIR = os.path.join("ltweb", 'tools')
