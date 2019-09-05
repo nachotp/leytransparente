@@ -1,8 +1,15 @@
 {%  load static %}
+
+{% block body_end %}
+
+    <link rel="stylesheet" href="{% static 'ltweb/style.css' %}">
+
+{% endblock %}
+
 <div>
     
     <div>
-      <b-navbar toggleable="lg" type="dark" variant="dark">
+      <b-navbar toggleable="lg" type="dark" variant="dark" class="nav-menu">
           <b-navbar-brand href="{% url "Home" %}">
               <img  src="{% static "ltweb/img/logo2.png" %}" class="d-inline-block align-top" width="300px">
           </b-navbar-brand>
@@ -10,8 +17,9 @@
     
         <b-collapse id="nav-collapse" is-nav>
           <b-navbar-nav>
-            <b-nav-item href="{% url "Lista Diputados" %}">Diputados</b-nav-item>
-            <b-nav-item href="{% url "Lista Leyes" %}">Proyectos de Ley</b-nav-item>
+            <b-nav-item href="{% url "Lista Diputados" %}" class="nav-menu-item">Diputados</b-nav-item>
+            <b-nav-item href="{% url "Lista Leyes" %}" class="nav-menu-item">Proyectos de Ley</b-nav-item>
+            <b-nav-item href="{% url "Lista Conflictos" %}" class="nav-menu-item">Conflictos</b-nav-item>
           </b-navbar-nav>
         </b-collapse>
       </b-navbar>

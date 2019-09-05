@@ -1,11 +1,20 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block body_end %}
+
+    <link rel="stylesheet" href="{% static 'ltweb/style.css' %}">
+
+{% endblock %}
 
 {% block content %}
-
 {% if nombre_ley %}
-    <b-container class="bv-example-row">  
+    <b-container class="bv-example-row mb-4">
 
-            <b-card bg-variant="light" text-variant="dark" title="Ley N°{{nro_ley}}" class="text-center">
+            <b-card bg-variant="light" text-variant="dark"  class="text-center">
+                <b-card-title>
+                    <a href="{{ url_ley }}">Ley N°{{nro_ley}}</a>
+                </b-card-title>
             <b-card-text>
                 {{nombre_ley}}
             </b-card-text>
@@ -14,7 +23,7 @@
                 </b-list-group>
             </b-card>
     </b-container>
-    <br>
+
     {% if conflictos %}
     <b-container class="bv-example-row">
         <b-row>
@@ -60,6 +69,57 @@
                         </div>
                     </b-card>
                     <br>
+
+    <b-container class="bv-example-row">
+
+        <b-row style="justify-content: center"><h4>Conflictos Graves</h4></b-row>
+
+        <b-row>
+        {% for diputado in high%}
+            <b-col class="col-6">
+                <b-card class="mb-3" header=" " header-bg-variant="danger">
+                    <a href="{% url 'Ver Declaracion' id=diputado.3 %}"><h4>{{ diputado.2 }}</h4></a>
+                    <b-list-group flush>
+                        <b-list-group-item class="conflictViewListItem"><b>Nombre Razon Social : </b>{{diputado.4.Nombre_Razon_Social|title}}</b-list-group-item>
+                        <b-list-group-item class="conflictViewListItem"><b>Porcentaje Propiedad : </b>{{diputado.4.Cantidad_Porcentaje|title}}%</b-list-group-item>
+                    </b-list-group>
+                    <br>
+                    <div class="bg-default text-dark text-center">
+                        <b>
+                            {% if diputado.4.Tiene_Calidad_Controlador == "false" %}
+                                NO
+                            {% else %}
+                                SI
+                            {% endif %}
+                            </b> tiene calidad de controlador
+                    </div>
+                </b-card>
+            </b-col>
+        {% endfor %}
+        </b-row>
+
+        <b-row style="justify-content: center"><h4>Conflictos Leves</h4></b-row>
+
+        <b-row>
+        {% for diputado in low%}
+            <b-col class="col-6">
+                <b-card class="mb-3" header=" " header-bg-variant="warning">
+                    <a href="{% url 'Ver Declaracion' id=diputado.3 %}"><h4>{{ diputado.2 }}</h4></a>
+                    <b-list-group flush>
+                        <b-list-group-item class="conflictViewListItem"><b>Razón Social : </b>{{diputado.4.Nombre_Razon_Social|title}}</b-list-group-item>
+                        <b-list-group-item class="conflictViewListItem"><b>Porcentaje Propiedad : </b>{{diputado.4.Cantidad_Porcentaje|title}}%</b-list-group-item>
+                    </b-list-group>
+                    <br>
+                    <div class="bg-default text-dark text-center" style="align-content: stretch">
+                        {% if diputado.4.Tiene_Calidad_Controlador == "false"%}
+                            <b>NO </b> tiene calidad de controlador
+                        {% elif diputado.4.Tiene_Calidad_Controlador == "true"%}
+                            <b>SI </b> tiene calidad de controlador
+                        {%else%}
+                            <b>{{diputado.4.Tiene_Calidad_Controlador}}</b> tiene calidad de controlador
+                        {%endif%}
+                    </div>
+                </b-card>
             </b-col>
             {% endfor %}
         </b-row>
