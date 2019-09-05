@@ -48,7 +48,7 @@ const conflictosVue = {
                             <b-list-group-item v-bind="listItem"><b>Ley Nº : </b>[[conflicto.ley]]</b-list-group-item>
                             <b-list-group-item v-bind="listItem"><b>Nombre de Ley : </b>[[conflicto.nombre_ley|capitalize]]</b-list-group-item>
                             <b-list-group-item v-bind="listItem"><b>Motivo : </b>[[conflicto.prov_conf|capitalize]]</b-list-group-item>
-                            <b-list-group-item v-bind="listItem"><b>Patrimonio en conflicto : </b>[[conflicto.motivo|capitalize]]</b-list-group-item>
+                            <b-list-group-item v-bind="listItem"><b>Patrimonio relacionado : </b>[[conflicto.motivo|capitalize]]</b-list-group-item>
                             <b-list-group-item v-bind="listItem"><b>Grado de Conflicto : </b>[[conflicto.grado|capitalize]]</b-list-group-item>
                         </b-list-group>
                     </b-card-text>

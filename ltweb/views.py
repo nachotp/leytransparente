@@ -240,6 +240,8 @@ class ConflictoView(TemplateView):
         diclist = []
 
         for conflicto in conflictos:
+            duplicado = self.confl.find_one({"ley":ley , "id_declaracion": conflicto[3]})
+
             dic = {"ley": ley,
                    "nombre_ley": ctx["nombre_ley"],
                    "id_declaracion": conflicto[3],
@@ -262,6 +264,9 @@ class ConflictoView(TemplateView):
             else:
                 low.append(conflicto)
                 dic["grado"] = "leve"
+
+            if duplicado != None:
+                continue
             diclist.append(dic)
 
         if (len(diclist)>0):
