@@ -31,7 +31,7 @@
         {% for diputado in high%}
             <b-col class="col-6">
                 <b-card class="mb-3" header=" " header-bg-variant="danger">
-                    <a href="{% url 'Ver Declaracion' id=diputado.3 %}"><h4>{{ diputado.1 }}</h4></a>
+                    <a href="{% url 'Ver Declaracion' id=diputado.3 %}"><h4>{{ diputado.2 }}</h4></a>
                     <b-list-group flush>
                         <b-list-group-item class="conflictViewListItem"><b>Nombre Razon Social : </b>{{diputado.4.Nombre_Razon_Social}}</b-list-group-item>
                         <b-list-group-item class="conflictViewListItem"><b>Porcentaje Propiedad : </b>{{diputado.4.Cantidad_Porcentaje}}%</b-list-group-item>
