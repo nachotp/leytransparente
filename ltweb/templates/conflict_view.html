@@ -38,7 +38,13 @@
                     </b-list-group>
                     <br>
                     <div class="bg-default text-dark text-center">
-                        <b>{{diputado.4.Tiene_Calidad_Controlador}}</b> tiene calidad de controlador
+                        <b>
+                            {% if diputado.4.Tiene_Calidad_Controlador == "false" %}
+                                NO
+                            {% else %}
+                                SI
+                            {% endif %}
+                            </b> tiene calidad de controlador
                     </div>
                 </b-card>
             </b-col>
