@@ -37,7 +37,7 @@ const conflictosVue = {
         
         <b-row>
             <!--Se muestran todos los conflictos-->
-            <b-col v-for="(conflicto, index) in filterConflictosLey" :key="index" class="cols-6">
+            <b-col v-for="(conflicto, index) in filterConflictosLey" :key="index" cols="6">
                 <b-card style="margin-top: 20px;" no-body header=" " :header-bg-variant="conflicto.grado == 'leve' ? 'warning' : 'danger' ">
     
                 <b-card-body style="padding-bottom: 0px; padding-top: 12px">
