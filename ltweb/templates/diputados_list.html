@@ -11,10 +11,10 @@
 {% block content %}
 <b-row>
     <b-col>
-        <h2>Declaraciones de Diputados</h2>
+        <h2>Diputados</h2>
     </b-col>
     <b-col>
-        <b-button v-b-modal.my-modal size="lg" variant="primary" class="mb-3 float-right"><i class="fas fa-file-upload"></i> <b>Subir Declaracion</b></b-button>
+        <b-button v-b-modal.my-modal size="lg" variant="primary" class="mb-3 float-right"><i class="fas fa-file-upload"></i> <b>Subir Declaración</b></b-button>
 
         <b-modal id="my-modal" title="Nueva Declaración de Patrimonio" hide-footer>
             <form name='load_file_form' method='POST' action="{% url 'Subir declaracion' %}" enctype="multipart/form-data">
@@ -41,9 +41,9 @@
                 <tr>
                     <td>Nombre</td>
                     <td>Apellido Paterno</td>
-                    <td>Apellidos Materno</td>
-                    <td>Fecha Declaracion</td>
+                    <td>Apellido Materno</td>
                     <td>Partido Político</td>
+                    <td>Fecha Declaración</td>
                     <td></td>
                 </tr>
             </thead>
@@ -54,12 +54,12 @@
                     <td>{{ diputado.nombres|title }}</td>
                     <td>{{ diputado.apellido_paterno|title }}</td>
                     <td>{{ diputado.apellido_materno|title }}</td>
-                    <td>{{ diputado.fecha_declaracion }}</td>
                     <td>{% if diputado.partido == None  %}
                             Sin información
                         {% else %}
                             {{ diputado.partido }}
                         {% endif %}</td>
+                    <td>{{ diputado.fecha_declaracion }}</td>
                     <td class="align-middle">
                         <div class="text-center">
                             <a class="" href="{% url 'Ver Declaracion' id=diputado.id %}" >Ver Declaración</a>

@@ -11,15 +11,15 @@
 {% if nombre_ley %}
     <b-container class="bv-example-row mb-4">
 
-            <b-card bg-variant="light" text-variant="dark"  class="text-center">
+            <b-card bg-variant="light" text-variant="dark" class="justify-content-start">
                 <b-card-title>
                     <a href="{{ url_ley }}">Ley N°{{nro_ley}}</a>
                 </b-card-title>
-            <b-card-text>
-                {{nombre_ley}}
-            </b-card-text>
-            <b-list-group flush>
-                    <b-list-group-item class="bg-light">Resumen: {{desc_ley}}</b-list-group-item >
+                <b-card-text>
+                    {{nombre_ley}}
+                </b-card-text>
+                <b-list-group flush>
+                    <b-list-group-item class="conflictViewListItem" class="bg-light">Resumen: {{desc_ley}}</b-list-group-item >
                 </b-list-group>
             </b-card>
     </b-container>
@@ -82,7 +82,11 @@
 </b-container>
 
 {% else %}
-    <h1>No se han encontrado conflictos de interes.</h1>
+    <b-row>
+        <b-col>
+            <h1>No se han encontrado conflictos de interés.</h1>
+        </b-col>
+    </b-row>
 {% endif %}
 {%else%}
     <h1>No se ha encontrado la ley.</h1>

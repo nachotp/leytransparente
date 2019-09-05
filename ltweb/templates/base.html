@@ -32,17 +32,53 @@
   {% block body_end %}
     {# Mostly for scripts that should go after the content and after the vue.js script tag #}
   {% endblock body_end %}
-  <script>
-    {% block vue_dependencies %}
-      const DEPS = {};
-    {% endblock %}
-  </script>
+    <script>
+        {% block vue_dependencies %}
+            const DEPS = {};
+        {% endblock %}
+    </script>
 
     <script>
         window.app = new Vue({
             el: '#app',
-            data: {},
-            computed: {},
+            data() {
+                return {
+                    actualPage: '',
+                }
+            },
+            computed: {
+                toConflictos: function () {
+                    this.actualPage = 'Conflictos';
+                    return '';
+                },
+                toDiputados: function(){
+                    this.actualPage = 'Diputados';
+                    return '';
+                },
+                toProyLey: function(){
+                    this.actualPage = 'ProyLey';
+                    return '';
+                },
+
+                inConflictos: function () {
+                    if (this.actualPage === 'Conflictos')
+                        return 'active';
+                    else
+                        return '';
+                },
+                inDiputados: function () {
+                    if (this.actualPage === 'Diputados')
+                        return 'active';
+                    else
+                        return '';
+                },
+                inProyLey: function () {
+                    if (this.actualPage === 'ProyLey')
+                        return 'active';
+                    else
+                        return '';
+                }
+            },
             components: DEPS
         })
     </script>

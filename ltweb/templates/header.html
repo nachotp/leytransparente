@@ -17,9 +17,9 @@
     
         <b-collapse id="nav-collapse" is-nav>
           <b-navbar-nav>
-            <b-nav-item href="{% url "Lista Diputados" %}" class="nav-menu-item">Diputados</b-nav-item>
-            <b-nav-item href="{% url "Lista Leyes" %}" class="nav-menu-item">Proyectos de Ley</b-nav-item>
-            <b-nav-item href="{% url "Lista Conflictos" %}" class="nav-menu-item">Conflictos</b-nav-item>
+            <b-nav-item href="{% url "Lista Diputados" %}" class="nav-menu-item" :class="inDiputados">Diputados</b-nav-item>
+            <b-nav-item href="{% url "Lista Leyes" %}" class="nav-menu-item" :class="inProyLey">Proyectos de Ley</b-nav-item>
+            <b-nav-item href="{% url "Lista Conflictos" %}" class="nav-menu-item" :class="inConflictos">Conflictos</b-nav-item>
           </b-navbar-nav>
         </b-collapse>
       </b-navbar>
