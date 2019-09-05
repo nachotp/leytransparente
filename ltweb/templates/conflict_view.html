@@ -11,7 +11,10 @@
 {% if nombre_ley %}
     <b-container class="bv-example-row mb-4">
 
-            <b-card bg-variant="light" text-variant="dark" title="Ley N°{{nro_ley}}" class="text-center">
+            <b-card bg-variant="light" text-variant="dark"  class="text-center">
+                <b-card-title>
+                    <a href="{{ url_ley }}">Ley N°{{nro_ley}}</a>
+                </b-card-title>
             <b-card-text>
                 {{nombre_ley}}
             </b-card-text>

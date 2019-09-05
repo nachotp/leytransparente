@@ -233,7 +233,7 @@ class ConflictoView(TemplateView):
         ctx = super().get_context_data()
         ley = self.kwargs['ley']
         print(f"Buscando Ley {ley}")
-        tags_ley = self.leyes.find_one({"numero": ley}, {"tags": 1, "nombre": 1, "resumen": 1})
+        tags_ley = self.leyes.find_one({"numero": ley}, {"tags": 1, "nombre": 1, "resumen": 1, "url": 1})
 
         if tags_ley is None:
             return ctx
@@ -242,6 +242,7 @@ class ConflictoView(TemplateView):
         ctx["nro_ley"] = ley
         ctx["nombre_ley"] = tags_ley["nombre"]
         ctx["desc_ley"] = tags_ley["resumen"]
+        ctx["url_ley"] = tags_ley["url"]
         high = []
         low = []
         conflictos = confd.conflicto_embedding(list(tags_ley["tags"]))
@@ -293,6 +294,7 @@ class ConflictoListView(TemplateView):
     template_name = 'conflictos_list.html'
     conn = DBconnection()
     confl = conn.get_collection("conflictos")
+    leyes = conn.get_collection("leyes")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -301,6 +303,7 @@ class ConflictoListView(TemplateView):
         data = []
 
         for conf in query:
+            url_ley = self.leyes.find_one({"numero": conf["ley"]})
             dic = {
                 "ley": conf["ley"],
                 "nombre_ley": conf["nombre_ley"],
@@ -309,7 +312,8 @@ class ConflictoListView(TemplateView):
                 "partido": conf["partido"],
                 "grado": conf["grado"],
                 "prov_conf": conf["razon"]["prov_conf"],
-                "motivo": conf["razon"]["motivo"]
+                "motivo": conf["razon"]["motivo"],
+                "url": url_ley["url"]
             }
 
             if conf["pariente"] is not None:
