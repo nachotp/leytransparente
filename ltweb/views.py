@@ -8,6 +8,7 @@ from bson.objectid import ObjectId
 
 from ltweb import conflict_detection as confd
 from .conn import DBconnection
+from datetime import datetime
 
 class HomeView(TemplateView):
     template_name = "home.html"
@@ -239,11 +240,21 @@ class ConflictoView(TemplateView):
         diclist = []
 
         for conflicto in conflictos:
-            dic = {"Ley": ley,
+            dic = {"ley": ley,
+                   "nombre_ley": ctx["nombre_ley"],
                    "id_declaracion": conflicto[3],
-                   "razon": conflicto[4],
-                   "nombre": conflicto[2]
+                   "parlamentario": conflicto[2]
                    }
+            query = self.decl.find_one({"_id":conflicto[3]})
+            dic["partido"]=query["partido"]
+            dic["pariente"] = 'null'
+            dic["meta"]={}
+            dic["meta"]["Fecha"]= datetime.today()
+
+
+            dic["razon"]={}
+            dic["razon"]["prov_conf"] = "acciones"
+            dic["razon"]["motivo"] = conflicto[4]["Nombre_Razon_Social"]
 
             if conflicto[0] > 0.6:
                 high.append(conflicto)
@@ -253,7 +264,8 @@ class ConflictoView(TemplateView):
                 dic["grado"] = "leve"
             diclist.append(dic)
 
-        #x = self.confl.insert_many(diclist)
+        if (len(diclist)>0):
+            x = self.confl.insert_many(diclist)
 
         ctx["high"] = high
         ctx["low"] = low
