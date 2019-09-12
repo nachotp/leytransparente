@@ -1,11 +1,16 @@
 language: python # => 1
-    python: # => 2
-      - "3.6"
-    services: # => 3
-      - mongodb
-    env: # => 4
-      -DJANGO=2.2
-    install: # => 5
-      - pip install -r requirements.txt
-    script: # => 7
-      - python manage.py test
+
+python: # => 2
+  - 3.6
+
+services: # => 3  
+  - mongodb
+
+env: # => 4
+  -DJANGO=2.2
+
+install: # => 5
+  - pip install -r requirements.txt
+
+script: # => 7
+  - python manage.py test
