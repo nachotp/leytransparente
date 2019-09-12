@@ -1,6 +1,7 @@
 .conflictViewListItem {
     padding-left: 0px;
-    justify-content: center;
+    padding-right: 0px;
+    background: none !important;
 }
 
 .nav-menu{

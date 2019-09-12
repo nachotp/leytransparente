@@ -6,7 +6,7 @@ const conflictosVue = {
     <b-container v-if="conflictos" class="bv-example-row">
         <b-row>
             <b-col class="ml-auto">
-            <h3>Conflictos Existentes</h3>
+            <h3>Conflictos</h3>
             </b-col>
         </b-row>
         
@@ -61,13 +61,13 @@ const conflictosVue = {
                     <h4>[[conflicto.partido]]</h4>
                     <b-card-text>
                         <b-list-group flush>
-                            <b-list-group-item v-bind="listItem"><b>Ley Nº : </b>
+                            <b-list-group-item v-bind="listItem"><b>Ley Nº: </b>
                             <b-link :href="conflicto.url" class="card-link">[[conflicto.ley]]</b-link>
                             </b-list-group-item>
-                            <b-list-group-item v-bind="listItem"><b>Nombre de Ley : </b>[[conflicto.nombre_ley|capitalize]]</b-list-group-item>
-                            <b-list-group-item v-bind="listItem"><b>Motivo : </b>[[conflicto.prov_conf|capitalize]]</b-list-group-item>
-                            <b-list-group-item v-bind="listItem"><b>Patrimonio relacionado : </b>[[conflicto.motivo|capitalize]]</b-list-group-item>
-                            <b-list-group-item v-bind="listItem"><b>Grado de Conflicto : </b>[[conflicto.grado|capitalize]]</b-list-group-item>
+                            <b-list-group-item v-bind="listItem"><b>Nombre de Ley: </b>[[conflicto.nombre_ley|capitalize]]</b-list-group-item>
+                            <b-list-group-item v-bind="listItem"><b>Motivo: </b>[[conflicto.prov_conf|capitalize]]</b-list-group-item>
+                            <b-list-group-item v-bind="listItem"><b>Patrimonio relacionado: </b>[[conflicto.motivo|capitalize]]</b-list-group-item>
+                            <b-list-group-item v-bind="listItem"><b>Grado de Conflicto: </b>[[conflicto.grado|capitalize]]</b-list-group-item>
                         </b-list-group>
                     </b-card-text>
                 </b-card-body>
