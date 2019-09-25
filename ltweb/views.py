@@ -17,6 +17,9 @@ from django.db import IntegrityError
 class HomeView(TemplateView):
     template_name = "home.html"
 
+class RegistroView(TemplateView):
+    template_name = "registro.html"
+
 
 class ViewDeclaracion(TemplateView):
     template_name = "ver.html"

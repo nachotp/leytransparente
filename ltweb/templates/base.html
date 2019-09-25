@@ -44,6 +44,13 @@
             data() {
                 return {
                     actualPage: '',
+                    form: {
+                        email: '',
+                        nombre: '',
+                        contrasena: '',
+                    },
+                    show: true
+
                 }
             },
             computed: {
@@ -57,6 +64,10 @@
                 },
                 toProyLey: function(){
                     this.actualPage = 'ProyLey';
+                    return '';
+                },
+                toRegistro: function(){
+                    this.actualPage = 'Registro';
                     return '';
                 },
 
@@ -77,6 +88,27 @@
                         return 'active';
                     else
                         return '';
+                },
+                inRegistro: function () {
+                    if (this.actualPage === 'Registro')
+                        return 'active';
+                    else
+                        return '';
+                }
+            },
+            methods: {
+                onSubmit: function (evt) {
+                    evt.preventDefault();
+                    alert(JSON.stringify(this.form))
+                },
+                onReset: function(evt) {
+                    evt.preventDefault();
+                    this.form.email = '';
+                    this.form.nombre = '';
+                    this.form.contrasena = '';
+                    this.$nextTick(() =>{
+                        this.show = true
+                    })
                 }
             },
             components: DEPS

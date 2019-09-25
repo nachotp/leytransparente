@@ -10,5 +10,6 @@ urlpatterns = [
     path(r'ver/<str:id>', views.ViewDeclaracion.as_view(), name='Ver Declaracion'),
     path(r'conflicto/<str:ley>', views.ConflictoView.as_view(), name='Conflictos'),
     path(r'conflictos',views.ConflictoListView.as_view(), name='Lista Conflictos'),
-    path(r'registrar',views.RegisterView.as_view(), name='Registrar'),
+    path(r'registro',views.RegistroView.as_view(), name='Registro de usuario'),
+
 ]
