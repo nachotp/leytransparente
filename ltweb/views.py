@@ -9,6 +9,10 @@ from ltweb import conflict_detection as confd
 from .conn import DBconnection
 from datetime import datetime
 
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
+from django.db import IntegrityError
+
 
 class HomeView(TemplateView):
     template_name = "home.html"
@@ -332,3 +336,36 @@ class ConflictoListView(TemplateView):
         context["conflictos"] = json.dumps(data)
         print(context["conflictos"])
         return context
+
+
+class RegisterView(View):
+    template_name = "base.html"
+    context = {}
+
+    def get(self, request, *args, **kwargs):
+        try:
+            print("Registrando...")
+            user = User.objects.create_user("username", "name@gmail.com", "test123")
+            user.first_name = "jose"
+            user.last_name = "canseco"
+            user.save()
+
+            return render(request, self.template_name, self.context)
+
+        except IntegrityError:
+            print("Usuario ya existe")
+            return render(request, self.template_name, self.context)
+
+
+    def post(self, request, *args, **kwargs):
+        print("Registrando...")
+        user = User.objects.create_user("username", "name@gmail.com", "test123")
+        user.first_name = "jose"
+        user.last_name = "canseco"
+        user.save()
+
+        return self.context
+
+
+
+
