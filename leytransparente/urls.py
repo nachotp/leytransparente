@@ -20,5 +20,6 @@ from ltweb.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include("ltweb.urls"))
+    path('', include("ltweb.urls")),
+    path('accounts/', include('django.contrib.auth.urls'))
 ]
