@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <b-container :class="toRegistro">
+        <form method="POST" action="{% url 'login' %}">
+            {%  csrf_token %}
+
+            {{ form.username.label_tag }}
+            {{ form.username }}
+
+            <br>
+            <br>
+
+            {{ form.password.label_tag }}
+            {{ form.password }}
+
+            <br>
+            <br>
+
+            {{ form.errors }}
+
+            <input type="submit" value="Ingresar">
+
+        </form>
+
+    </b-container>
+{% endblock %}

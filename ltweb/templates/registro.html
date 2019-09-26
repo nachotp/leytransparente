@@ -2,7 +2,7 @@
 
 {% block content %}
     <b-container :class="toRegistro">
-        <b-form v-if="show">
+        <b-form v-if="show" method='POST' action="{% url 'Registro de usuario' %}">
 
             <b-form-group label="Nombre:" label-for="textNombre">
                 <b-form-input id="textNombre"

@@ -12,7 +12,7 @@ from datetime import datetime
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.db import IntegrityError
-
+from django.contrib.auth.decorators import *
 
 class HomeView(TemplateView):
     template_name = "home.html"
