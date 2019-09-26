@@ -36,13 +36,18 @@ class RegistroView(View):
             return render(request, self.template_name, self.context)
 
     def post(self, request, *args, **kwargs):
-        print("Registrando...")
-        user = User.objects.create_user("username", "name@gmail.com", "test123")
-        user.first_name = "jose"
-        user.last_name = "canseco"
-        user.save()
+        try:
+            print("Registrando...")
+            user = User.objects.create_user("username", "name@gmail.com", "test123")
+            user.first_name = "jose"
+            user.last_name = "canseco"
+            user.save()
 
-        return self.context
+            return render(request, self.template_name, self.context)
+
+        except IntegrityError:
+            print("Usuario ya existe")
+            return render(request, self.template_name, self.context)
 
 
 class ViewDeclaracion(TemplateView):
