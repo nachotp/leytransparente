@@ -12,7 +12,8 @@ from datetime import datetime
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.db import IntegrityError
-from django.contrib.auth.decorators import *
+from django.contrib.auth.decorators import login_required
+
 
 class HomeView(TemplateView):
     template_name = "home.html"
@@ -22,18 +23,7 @@ class RegistroView(View):
     context = {}
 
     def get(self, request, *args, **kwargs):
-        try:
-            print("Registrando...")
-            user = User.objects.create_user("username", "name@gmail.com", "test123")
-            user.first_name = "jose"
-            user.last_name = "canseco"
-            user.save()
-
-            return render(request, self.template_name, self.context)
-
-        except IntegrityError:
-            print("Usuario ya existe")
-            return render(request, self.template_name, self.context)
+        return render(request, self.template_name, self.context)
 
     def post(self, request, *args, **kwargs):
         try:
