@@ -18,6 +18,13 @@ from django.contrib.auth.decorators import login_required
 class HomeView(TemplateView):
     template_name = "home.html"
 
+    def get(self, request, *args, **kwargs):
+        print(request.user.is_authenticated)
+        if not request.user.is_authenticated:
+            return redirect('login')
+
+        return render(request, self.template_name)
+
 class RegistroView(View):
     template_name = "registro.html"
     context = {}
