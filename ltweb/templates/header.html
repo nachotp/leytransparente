@@ -14,7 +14,15 @@
                 <img  src="{% static "ltweb/img/logo2.png" %}" class="d-inline-block align-top" width="300px">
             </b-navbar-brand>
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
-    
+
+            {% if not user.is_authenticated %}
+
+            <b-navbar-nav class="ml-auto">
+                <b-nav-item href="{% url "Registro de usuario" %}" class="nav-menu-item" :class="inRegistro">Registrarse</b-nav-item>
+            </b-navbar-nav>
+
+            {% else %}
+
             <b-collapse id="nav-collapse" is-nav>
                 <b-navbar-nav>
                     <b-nav-item href="{% url "Lista Diputados" %}" class="nav-menu-item" :class="inDiputados">Diputados</b-nav-item>
@@ -24,9 +32,12 @@
             </b-collapse>
 
             <b-navbar-nav class="ml-auto">
-                <b-nav-item href="{% url "Registro de usuario" %}" class="nav-menu-item" :class="inRegistro">Registrarse</b-nav-item>
+                <b-nav-item class="nav-menu-item">{{ user.username }}</b-nav-item>
                 <b-nav-item href="{% url "logout" %}" class="nav-menu-item" :class="inRegistro">Cerrar Sesión</b-nav-item>
             </b-navbar-nav>
+
+
+            {% endif %}
 
         </b-navbar>
 
