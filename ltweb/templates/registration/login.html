@@ -2,26 +2,43 @@
 
 {% block content %}
     <b-container :class="toRegistro">
-        <form method="POST" action="{% url 'login' %}">
-            {%  csrf_token %}
+        <b-row class="justify-content-center">
+            <b-col cols="6">
+                <b-card header-bg-variant="primary" header-text-variant="white" style="font-size: large;" header="Iniciar Sesión">
+                    <b-card-text>
+                        <b-form method="POST" action="{% url 'login' %}">
+                            {%  csrf_token %}
 
-            {{ form.username.label_tag }}
-            {{ form.username }}
+                            <b-form-group label="Nombre de usuario:" label-for="textNombre">
+                                {{ form.username }}
+                            </b-form-group>
 
-            <br>
-            <br>
+                            <b-form-group label="Contraseña:" label-for="textPassword">
+                                {{ form.password }}
+                            </b-form-group>
 
-            {{ form.password.label_tag }}
-            {{ form.password }}
+                            <b-button type="submit" size="large" variant="primary">Ingresar</b-button>
 
-            <br>
-            <br>
 
-            {{ form.errors }}
+                {#            {{ form.username.label_tag }}#}
+                {#            {{ form.username }}#}
+                {##}
+                {#            <br>#}
+                {##}
+                {#            {{ form.password.label_tag }}#}
+                {#            {{ form.password }}#}
+                {##}
+                {#            <br>#}
+                {#            <br>#}
+                {##}
+                {#            {{ form.errors }}#}
+                {#            #}
+                {#            <input type="submit" value="Ingresar">#}
 
-            <input type="submit" value="Ingresar">
-
-        </form>
-
+                        </b-form>
+                    </b-card-text>
+                </b-card>
+            </b-col>
+        </b-row>
     </b-container>
 {% endblock %}
