@@ -45,8 +45,10 @@
                 return {
                     actualPage: '',
                     form: {
+                        nombreUsuario: '',
                         email: '',
                         nombre: '',
+                        apellido: '',
                         contrasena: '',
                     },
                     show: true
@@ -103,6 +105,8 @@
                 },
                 onReset: function(evt) {
                     evt.preventDefault();
+                    this.form.nombreUsuario = '';
+                    this.form.apellido = '';
                     this.form.email = '';
                     this.form.nombre = '';
                     this.form.contrasena = '';

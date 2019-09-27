@@ -2,38 +2,62 @@
 
 {% block content %}
     <b-container :class="toRegistro">
-        <b-form v-if="show" method="">
+        <b-row class="justify-content-center">
+            <b-col cols="6">
+                <b-card header-bg-variant="primary" header-text-variant="white" style="font-size: large;" header="Iniciar Sesión">
+                    <b-card-text>
+                        <b-form v-if="show" method="">
 
-            <b-form-group label="Nombre:" label-for="textNombre">
-                <b-form-input id="textNombre"
-                required
-                placeholder="Ingresar Nombre"
-                v-model="form.nombre">
-                </b-form-input>
-            </b-form-group>
+                            <b-form-group label="Nombre de usuario:" label-for="textUsername">
+                                <b-form-input id="textUsername"
+                                required
+                                placeholder="Ingresar Nombre de usuario"
+                                v-model="form.nombreUsuario">
+                                </b-form-input>
+                            </b-form-group>
 
-            <b-form-group label="Email:" label-for="textEmail">
-                <b-form-input id="textEmail"
-                required
-                placeholder="Ingresar Email"
-                v-model="form.email">
-                </b-form-input>
-            </b-form-group>
+                            <b-form-group label="Nombre:" label-for="textNombre">
+                                <b-form-input id="textNombre"
+                                required
+                                placeholder="Ingresar Nombre"
+                                v-model="form.nombre">
+                                </b-form-input>
+                            </b-form-group>
 
-            <b-form-group label="Contraseña:" label-for="textPassword">
-                <b-form-input id="textPassword"
-                required
-                placeholder="Ingresar Contraseña"
-                type="password"
-                v-model="form.contrasena">
-                </b-form-input>
-            </b-form-group>
+                            <b-form-group label="Apellido:" label-for="textApellido">
+                                <b-form-input id="textApellido"
+                                required
+                                placeholder="Ingresar Apellido"
+                                v-model="form.apellido">
+                                </b-form-input>
+                            </b-form-group>
 
-        </b-form>
+                            <b-form-group label="Email:" label-for="textEmail">
+                                <b-form-input id="textEmail"
+                                required
+                                placeholder="Ingresar Email"
+                                v-model="form.email">
+                                </b-form-input>
+                            </b-form-group>
 
-        <b-button v-on:click="onSubmit" type="submit" variant="primary">Registrarse</b-button>
-        <b-button v-on:click="onReset" type="reset" variant="danger">Limpiar campos</b-button>
+                            <b-form-group label="Contraseña:" label-for="textPassword">
+                                <b-form-input id="textPassword"
+                                required
+                                placeholder="Ingresar Contraseña"
+                                type="password"
+                                v-model="form.contrasena">
+                                </b-form-input>
+                            </b-form-group>
 
+                        </b-form>
+
+                        <b-button v-on:click="onSubmit" type="submit" variant="primary">Registrarse</b-button>
+                        <b-button v-on:click="onReset" type="reset" variant="danger">Limpiar campos</b-button>
+
+                    </b-card-text>
+                </b-card>
+            </b-col>
+        </b-row>
     </b-container>
 
 {% endblock %}
