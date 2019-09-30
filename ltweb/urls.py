@@ -13,5 +13,5 @@ urlpatterns = [
     path(r'conflictos',views.ConflictoListView.as_view(), name='Lista Conflictos'),
     path(r'registro',views.RegistroView.as_view(), name='Registro de usuario'),
     path(r'login/', LoginView.as_view(), name='login'),
-    path(r'login/', LogoutView.as_view(), name='logout')
+    path(r'logout/', LogoutView.as_view(), name='logout')
 ]

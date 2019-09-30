@@ -6,13 +6,15 @@
             <b-col cols="6">
                 <b-card header-bg-variant="primary" header-text-variant="white" style="font-size: large;" header="Registrar un nuevo Trabajador">
                     <b-card-text>
-                        <b-form v-if="show" method="">
+                        <b-form method="POST" action="{% url 'Registro de usuario' %}" v-if="show">
+                            {% csrf_token %}
 
                             <b-form-group label="Nombre de usuario:" label-for="textUsername">
                                 <b-form-input id="textUsername"
                                 required
                                 placeholder="Ingresar Nombre de usuario"
-                                v-model="form.nombreUsuario">
+                                v-model="form.nombreUsuario"
+                                name="username">
                                 </b-form-input>
                             </b-form-group>
 
@@ -20,7 +22,8 @@
                                 <b-form-input id="textNombre"
                                 required
                                 placeholder="Ingresar Nombre"
-                                v-model="form.nombre">
+                                v-model="form.nombre"
+                                name="name">
                                 </b-form-input>
                             </b-form-group>
 
@@ -28,7 +31,8 @@
                                 <b-form-input id="textApellido"
                                 required
                                 placeholder="Ingresar Apellido"
-                                v-model="form.apellido">
+                                v-model="form.apellido"
+                                name="apellido">
                                 </b-form-input>
                             </b-form-group>
 
@@ -36,7 +40,9 @@
                                 <b-form-input id="textEmail"
                                 required
                                 placeholder="Ingresar Email"
-                                v-model="form.email">
+                                v-model="form.email"
+                                type="Email"
+                                name="email">
                                 </b-form-input>
                             </b-form-group>
 
@@ -45,14 +51,15 @@
                                 required
                                 placeholder="Ingresar Contraseña"
                                 type="password"
-                                v-model="form.contrasena">
+                                v-model="form.contrasena"
+                                name="password">
                                 </b-form-input>
                             </b-form-group>
 
-                        </b-form>
+                            <b-button type="submit" variant="primary">Registrarse</b-button>
+                            <b-button v-on:click="onReset" type="reset" variant="danger">Limpiar campos</b-button>
 
-                        <b-button v-on:click="onSubmit" type="submit" variant="primary">Registrarse</b-button>
-                        <b-button v-on:click="onReset" type="reset" variant="danger">Limpiar campos</b-button>
+                        </b-form>
 
                     </b-card-text>
                 </b-card>

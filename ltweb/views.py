@@ -34,13 +34,14 @@ class RegistroView(View):
 
     def post(self, request, *args, **kwargs):
         try:
+            ctx = request.POST
             print("Registrando...")
-            user = User.objects.create_user("username", "name@gmail.com", "test123")
-            user.first_name = "jose"
-            user.last_name = "canseco"
+            user = User.objects.create_user(ctx['username'], ctx['email'], ctx['password'])
+            user.first_name = ctx['name']
+            user.last_name = ctx['apellido']
             user.save()
 
-            return render(request, self.template_name, self.context)
+            return redirect('Home')
 
         except IntegrityError:
             print("Usuario ya existe")
@@ -365,35 +366,6 @@ class ConflictoListView(TemplateView):
         context["conflictos"] = json.dumps(data)
         print(context["conflictos"])
         return context
-
-
-class RegisterView(View):
-    template_name = "base.html"
-    context = {}
-
-    def get(self, request, *args, **kwargs):
-        try:
-            print("Registrando...")
-            user = User.objects.create_user("username", "name@gmail.com", "test123")
-            user.first_name = "jose"
-            user.last_name = "canseco"
-            user.save()
-
-            return render(request, self.template_name, self.context)
-
-        except IntegrityError:
-            print("Usuario ya existe")
-            return render(request, self.template_name, self.context)
-
-
-    def post(self, request, *args, **kwargs):
-        print("Registrando...")
-        user = User.objects.create_user("username", "name@gmail.com", "test123")
-        user.first_name = "jose"
-        user.last_name = "canseco"
-        user.save()
-
-        return self.context
 
 
 
