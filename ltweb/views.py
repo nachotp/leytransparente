@@ -34,6 +34,7 @@ class RegistroView(View):
 
     def post(self, request, *args, **kwargs):
         try:
+            print(request.POST)
             ctx = request.POST
             print("Registrando...")
             user = User.objects.create_user(ctx['username'], ctx['email'], ctx['password'])
