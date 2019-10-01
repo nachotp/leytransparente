@@ -50,13 +50,13 @@
                         nombre: '',
                         apellido: '',
                         contrasena: '',
+                        selected: [],
                     },
                     show: true,
-                    selected: [],
                     opciones: [
-                        { text: 'Primer usuario', value: 'usuario1'},
-                        { text: 'Segundo usuario', value: 'usuario2'},
-                        { text: 'Tercer usuario', value: 'usuario3'}
+                        { text: 'Primer usuario', value: 'usuario1' },
+                        { text: 'Segundo usuario', value: 'usuario2' },
+                        { text: 'Tercer usuario', value: 'usuario3' }
                     ]
                 }
             },
@@ -115,6 +115,7 @@
                     this.form.email = '';
                     this.form.nombre = '';
                     this.form.contrasena = '';
+                    this.form.selected = [];
                     this.$nextTick(() =>{
                         this.show = true
                     })
