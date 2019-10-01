@@ -1,0 +1,20 @@
+[
+  {
+  "name": "Oficina",
+  "permissions": [
+      "is_oficina"
+      ]
+  },
+  {
+  "name": "Comision",
+  "permissions": [
+      "is_comision"
+      ]
+  },
+  {
+  "name": "Admin",
+  "permissions": [
+      "*"
+      ]
+  }
+]

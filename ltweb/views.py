@@ -15,7 +15,30 @@ from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
+from django.shortcuts import get_object_or_404
 
+"""
+content_type = ContentType.objects.get_for_model(User)
+permission = Permission.objects.create(
+    codename='is_oficina',
+    name='Oficina de Informaciones',
+    content_type=content_type,
+)
+
+content_type = ContentType.objects.get_for_model(User)
+permission2 = Permission.objects.create(
+    codename='is_comision',
+    name='Comision de Etica',
+    content_type=content_type,
+)
+
+content_type = ContentType.objects.get_for_model(User)
+permission3 = Permission.objects.create(
+    codename='is_admin',
+    name='Administrador',
+    content_type=content_type,
+)
+"""
 
 class HomeView(TemplateView):
     template_name = "home.html"
@@ -32,29 +55,53 @@ class RegistroView(View):
     context = {}
 
     def get(self, request, *args, **kwargs):
-        self.context['repetido'] = False
-        return render(request, self.template_name, self.context)
+        user = get_object_or_404(User, pk=request.user.username)
+        if user.has_perm('ltweb.is_admin'):
+            self.context['repetido'] = False
+            return render(request, self.template_name, self.context)
+
+        else:
+            return redirect('Home')
 
     def post(self, request, *args, **kwargs):
         try:
             self.context['repetido'] = False
-            print(request.POST)
+            #print(request.POST)
             ctx = request.POST
             print("Registrando...")
             user = User.objects.create_user(ctx['username'], ctx['email'], ctx['password'])
             user.first_name = ctx['name']
             user.last_name = ctx['apellido']
 
-            user.save()
+            for perm in ctx.getlist('roles'):
+                if perm == 'is_oficina':
+                    print('oficina')
+                    content_type = ContentType.objects.get_for_model(User)
+                    permission = Permission.objects.get(
+                        codename=perm,
+                        content_type=content_type,
+                    )
+                    user.user_permissions.add(permission)
 
-            for permiso in ctx.getlist('roles'):
-                print(permiso)
-                if permiso == 'is_oficina':
-                    n = 'Oficina Informaciones'
-                elif permiso == 'is_comision':
-                    n = 'Comision de Etica'
+                elif perm == 'is_comision':
+                    print('comision')
+                    content_type = ContentType.objects.get_for_model(User)
+                    permission = Permission.objects.get(
+                        codename=perm,
+                        content_type=content_type,
+                    )
+                    user.user_permissions.add(permission)
+
                 else:
-                    n = 'Administrador'
+                    print('admin')
+                    content_type = ContentType.objects.get_for_model(User)
+                    permission = Permission.objects.get(
+                        codename=perm,
+                        content_type=content_type,
+                    )
+                    user.user_permissions.add(permission)
+
+            user.save()
 
             return redirect('Home')
 
