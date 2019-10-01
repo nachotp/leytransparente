@@ -12,43 +12,50 @@ const conflictosVue = {
         
         <!--Herramientras de filtrado-->
         
-        <b-row class="mt-3">
-            <b-col>
-                <label for="namesearch" style="display: block"><h5>Nombre parlamentario</h5></label>
-            </b-col>
-            
-            <b-col>
-                <label for="leysearch" style="display: block"><h5>Número o nombre Ley</h5></label>
-            </b-col>
-            
-            <b-col>
-                <label for="partidosearch" style="display: block"><h5>Partido político</h5></label>
-            </b-col>
-        </b-row>
+        <b-card
+        header-bg-variant="secondary"
+        header-text-variant="white"
+        header="Herramientas de filtrado"
+        header-class="h4">
         
-        <b-row>
-            <b-col v-bind="filterCols">
-                <b-form-input  id="namesearch" size="lg" v-model="searchName" placeholder="Buscar por nombre"></b-form-input>
-            </b-col>
-            
-            <b-col v-bind="filterCols">
-                <b-form-input id="leysearch" size="lg" v-model="searchLey" placeholder="Buscar por ley"></b-form-input>
-            </b-col>
-        
-            <b-col v-bind="filterCols">
-            
-                <b-dropdown id="partidosearch" size="lg" variant="outline-dark" style="width:100%" :text="fillDropdown">
-                    <b-dropdown-item @click="searchPartido = ''"> Todos</b-dropdown-item>
-                    <b-dropdown-item v-for="(conflicto, index) in conflictos" 
-                                :key="index" 
-                                :value="conflicto.partido"
-                                @click="searchPartido = conflicto.partido">[[conflicto.partido]]
-                    </b-dropdown-item>
-                </b-dropdown>
+            <b-row class="mt-3">
+                <b-col>
+                    <label for="namesearch" style="display: block"><h5>Nombre parlamentario</h5></label>
+                </b-col>
                 
-            </b-col>
-        
-        </b-row>
+                <b-col>
+                    <label for="leysearch" style="display: block"><h5>Número o nombre Ley</h5></label>
+                </b-col>
+                
+                <b-col>
+                    <label for="partidosearch" style="display: block"><h5>Partido político</h5></label>
+                </b-col>
+            </b-row>
+            
+            <b-row>
+                <b-col v-bind="filterCols">
+                    <b-form-input  id="namesearch" size="lg" v-model="searchName" placeholder="Buscar por nombre"></b-form-input>
+                </b-col>
+                
+                <b-col v-bind="filterCols">
+                    <b-form-input id="leysearch" size="lg" v-model="searchLey" placeholder="Buscar por ley"></b-form-input>
+                </b-col>
+            
+                <b-col v-bind="filterCols">
+                
+                    <b-dropdown id="partidosearch" size="lg" variant="outline-dark" style="width:100%" :text="fillDropdown">
+                        <b-dropdown-item @click="searchPartido = ''"> Todos</b-dropdown-item>
+                        <b-dropdown-item v-for="(conflicto, index) in conflictos" 
+                                    :key="index" 
+                                    :value="conflicto.partido"
+                                    @click="searchPartido = conflicto.partido">[[conflicto.partido]]
+                        </b-dropdown-item>
+                    </b-dropdown>
+                    
+                </b-col>
+            
+            </b-row>
+        </b-card>
 
         
         <b-row>
