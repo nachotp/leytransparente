@@ -143,7 +143,7 @@ def conflicto_embedding(tags):
             print(giro, ">", cos_sim)
             if cos_sim > 0.5:
                 scr = score(porc, cont)
-                matches.append((cos_sim, scr, nombre, idec, emp))
+                matches.append((cos_sim, scr, nombre, idec, emp, giro_vec))
 
     matches.sort(key=operator.itemgetter(0, 1), reverse=True)
 

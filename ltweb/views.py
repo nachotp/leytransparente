@@ -66,7 +66,7 @@ class SubirDeclaracionView(View):
                                          "Apellido_Materno"],
                                      "meta.actual": True})
 
-        if query == None:  # inserta automaticamente porque no existe nadie.
+        if query is None:  # inserta automaticamente porque no existe nadie.
             dic["partido"] = 'null'
             # x=self.mycol.insert(dic)
 
@@ -252,7 +252,7 @@ class ConflictoView(TemplateView):
         diclist = []
 
         for conflicto in conflictos:
-            duplicado = self.confl.find_one({"ley":ley , "id_declaracion": conflicto[3]})
+            duplicado = self.confl.find_one({"ley": ley, "id_declaracion": conflicto[3]})
 
             dic = {"ley": ley,
                    "nombre_ley": ctx["nombre_ley"],
@@ -268,6 +268,7 @@ class ConflictoView(TemplateView):
             dic["razon"] = {}
             dic["razon"]["prov_conf"] = "acciones"
             dic["razon"]["motivo"] = conflicto[4]["Nombre_Razon_Social"]
+            dic["vector"] = conflicto[5]
 
             if conflicto[0] * conflicto[1] > 100:
                 high.append(conflicto)
@@ -276,7 +277,7 @@ class ConflictoView(TemplateView):
                 low.append(conflicto)
                 dic["grado"] = "leve"
 
-            if duplicado != None:
+            if duplicado is not None:
                 continue
             diclist.append(dic)
 
@@ -305,11 +306,11 @@ class ConflictoListView(TemplateView):
         for conf in query:
             print(conf["ley"])
             url_ley = self.leyes.find_one({"numero": conf["ley"]})
-            if url_ley == None:
-                url_ley={}
-                url_ley["url"]="#"
-            if conf["partido"] == None:
-                conf["partido"] ="Sin información"
+            if url_ley is None:
+                url_ley = {}
+                url_ley["url"] = "#"
+            if conf["partido"] is None:
+                conf["partido"] = "Sin información"
 
             dic = {
                 "ley": conf["ley"],
