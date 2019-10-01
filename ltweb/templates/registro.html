@@ -2,12 +2,12 @@
 
 {% block content %}
     <b-container :class="toRegistro">
-        <b-row class="justify-content-center">
-            <b-col cols="6">
-                <b-card header-bg-variant="primary" header-text-variant="white" style="font-size: large;" header="Registrar un nuevo Trabajador">
-                    <b-card-text>
-                        <b-form method="POST" action="{% url 'Registro de usuario' %}" v-if="show">
-                            {% csrf_token %}
+        <b-card header-bg-variant="primary" header-text-variant="white" style="font-size: large;" header="Registrar un nuevo Trabajador">
+            <b-form method="POST" action="{% url 'Registro de usuario' %}" v-if="show">
+                {% csrf_token %}
+                <b-row class="justify-content-center">
+                    <b-col cols="6">
+                        <b-card-text>
 
                             <b-form-group label="Nombre de usuario:" label-for="textUsername">
                                 <b-form-input id="textUsername"
@@ -36,7 +36,13 @@
                                 </b-form-input>
                             </b-form-group>
 
-                            <b-form-group label="Email:" label-for="textEmail">
+                        </b-card-text>
+                    </b-col>
+
+                    <b-col cols="6">
+                        <b-card-text>
+
+                        <b-form-group label="Email:" label-for="textEmail">
                                 <b-form-input id="textEmail"
                                 required
                                 placeholder="Ingresar Email"
@@ -56,15 +62,22 @@
                                 </b-form-input>
                             </b-form-group>
 
-                            <b-button type="submit" variant="primary">Registrarse</b-button>
-                            <b-button v-on:click="onReset" type="reset" variant="danger">Limpiar campos</b-button>
+                            <b-form-group label="Roles:">
+                                <b-form-checkbox-group
+                                    v-model="selected"
+                                    :options="opciones"
+                                    name="roles"
+                                    switches
+                                ></b-form-checkbox-group>
+                            </b-form-group>
 
-                        </b-form>
-
-                    </b-card-text>
-                </b-card>
-            </b-col>
-        </b-row>
+                        </b-card-text>
+                    </b-col>
+                </b-row>
+                <b-button type="submit" variant="primary">Registrarse</b-button>
+                <b-button v-on:click="onReset" type="reset" variant="danger">Limpiar campos</b-button>
+            </b-form>
+        </b-card>
     </b-container>
 
 {% endblock %}
