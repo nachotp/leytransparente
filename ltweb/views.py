@@ -12,10 +12,9 @@ from datetime import datetime
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.db import IntegrityError
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
-from django.shortcuts import get_object_or_404
 
 """
 content_type = ContentType.objects.get_for_model(User)
@@ -50,13 +49,15 @@ class HomeView(TemplateView):
 
         return render(request, self.template_name)
 
+
 class RegistroView(View):
     template_name = "registro.html"
     context = {}
 
     def get(self, request, *args, **kwargs):
-        user = get_object_or_404(User, pk=request.user.username)
-        if user.has_perm('ltweb.is_admin'):
+        user = User.objects.get(username=request.user.username)
+        print(user.get_all_permissions())
+        if user.has_perm('auth.is_admin'):
             self.context['repetido'] = False
             return render(request, self.template_name, self.context)
 
