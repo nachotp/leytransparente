@@ -16,35 +16,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 
-"""
-######################## Bloque de Generador de permisos para la BD ###################################
-
-from django.contrib.auth.models import Permission
-from django.contrib.contenttypes.models import ContentType
-
-content_type = ContentType.objects.get_for_model(User)
-permission = Permission.objects.create(
-    codename='is_oficina',
-    name='Oficina Informaciones',
-    content_type=content_type,
-)
-
-content_type = ContentType.objects.get_for_model(User)
-permission2 = Permission.objects.create(
-    codename='is_comision',
-    name='Comision Etica',
-    content_type=content_type,
-)
-
-content_type = ContentType.objects.get_for_model(User)
-permission3 = Permission.objects.create(
-    codename='is_administrador',
-    name='Administrador',
-    content_type=content_type,
-)
-
-#######################################################################################################
-"""
 
 class HomeView(TemplateView):
     template_name = "home.html"
@@ -61,10 +32,12 @@ class RegistroView(View):
     context = {}
 
     def get(self, request, *args, **kwargs):
+        self.context['repetido'] = False
         return render(request, self.template_name, self.context)
 
     def post(self, request, *args, **kwargs):
         try:
+            self.context['repetido'] = False
             print(request.POST)
             ctx = request.POST
             print("Registrando...")
@@ -74,8 +47,7 @@ class RegistroView(View):
 
             user.save()
 
-            """
-            for permiso in ctx['roles']:
+            for permiso in ctx.getlist('roles'):
                 print(permiso)
                 if permiso == 'is_oficina':
                     n = 'Oficina Informaciones'
@@ -84,18 +56,10 @@ class RegistroView(View):
                 else:
                     n = 'Administrador'
 
-                content_type = ContentType.objects.get_for_model(User)
-                permission = Permission.objects.create(
-                    codename=permiso,
-                    name=n,
-                    content_type=content_type,
-                )
-                user.user_permissions.add(permission)
-            """
-
             return redirect('Home')
 
         except IntegrityError:
+            self.context['repetido'] = True
             print("Usuario ya existe")
             return render(request, self.template_name, self.context)
 
