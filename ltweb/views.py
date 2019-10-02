@@ -119,10 +119,28 @@ class ControlView(TemplateView):
             dic['nombre'] = u.first_name
             dic['apellido'] = u.last_name
             dic['email'] = u.email
+            dic['password'] = u.password
 
             data.append(dic)
 
         context['usuarios'] = data
+        return context
+
+class ActualizarView(TemplateView):
+    template_name = "actualizar.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = User.objects.get(username=self.kwargs['id'])
+
+        dic = {}
+        dic['username'] = user.username
+        dic['nombre'] = user.first_name
+        dic['apellido'] = user.last_name
+        dic['email'] = user.email
+        dic['password'] = user.password
+
+        context['usuarios'] = dic
         return context
 
 
