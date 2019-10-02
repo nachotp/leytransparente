@@ -43,17 +43,14 @@
                         <td>{{ usuario.permiso}}</td>
                         <td class="align-middle">
                             <div class="text-center">
-                                <a href="{% url 'Actualizar Usuario' id=usuario.username %}"><button v-b-popover.hover.top="'Editar rol'" type="submit" class="btn"><i class="fas fa-user-edit"></i></button></a>
                                 <b-form method="GET" action="{% url 'Eliminar Usuario' id=usuario.username %}" v-if="show">
-                                    <button v-b-popover.hover.top="'Eliminar usuario'" type="submit" class="btn"><i class="fas fa-trash"></i></button>
+                                    <a style="color: #007bff" class="align-middle" v-b-popover.hover.top="'Editar rol'" href="{% url 'Actualizar Usuario' id=usuario.username %}"><i class="fas fa-user-edit"></i></a>
+                                    <button v-b-popover.hover.top="'Eliminar usuario'" style="color: #007bff" type="submit" class="btn align-middle"><i class="fas fa-trash"></i></button>
                                 </b-form>
                             </div>
                         </td>
                     </tr>
                 {% endfor %}
-
-                {% else %}
-                <h1>No hay registros de Usuarios</h1>
                 {% endif %}
             </tbody>
         </table>
