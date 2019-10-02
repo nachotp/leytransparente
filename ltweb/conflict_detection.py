@@ -12,7 +12,7 @@ import numpy as np
 
 class EmbeddingPredictor:
 
-    def __init__(self, filename='fasttext-esp.bin', lim=500000):
+    def __init__(self, filename='fasttext-esp.bin', lim=600000):
         if "JAVAHOME" not in os.environ:
             assert ("JAVA_HOME" in os.environ), "JAVA must be installed and accesible from path."
             os.environ['JAVAHOME'] = str(os.environ['JAVA_HOME'])
@@ -102,22 +102,12 @@ def conflicto_embedding(tags):
 
     print("Revisando pre-candidatos")
     for person in query:
-        name = ""
-        for nombre in person["Datos_del_Declarante"]["nombre"].split():
-            name += nombre.lower().capitalize() + " "
-        nombre = name + person["Datos_del_Declarante"]["Apellido_Paterno"].lower().capitalize() + " " + \
-            person["Datos_del_Declarante"]["Apellido_Materno"].lower().capitalize()
-        idec = person["_id"]
 
         for emp in person["Derechos_Acciones_Chile"]:
 
-            porc = float(emp["Cantidad_Porcentaje"])
-            cont = emp["Tiene_Calidad_Controlador"]
             giro = emp["Giro_Registrado_SII"] if "Giro_Registrado_SII" in emp else ""
-            razon = emp["Nombre_Razon_Social"]
 
             giro = giro.lower().translate(str.maketrans('', '', string.punctuation))
-            razon = razon.lower().translate(str.maketrans('', '', string.punctuation))
 
             # giro_vec = wp.to_vector(wp.extract_nouns(giro.lower()))
             giro_vec = wp.to_vector(giro)
@@ -152,7 +142,7 @@ def conflicto_embedding(tags):
             print(giro, ">", cos_sim)
             if cos_sim > 0.5:
                 scr = score(porc, cont)
-                matches.append((cos_sim, scr, nombre, idec, emp))
+                matches.append((cos_sim, scr, nombre, idec, emp, list(giro_vec)))
 
     for familiar in query_familiar:
         nombre = ""
@@ -189,36 +179,5 @@ def conflicto_embedding(tags):
                 matches.append((cos_sim, -1, nombre, idec, empresa))
 
     matches.sort(key=operator.itemgetter(0, 1), reverse=True)
-
-    return matches
-
-
-def conflicto_patrimonio(kwrds):
-    myclient = DBconnection()
-    mycol = myclient.get_collection("declaraciones")
-
-    query = mycol.find(
-        {"meta.actual": True, "Derechos_Acciones_Chile": {"$elemMatch": {"Giro_Registrado_SII": {"$in": kwrds}}}},
-        {"_id": 1, "Id_Declaracion": 1, "Datos_del_Declarante": 1,
-         "Derechos_Acciones_Chile": {"$elemMatch": {"Giro_Registrado_SII": {"$in": kwrds}}}}
-    )
-    print(query is not None)
-    matches = []
-    for person in query:
-        name = ""
-        for nombre in person["Datos_del_Declarante"]["nombre"].split():
-            name += nombre.lower().capitalize() + " "
-        nombre = name + person["Datos_del_Declarante"]["Apellido_Paterno"].lower().capitalize() + " " + \
-                 person["Datos_del_Declarante"]["Apellido_Materno"].lower().capitalize()
-        idec = person["_id"]
-
-        # TODO: Le estamos agregando distintos scores para una misma persona ?
-        for emp in person["Derechos_Acciones_Chile"]:
-            porc = float(emp["Cantidad_Porcentaje"])
-            cont = emp["Tiene_Calidad_Controlador"]
-            # razon = emp["Nombre_Razon_Social"]
-            scr = score(porc, cont)
-            matches.append((scr, nombre, idec, emp))
-    matches.sort(reverse=True)
 
     return matches
