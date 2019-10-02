@@ -16,5 +16,5 @@ urlpatterns = [
     path(r'logout/', LogoutView.as_view(), name='logout'),
     path(r'control/', views.ControlView.as_view(), name='Control de usuario'),
     path(r'cluster/', views.ClusterView.as_view(), name='Cluster'),
-    path(r'actualizar/', views.ActualizarView.as_view(), name='Actualizar Usuario')
+    path(r'actualizar/<str:id>', views.ActualizarView.as_view(), name='Actualizar Usuario')
 ]
