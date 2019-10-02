@@ -19,33 +19,33 @@ const conflictosVue = {
         header-class="h4">
         
             <b-row class="mt-3">
-                <b-col>
+                <b-col cols="3">
                     <label for="namesearch" style="display: block"><h5>Nombre parlamentario</h5></label>
                 </b-col>
                 
-                <b-col>
+                <b-col cols="3">
                     <label for="leysearch" style="display: block"><h5>Número o nombre Ley</h5></label>
                 </b-col>
                 
-                <b-col>
+                <b-col cols="3">
                     <label for="partidosearch" style="display: block"><h5>Partido político</h5></label>
                 </b-col>
                 
-                <b-col>
+                <b-col cols="3">
                     <label for="conflictosearch" style="display: block"><h5>Tipo Conflicto</h5></label>
                 </b-col>
             </b-row>
             
             <b-row>
-                <b-col v-bind="filterCols">
+                <b-col cols="3" v-bind="filterCols">
                     <b-form-input  id="namesearch" size="lg" v-model="searchName" placeholder="Buscar por nombre"></b-form-input>
                 </b-col>
                 
-                <b-col v-bind="filterCols">
+                <b-col cols="3" v-bind="filterCols">
                     <b-form-input id="leysearch" size="lg" v-model="searchLey" placeholder="Buscar por ley"></b-form-input>
                 </b-col>
             
-                <b-col v-bind="filterCols">
+                <b-col cols="3" v-bind="filterCols">
                 
                     <b-dropdown id="partidosearch" size="lg" variant="outline-dark" style="width:100%" :text="fillDropdown">
                         <b-dropdown-item @click="searchPartido = ''"> Todos</b-dropdown-item>
@@ -58,8 +58,11 @@ const conflictosVue = {
                     
                 </b-col>
                 
-                <b-col v-bind="filterCols">
-                    <b-form-input id="conflictosearch" size="lg" v-model="searchConflicto" placeholder="Tipo de Conflicto"></b-form-input>
+                <b-col cols="3" v-bind="filterCols">
+                    <b-dropdown id="conflictosearch" size="lg" variant="outline-dark" style="width:100%" :text="fillDropdown2">
+                        <b-dropdown-item @click="searchTipo = 'Directo'"> Directo</b-dropdown-item>
+                        <b-dropdown-item @click="searchTipo = 'Indirecto'"> Indirecto</b-dropdown-item>
+                    </b-dropdown>
                 </b-col>
             
             </b-row>
@@ -84,6 +87,7 @@ const conflictosVue = {
                             <b-list-group-item v-bind="listItem"><b>Motivo: </b>[[conflicto.prov_conf|capitalize]]</b-list-group-item>
                             <b-list-group-item v-bind="listItem"><b>2º Involucrado: </b>[[conflicto.nombre_involucrado|capitalize]]</b-list-group-item>
                             <b-list-group-item v-bind="listItem"><b>Razon social del Involucrado: </b>[[conflicto.razon_social|capitalize]]</b-list-group-item>
+                            [[conflicto.tipo_conflicto]]
                         </b-list-group>
                     </b-card-text>
                 </b-card-body>
@@ -131,6 +135,7 @@ const conflictosVue = {
             searchName: '',
             searchLey: '',
             searchPartido: '',
+            searchTipo: '',
             filterCols: {
                 cols: '4',
                 style:{
@@ -150,6 +155,12 @@ const conflictosVue = {
         this.conflictos = JSON.parse(document.getElementsByTagName('body')[0].getAttribute('data') || '{}');
     },
     computed: {
+        filterConflictosTipo: function() {
+            if (conflicto.tipo_conflicto === undefined)
+                return conflicto;
+            else
+                return conflicto.tipo_conflicto.toLowerCase().match(this.searchTipo.toLowerCase());
+        },
         //Filtra los conflictos, tal que sólo se muestran los que calzan parcialmente con el texto en searchName
         filterConflictosName: function () {
             return this.conflictos.filter((conflicto) =>{
@@ -173,7 +184,11 @@ const conflictosVue = {
         },
         fillDropdown: function () {
             return (this.searchPartido === '') ? "Todos" : this.searchPartido;
-        }
+        },
+        fillDropdown2: function () {
+            return (this.searchTipo === '') ? "Directo" : this.searchTipo;
+        },
+
     },
     //Ajusta la frase para que la primera letra sea mayúscula
     filters: {

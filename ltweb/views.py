@@ -97,7 +97,7 @@ class RegistroView(View):
 
             user.save()
 
-            return redirect('Home')
+            return redirect('Control de usuario')
 
         except IntegrityError:
             self.context['repetido'] = True
@@ -114,8 +114,19 @@ class ActualizarPermisosView(View):
 
     def post(self, request, *args, **kwargs):
         print(request.POST)
-        #user = User.objects.get(username=request.POST['username'])
+        user = User.objects.get(username=request.POST['username'])
         #print(user.get_all_permissions())
+        user.user_permissions.clear()
+
+        user = User.objects.get(username=request.POST['username'])
+
+        content_type = ContentType.objects.get_for_model(User)
+        permission = Permission.objects.get(
+            codename=request.POST['roles'],
+            content_type=content_type,
+        )
+        user.user_permissions.add(permission)
+
         return redirect('Control de usuario')
 
 
@@ -128,14 +139,24 @@ class ControlView(TemplateView):
         users = User.objects.all()
 
         for u in users:
-            dic = {}
-            dic['username'] = u.username
-            dic['nombre'] = u.first_name
-            dic['apellido'] = u.last_name
-            dic['email'] = u.email
-            dic['password'] = u.password
+            if u.is_superuser != True:
+                dic = {}
+                dic['username'] = u.username
+                dic['nombre'] = u.first_name
+                dic['apellido'] = u.last_name
+                dic['email'] = u.email
+                dic['password'] = u.password
 
-            data.append(dic)
+                perm = u.get_all_permissions()
+
+                if 'auth.is_oficina' in perm:
+                    dic['permiso'] = 'Oficina de Informaciones'
+                elif 'auth.is_comision' in perm:
+                    dic['permiso'] = 'Comision de Etica'
+                else:
+                    dic['permiso'] = 'Administrador'
+
+                data.append(dic)
 
         context['usuarios'] = data
         return context
@@ -157,6 +178,14 @@ class ActualizarView(TemplateView):
 
         context['usuarios'] = dic
         return context
+
+
+class EliminarUserView(View):
+
+    def get(self, request, *args, **kwargs):
+        user = User.objects.get(username=self.kwargs['id'])
+        user.delete()
+        return redirect('Control de usuario')
 
 
 class ViewDeclaracion(TemplateView):
@@ -474,6 +503,7 @@ class ConflictoListView(TemplateView):
                 dic["tipo_conflicto"] = 'indirecto'
             else:
                 dic["motivo"] = conf["razon"]["motivo"]
+                dic["tipo_conflicto"] = 'directo'
 
             dic["prov_conf"] = conf["razon"]["prov_conf"]
 
