@@ -2,7 +2,7 @@
 
 {% block content %}
     <b-container :class="toRegistro">
-        <b-card header-bg-variant="primary" header-text-variant="white" style="font-size: large;" header="Registrar un nuevo Trabajador">
+        <b-card header-bg-variant="primary" header-text-variant="white" style="font-size: large;" header="Registrar un nuevo usuario">
             <b-form method="POST" action="{% url 'Registro de usuario' %}" v-if="show">
                 {% csrf_token %}
                 <b-row class="justify-content-center">
@@ -66,14 +66,14 @@
                                 </b-form-input>
                             </b-form-group>
 
-                            <b-form-group label="Roles:">
-                                <b-form-radio-group
+                            <b-form-group label="Rol:">
+                                <b-dropdown
                                     v-model="form.selected"
                                     :options="opciones"
                                     name="roles"
                                     size="lg"
                                     required
-                                ></b-form-radio-group>
+                                ></b-dropdown>
                             </b-form-group>
 
                         </b-card-text>
