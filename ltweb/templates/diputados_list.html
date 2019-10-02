@@ -13,27 +13,29 @@
     <b-col>
         <h2>Diputados</h2>
     </b-col>
-    <b-col>
-        <b-button v-b-modal.my-modal size="lg" variant="primary" class="mb-3 float-right"><i class="fas fa-file-upload"></i> <b>Subir Declaración</b></b-button>
+    {% if perms.auth.is_oficina %}
+        <b-col>
+            <b-button v-b-modal.my-modal size="lg" variant="primary" class="mb-3 float-right"><i class="fas fa-file-upload"></i> <b>Subir Declaración</b></b-button>
 
-        <b-modal id="my-modal" title="Nueva Declaración de Patrimonio" hide-footer>
-            <form name='load_file_form' method='POST' action="{% url 'Subir declaracion' %}" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <h5>Subir JSON de la declaración de patrimonios</h5>
-                    <p>Subir una nueva declaración de patrimonios para un parlamentario ya ingresado actualizará la declaración existente para futuros análisis de conflictos de interés.</p>
-                        <b-form-file
-                          name='uploaded_file'
-                          placeholder="Elegir archivo..."
-                          drop-placeholder="Arrastrar archivo aquí..."
-                          browse-text="Examinar"
-                          class="my-3"
+            <b-modal id="my-modal" title="Nueva Declaración de Patrimonio" hide-footer>
+                <form name='load_file_form' method='POST' action="{% url 'Subir declaracion' %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <h5>Subir JSON de la declaración de patrimonios</h5>
+                        <p>Subir una nueva declaración de patrimonios para un parlamentario ya ingresado actualizará la declaración existente para futuros análisis de conflictos de interés.</p>
+                            <b-form-file
+                              name='uploaded_file'
+                              placeholder="Elegir archivo..."
+                              drop-placeholder="Arrastrar archivo aquí..."
+                              browse-text="Examinar"
+                              class="my-3"
 
-                        ></b-form-file>
+                            ></b-form-file>
 
-                <b-button block type="submit" variant="primary"><i class="fas fa-file-upload"></i> Subir Archivo</b-button>
-            </form>
-        </b-modal>
-    </b-col>
+                    <b-button block type="submit" variant="primary"><i class="fas fa-file-upload"></i> Subir Archivo</b-button>
+                </form>
+            </b-modal>
+        </b-col>
+    {% endif %}
 </b-row>
     <div class="container" style="max-width: 1450px">
         <table  class="table table-striped table-bordered compact" id="dip_table" cellspacing="0">

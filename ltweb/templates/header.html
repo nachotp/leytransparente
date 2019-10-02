@@ -27,7 +27,9 @@
 
             <b-navbar-nav class="ml-auto">
                 <b-nav-item class="nav-menu-item" disabled>{{ user.username }}</b-nav-item>
-                <b-nav-item href="{% url "Registro de usuario" %}" class="nav-menu-item" :class="inRegistro">Registrar usuario</b-nav-item>
+                {% if perms.auth.is_admin %}
+                    <b-nav-item href="{% url "Registro de usuario" %}" class="nav-menu-item" :class="inRegistro">Registrar usuario</b-nav-item>
+                {% endif %}
                 <b-nav-item href="{% url "logout" %}" class="nav-menu-item" :class="inRegistro">Cerrar Sesión</b-nav-item>
             </b-navbar-nav>
 

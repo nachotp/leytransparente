@@ -55,19 +55,12 @@ class RegistroView(View):
     context = {}
 
     def get(self, request, *args, **kwargs):
-        user = User.objects.get(username=request.user.username)
-        print(user.get_all_permissions())
-        if user.has_perm('auth.is_admin'):
-            self.context['repetido'] = False
-            return render(request, self.template_name, self.context)
-
-        else:
-            return redirect('Home')
+        self.context['repetido'] = False
+        return render(request, self.template_name, self.context)
 
     def post(self, request, *args, **kwargs):
         try:
             self.context['repetido'] = False
-            #print(request.POST)
             ctx = request.POST
             print("Registrando...")
             user = User.objects.create_user(ctx['username'], ctx['email'], ctx['password'])
