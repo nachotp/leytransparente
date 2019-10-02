@@ -13,7 +13,7 @@ from datetime import datetime
 
 class HomeView(TemplateView):
     template_name = "home.html"
-    send_email("Prueba", "test", {"item": "Mundo"}, "mail@domain.com")
+
 
 class RegistroView(TemplateView):
     template_name = "registro.html"
