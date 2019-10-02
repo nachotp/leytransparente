@@ -455,5 +455,10 @@ class ConflictoListView(TemplateView):
         print(context["conflictos"])
         return context
 
+class ClusterView(TemplateView):
 
+    template_name = "cluster.html"
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name)
 

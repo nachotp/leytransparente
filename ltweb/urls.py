@@ -14,5 +14,7 @@ urlpatterns = [
     path(r'registro', views.RegistroView.as_view(), name='Registro de usuario'),
     path(r'login/', LoginView.as_view(), name='login'),
     path(r'logout/', LogoutView.as_view(), name='logout'),
-    path(r'control/', views.ControlView.as_view(), name='Control de usuario')
+    path(r'control/', views.ControlView.as_view(), name='Control de usuario'),
+    path(r'cluster/', views.ClusterView.as_view(), name='Cluster')
+
 ]
