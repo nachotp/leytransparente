@@ -63,12 +63,12 @@
                             </b-form-group>
 
                             <b-form-group label="Roles:">
-                                <b-form-checkbox-group
+                                <b-form-radio-group
                                     v-model="form.selected"
                                     :options="opciones"
                                     name="roles"
-                                    switches
-                                ></b-form-checkbox-group>
+                                    required
+                                ></b-form-radio-group>
                             </b-form-group>
 
                         </b-card-text>
