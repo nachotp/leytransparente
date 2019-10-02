@@ -1,80 +1,78 @@
 const conflictosVue = {
     template:`
-<div class="container">
+<!--Si hay conflictos-->
+<b-container v-if="conflictos">
+    <b-row>
+        <b-col class="ml-auto">
+        <h3>Conflictos</h3>
+        </b-col>
+    </b-row>
     
-    <!--Si hay conflictos-->
-    <b-container v-if="conflictos" class="bv-example-row">
-        <b-row>
-            <b-col class="ml-auto">
-            <h3>Conflictos</h3>
+    <!--Herramientras de filtrado-->
+    
+    <b-card
+    header-bg-variant="secondary"
+    header-text-variant="white"
+    header="Herramientas de filtrado"
+    header-class="h4">
+    
+        <b-row class="mt-3">
+            <b-col cols="3">
+                <label for="namesearch" style="display: block"><h5>Nombre parlamentario</h5></label>
+            </b-col>
+            
+            <b-col cols="3">
+                <label for="leysearch" style="display: block"><h5>Número o nombre Ley</h5></label>
+            </b-col>
+            
+            <b-col cols="3">
+                <label for="partidosearch" style="display: block"><h5>Partido político</h5></label>
+            </b-col>
+            
+            <b-col cols="3">
+                <label for="conflictosearch" style="display: block"><h5>Tipo Conflicto</h5></label>
             </b-col>
         </b-row>
         
-        <!--Herramientras de filtrado-->
-        
-        <b-card
-        header-bg-variant="secondary"
-        header-text-variant="white"
-        header="Herramientas de filtrado"
-        header-class="h4">
-        
-            <b-row class="mt-3">
-                <b-col cols="3">
-                    <label for="namesearch" style="display: block"><h5>Nombre parlamentario</h5></label>
-                </b-col>
-                
-                <b-col cols="3">
-                    <label for="leysearch" style="display: block"><h5>Número o nombre Ley</h5></label>
-                </b-col>
-                
-                <b-col cols="3">
-                    <label for="partidosearch" style="display: block"><h5>Partido político</h5></label>
-                </b-col>
-                
-                <b-col cols="3">
-                    <label for="conflictosearch" style="display: block"><h5>Tipo Conflicto</h5></label>
-                </b-col>
-            </b-row>
-            
-            <b-row>
-                <b-col cols="3" v-bind="filterCols">
-                    <b-form-input  id="namesearch" size="lg" v-model="searchName" placeholder="Buscar por nombre"></b-form-input>
-                </b-col>
-                
-                <b-col cols="3" v-bind="filterCols">
-                    <b-form-input id="leysearch" size="lg" v-model="searchLey" placeholder="Buscar por ley"></b-form-input>
-                </b-col>
-            
-                <b-col cols="3" v-bind="filterCols">
-                
-                    <b-dropdown id="partidosearch" size="lg" variant="outline-dark" style="width:100%" :text="fillDropdown">
-                        <b-dropdown-item @click="searchPartido = ''"> Todos</b-dropdown-item>
-                        <b-dropdown-item v-for="(partido, index) in getPartidos" 
-                                    :key="index" 
-                                    :value="partido"
-                                    @click="searchPartido = partido">[[partido]]
-                        </b-dropdown-item>
-                    </b-dropdown>
-                    
-                </b-col>
-                
-                <b-col cols="3" v-bind="filterCols">
-                    <b-dropdown id="conflictosearch" size="lg" variant="outline-dark" style="width:100%" :text="fillDropdown2">
-                        <b-dropdown-item @click="searchTipo = ''"> Ambos</b-dropdown-item>
-                        <b-dropdown-item @click="searchTipo = 'Directo'"> Directo</b-dropdown-item>
-                        <b-dropdown-item @click="searchTipo = 'Indirecto'"> Indirecto</b-dropdown-item>
-                    </b-dropdown>
-                </b-col>
-            
-            </b-row>
-        </b-card>
-
-        
         <b-row>
-            <!--Se muestran todos los conflictos-->
-            <b-col v-for="(conflicto, index) in filterConflictosLey" :key="index" cols="6" >
-                <b-card v-if="conflicto.tipo_conflicto == 'indirecto'" style="margin-top: 20px;" no-body header=" " header-bg-variant="info">
+            <b-col cols="3" v-bind="filterCols">
+                <b-form-input  id="namesearch" size="lg" v-model="searchName" placeholder="Buscar por nombre"></b-form-input>
+            </b-col>
+            
+            <b-col cols="3" v-bind="filterCols">
+                <b-form-input id="leysearch" size="lg" v-model="searchLey" placeholder="Buscar por ley"></b-form-input>
+            </b-col>
+        
+            <b-col cols="3" v-bind="filterCols">
+            
+                <b-dropdown id="partidosearch" size="lg" variant="outline-dark" style="width:100%" :text="fillDropdown">
+                    <b-dropdown-item @click="searchPartido = ''"> Todos</b-dropdown-item>
+                    <b-dropdown-item v-for="(partido, index) in getPartidos" 
+                                :key="index" 
+                                :value="partido"
+                                @click="searchPartido = partido">[[partido]]
+                    </b-dropdown-item>
+                </b-dropdown>
+                
+            </b-col>
+            
+            <b-col cols="3" v-bind="filterCols">
+                <b-dropdown id="conflictosearch" size="lg" variant="outline-dark" style="width:100%" :text="fillDropdown2">
+                    <b-dropdown-item @click="searchTipo = ''"> Ambos</b-dropdown-item>
+                    <b-dropdown-item @click="searchTipo = 'Directo'"> Directo</b-dropdown-item>
+                    <b-dropdown-item @click="searchTipo = 'Indirecto'"> Indirecto</b-dropdown-item>
+                </b-dropdown>
+            </b-col>
+        
+        </b-row>
+    </b-card>
+
     
+    <b-row>
+        <!--Se muestran todos los conflictos-->
+        <b-col v-for="(conflicto, index) in filterConflictosLey" :key="index" cols="6" >
+            <b-card v-if="conflicto.tipo_conflicto == 'indirecto'" style="margin-top: 20px;" no-body header=" " header-bg-variant="info">
+
                 <b-card-body style="padding-bottom: 0px; padding-top: 12px">
                     <a :href=" '/ver/' + conflicto.id_parlamentario"><h4>[[ conflicto.parlamentario ]]</h4></a>
                     <h4>[[conflicto.partido]]</h4>
@@ -92,9 +90,9 @@ const conflictosVue = {
                     </b-card-text>
                 </b-card-body>
             </b-card>
-            
+        
             <b-card v-else style="margin-top: 20px;" no-body header=" " :header-bg-variant="conflicto.grado == 'leve' ? 'warning' : 'danger' " >
-    
+
                 <b-card-body style="padding-bottom: 0px; padding-top: 12px">
                     <a :href=" '/ver/' + conflicto.id_parlamentario"><h4>[[ conflicto.parlamentario ]]</h4></a>
                     <h4>[[conflicto.partido]]</h4>
@@ -113,20 +111,18 @@ const conflictosVue = {
                     </b-card-text>
                 </b-card-body>
             </b-card>
-            
-            </b-col>
-        </b-row>
-    </b-container>
-    
-    <b-container v-else>
-        <b-row>
-            <b-col class="ml-auto">
-            <h3>No hay conflictos</h3>
-            </b-col>
-        </b-row>
-    </b-container>
-    
-</div>
+        
+        </b-col>
+    </b-row>
+</b-container>
+
+<b-container v-else>
+    <b-row>
+        <b-col class="ml-auto">
+        <h3>No hay conflictos</h3>
+        </b-col>
+    </b-row>
+</b-container>
     `,
     delimiters: ['[[', ']]'],
     data(){
