@@ -456,6 +456,7 @@ class ConflictoListView(TemplateView):
                 dic["nombre_involucrado"] = conf["razon"]["motivo"]["nombre_involucrado"]
                 dic["relacion_diputado"] = conf["razon"]["motivo"]["relacion_diputado"]
                 dic["razon_social"] = conf["razon"]["motivo"]["razon_social"]
+                dic["tipo_conflicto"] = 'indirecto'
             else:
                 dic["motivo"] = conf["razon"]["motivo"]
 
