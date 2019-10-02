@@ -493,6 +493,7 @@ class ConflictoListView(TemplateView):
                 dic["tipo_conflicto"] = 'indirecto'
             else:
                 dic["motivo"] = conf["razon"]["motivo"]
+                dic["tipo_conflicto"] = 'directo'
 
             dic["prov_conf"] = conf["razon"]["prov_conf"]
 
