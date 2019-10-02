@@ -15,13 +15,12 @@
                                 placeholder="Ingresar Nombre de usuario"
                                 name="username"
                                 value="{{ usuarios.username }}"
-                                disabled>
+                                readonly="readonly">
                                 </b-form-input>
                             </b-form-group>
 
                             <b-form-group label="Nombre:" label-for="textNombre">
                                 <b-form-input id="textNombre"
-                                required
                                 placeholder="Ingresar Nombre"
                                 name="name"
                                 value="{{ usuarios.nombre }}"
@@ -49,7 +48,7 @@
                                 <b-form-input id="textEmail"
                                 required
                                 placeholder="Ingresar Email"
-                                type="Email"
+                                type="email"
                                 value="{{ usuarios.email }}"
                                 name="email"
                                 disabled>
