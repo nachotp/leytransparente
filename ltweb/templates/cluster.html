@@ -1,126 +1,26 @@
-{% load staticfiles %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>{% block tab_title %}
-      Ley Transparente
-  {% endblock %}</title>
-  {% load static %}
-  <link rel="stylesheet" href="{% static "lib/fontawesome-free-5.6.3-web/css/all.css" %}">
-  <link type="text/css" rel="stylesheet" href="{%  static "lib/bootstrap-vue/bootstrap.min.css" %}"/>
-  <link type="text/css" rel="stylesheet" href="{%  static "lib/bootstrap-vue/bootstrap-vue.min.css" %}"/>
-  {% block head_end %}{% endblock %}
+{% extends 'base.html' %}
+{% load static %}
 
-</head>
+{% block body_end %}
+    <script type="text/x-template" id="conflictosVue"></script>
+    <script src="{% static 'lib/vuex/vuex.js' %}"></script>
+    <script src="{% static 'ltweb/js/conflictos_filter.js' %}"></script>
+{% endblock %}
 
-<body >
-    <div id="app">
-        {% include 'header.html' %}
-        <div class="container-fluid px-5 pt-5">
+<script>
+{% block vue_dependencies %}
+    const DEPS = {'conflictos-vue': conflictosVue};
+{% endblock %}
+</script>
 
-            {% block content %}{% endblock %}
+{% block content %}
 
-        </div>
-    </div>
+{% if conflictos %}
+<body data='{{ conflictos }}'>
 
-  <script type="text/javascript" src="{% static "lib/vue/vue.js" %}"></script>
-  <script src="{% static "lib/bootstrap-vue/polyfill.min.js" %}"></script>
-  <script src="{% static "lib/bootstrap-vue/bootstrap-vue.min.js" %}"></script>
-  <script type="text/javascript" src="{% static "lib/vue-resource/vue-resource.js" %}"></script>
-
-  {% block body_end %}
-    {# Mostly for scripts that should go after the content and after the vue.js script tag #}
-  {% endblock body_end %}
-    <script>
-        {% block vue_dependencies %}
-            const DEPS = {};
-        {% endblock %}
-    </script>
-
-    <script>
-        window.app = new Vue({
-            el: '#app',
-            data() {
-                return {
-                    actualPage: '',
-                    form: {
-                        nombreUsuario: '',
-                        email: '',
-                        nombre: '',
-                        apellido: '',
-                        contrasena: '',
-                        selected: [],
-                    },
-                    show: true,
-                    opciones: [
-                        { text: 'Informaciones', value: 'is_oficina' },
-                        { text: 'Revisión', value: 'is_comision' },
-                        { text: 'Administrador', value: 'is_admin' }
-                    ]
-                }
-            },
-            computed: {
-                toConflictos: function () {
-                    this.actualPage = 'Conflictos';
-                    return '';
-                },
-                toDiputados: function(){
-                    this.actualPage = 'Diputados';
-                    return '';
-                },
-                toProyLey: function(){
-                    this.actualPage = 'ProyLey';
-                    return '';
-                },
-                toRegistro: function(){
-                    this.actualPage = 'Registro';
-                    return '';
-                },
-
-                inConflictos: function () {
-                    if (this.actualPage === 'Conflictos')
-                        return 'active';
-                    else
-                        return '';
-                },
-                inDiputados: function () {
-                    if (this.actualPage === 'Diputados')
-                        return 'active';
-                    else
-                        return '';
-                },
-                inProyLey: function () {
-                    if (this.actualPage === 'ProyLey')
-                        return 'active';
-                    else
-                        return '';
-                },
-                inRegistro: function () {
-                    if (this.actualPage === 'Registro')
-                        return 'active';
-                    else
-                        return '';
-                }
-            },
-            methods: {
-                onReset: function(evt) {
-                    evt.preventDefault();
-                    this.form.nombreUsuario = '';
-                    this.form.apellido = '';
-                    this.form.email = '';
-                    this.form.nombre = '';
-                    this.form.contrasena = '';
-                    this.form.selected = [];
-                    this.$nextTick(() =>{
-                        this.show = true
-                    })
-                }
-            },
-            components: DEPS
-        })
-    </script>
-
+    <conflictos-vue :class="toConflictos"></conflictos-vue>
 </body>
-
-</html>
+{% else %}
+    <h1>No se han encontrado conflictos de interes.</h1>
+{% endif %}
+{% endblock %}
