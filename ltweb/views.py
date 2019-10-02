@@ -7,11 +7,13 @@ from bson.objectid import ObjectId
 
 from ltweb import conflict_detection as confd
 from .conn import DBconnection
+from .utilities import send_email
 from datetime import datetime
 
 
 class HomeView(TemplateView):
     template_name = "home.html"
+    send_email("Prueba", "test", {"item": "Mundo"}, "mail@domain.com")
 
 class RegistroView(TemplateView):
     template_name = "registro.html"
@@ -335,3 +337,4 @@ class ConflictoListView(TemplateView):
         context["conflictos"] = json.dumps(data)
         print(context["conflictos"])
         return context
+
