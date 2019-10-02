@@ -7,6 +7,7 @@ from bson.objectid import ObjectId
 
 from ltweb import conflict_detection as confd
 from .conn import DBconnection
+from .utilities import send_email
 from datetime import datetime
 
 from django.contrib.auth.models import User
@@ -41,13 +42,6 @@ permission3 = Permission.objects.create(
 
 class HomeView(TemplateView):
     template_name = "home.html"
-
-    def get(self, request, *args, **kwargs):
-        print(request.user.is_authenticated)
-        if not request.user.is_authenticated:
-            return redirect('login')
-
-        return render(request, self.template_name)
 
 
 class RegistroView(View):
@@ -530,11 +524,12 @@ class ConflictoListView(TemplateView):
         print(context["conflictos"])
         return context
 
-
+      
 class ClusterView(TemplateView):
 
     template_name = "cluster.html"
 
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name)
+
 
