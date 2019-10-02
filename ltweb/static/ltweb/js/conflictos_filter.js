@@ -49,10 +49,10 @@ const conflictosVue = {
                 
                     <b-dropdown id="partidosearch" size="lg" variant="outline-dark" style="width:100%" :text="fillDropdown">
                         <b-dropdown-item @click="searchPartido = ''"> Todos</b-dropdown-item>
-                        <b-dropdown-item v-for="(conflicto, index) in conflictos" 
+                        <b-dropdown-item v-for="(partido, index) in getPartidos" 
                                     :key="index" 
-                                    :value="conflicto.partido"
-                                    @click="searchPartido = conflicto.partido">[[conflicto.partido]]
+                                    :value="partido"
+                                    @click="searchPartido = partido">[[partido]]
                         </b-dropdown-item>
                     </b-dropdown>
                     
@@ -60,6 +60,7 @@ const conflictosVue = {
                 
                 <b-col cols="3" v-bind="filterCols">
                     <b-dropdown id="conflictosearch" size="lg" variant="outline-dark" style="width:100%" :text="fillDropdown2">
+                        <b-dropdown-item @click="searchTipo = ''"> Ambos</b-dropdown-item>
                         <b-dropdown-item @click="searchTipo = 'Directo'"> Directo</b-dropdown-item>
                         <b-dropdown-item @click="searchTipo = 'Indirecto'"> Indirecto</b-dropdown-item>
                     </b-dropdown>
@@ -87,7 +88,6 @@ const conflictosVue = {
                             <b-list-group-item v-bind="listItem"><b>Motivo: </b>[[conflicto.prov_conf|capitalize]]</b-list-group-item>
                             <b-list-group-item v-bind="listItem"><b>2º Involucrado: </b>[[conflicto.nombre_involucrado|capitalize]]</b-list-group-item>
                             <b-list-group-item v-bind="listItem"><b>Razon social del Involucrado: </b>[[conflicto.razon_social|capitalize]]</b-list-group-item>
-                            [[conflicto.tipo_conflicto]]
                         </b-list-group>
                     </b-card-text>
                 </b-card-body>
@@ -156,14 +156,16 @@ const conflictosVue = {
     },
     computed: {
         filterConflictosTipo: function() {
-            if (conflicto.tipo_conflicto === undefined)
-                return conflicto;
-            else
-                return conflicto.tipo_conflicto.toLowerCase().match(this.searchTipo.toLowerCase());
+            return this.conflictos.filter((conflicto) =>{
+                if (this.searchTipo === '')
+                    return true;
+                else
+                    return conflicto.tipo_conflicto.toLowerCase() === this.searchTipo.toLowerCase();
+            });
         },
         //Filtra los conflictos, tal que sólo se muestran los que calzan parcialmente con el texto en searchName
         filterConflictosName: function () {
-            return this.conflictos.filter((conflicto) =>{
+            return this.filterConflictosTipo.filter((conflicto) =>{
                 var namesearch = conflicto.parlamentario.toLowerCase().indexOf( this.searchName.toLowerCase() ) > -1;
                 return namesearch;
             });
@@ -186,8 +188,15 @@ const conflictosVue = {
             return (this.searchPartido === '') ? "Todos" : this.searchPartido;
         },
         fillDropdown2: function () {
-            return (this.searchTipo === '') ? "Directo" : this.searchTipo;
+            return (this.searchTipo === '') ? "Ambos" : this.searchTipo;
         },
+        getPartidos: function () {
+            var partidos = [];
+            for (const conflicto of this.conflictos)
+                if(!(partidos.includes(conflicto.partido)))
+                    partidos.push(conflicto.partido);
+            return partidos
+        }
 
     },
     //Ajusta la frase para que la primera letra sea mayúscula
