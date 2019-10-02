@@ -105,6 +105,20 @@ class RegistroView(View):
             return render(request, self.template_name, self.context)
 
 
+class ActualizarPermisosView(View):
+    template_name = "actualizar.html"
+    context = {}
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name, self.context)
+
+    def post(self, request, *args, **kwargs):
+        print(request.POST)
+        #user = User.objects.get(username=request.POST['username'])
+        #print(user.get_all_permissions())
+        return redirect('Control de usuario')
+
+
 class ControlView(TemplateView):
     template_name = "control_usuario.html"
 
@@ -125,6 +139,7 @@ class ControlView(TemplateView):
 
         context['usuarios'] = data
         return context
+
 
 class ActualizarView(TemplateView):
     template_name = "actualizar.html"

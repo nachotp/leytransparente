@@ -3,7 +3,7 @@
 {% block content %}
     <b-container>
         <b-card header-bg-variant="primary" header-text-variant="white" style="font-size: large;" header="Actalizar rol de un trabajador">
-            <b-form method="POST" v-if="show">
+            <b-form method="POST" action="{% url 'Actualizar Permisos' %}" v-if="show">
                 {% csrf_token %}
                 <b-row class="justify-content-center">
                     <b-col cols="6">
