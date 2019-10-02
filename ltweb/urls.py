@@ -6,10 +6,10 @@ from django.contrib.auth.decorators import login_required, permission_required
 urlpatterns = [
     path("", views.HomeView.as_view(), name="Home"),
     path(r'ley', views.SubirLeyView.as_view(), name='Subir Ley'),
-    path(r'leyes', login_required(views.LeyesListView.as_view()), name='Lista Leyes'),
+    path(r'leyes', views.LeyesListView.as_view(), name='Lista Leyes'),
     path(r'declaracion/', views.SubirDeclaracionView.as_view(), name='Subir declaracion'),
-    path(r'diputados/', login_required(views.DiputadosListView.as_view()), name='Lista Diputados'),
-    path(r'ver/<str:id>', login_required(views.ViewDeclaracion.as_view()), name='Ver Declaracion'),
+    path(r'diputados/', views.DiputadosListView.as_view(), name='Lista Diputados'),
+    path(r'ver/<str:id>', views.ViewDeclaracion.as_view(), name='Ver Declaracion'),
     path(r'conflicto/<str:ley>', views.ConflictoView.as_view(), name='Conflictos'),
     path(r'conflictos', views.ConflictoListView.as_view(), name='Lista Conflictos'),
     path(r'patrones', views.ClusterView.as_view(), name="patrones"),
