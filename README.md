@@ -1,5 +1,17 @@
 # ley Transparente
 
+## Ejecutar
+
+Servidor
+```shell
+python manage.py runserver
+```
+
+Servidor dummy de correos (según corresponda el OS)
+```shell
+smtpd.bat/.sh
+```
+
 ## MongoDB Atlas
 
 ```python
