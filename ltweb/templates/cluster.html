@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body_end %}
+    <script type="text/x-template" id="conflictosVue"></script>
+    <script src="{% static 'lib/vuex/vuex.js' %}"></script>
+    <script src="{% static 'ltweb/js/conflictos_filter.js' %}"></script>
+{% endblock %}
+
+<script>
+{% block vue_dependencies %}
+    const DEPS = {'conflictos-vue': conflictosVue};
+{% endblock %}
+</script>
+
+{% block content %}
+
+{% if conflictos %}
+<body data='{{ conflictos }}'>
+
+    <conflictos-vue :class="toConflictos"></conflictos-vue>
+</body>
+{% else %}
+    <h1>No se han encontrado conflictos de interes.</h1>
+{% endif %}
+{% endblock %}

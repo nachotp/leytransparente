@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <b-container :class="toRegistro">
-        <b-card header-bg-variant="primary" header-text-variant="white" style="font-size: large;" header="Registrar un nuevo Trabajador">
-            <b-form method="POST" action="{% url 'Registro de usuario' %}" v-if="show">
+    <b-container>
+        <b-card header-bg-variant="primary" header-text-variant="white" style="font-size: large;" header="Actalizar rol de un trabajador">
+            <b-form method="POST" action="{% url 'Actualizar Permisos' %}" v-if="show">
                 {% csrf_token %}
                 <b-row class="justify-content-center">
                     <b-col cols="6">
@@ -13,17 +13,18 @@
                                 <b-form-input id="textUsername"
                                 required
                                 placeholder="Ingresar Nombre de usuario"
-                                v-model="form.nombreUsuario"
-                                name="username">
+                                name="username"
+                                value="{{ usuarios.username }}"
+                                readonly="readonly">
                                 </b-form-input>
                             </b-form-group>
 
                             <b-form-group label="Nombre:" label-for="textNombre">
                                 <b-form-input id="textNombre"
-                                required
                                 placeholder="Ingresar Nombre"
-                                v-model="form.nombre"
-                                name="name">
+                                name="name"
+                                value="{{ usuarios.nombre }}"
+                                disabled>
                                 </b-form-input>
                             </b-form-group>
 
@@ -31,8 +32,9 @@
                                 <b-form-input id="textApellido"
                                 required
                                 placeholder="Ingresar Apellido"
-                                v-model="form.apellido"
-                                name="apellido">
+                                value="{{ usuarios.apellido }}"
+                                name="apellido"
+                                disabled>
                                 </b-form-input>
                             </b-form-group>
 
@@ -46,9 +48,10 @@
                                 <b-form-input id="textEmail"
                                 required
                                 placeholder="Ingresar Email"
-                                v-model="form.email"
                                 type="email"
-                                name="email">
+                                value="{{ usuarios.email }}"
+                                name="email"
+                                disabled>
                                 </b-form-input>
                             </b-form-group>
 
@@ -56,9 +59,9 @@
                                 <b-form-input id="textPassword"
                                 required
                                 placeholder="Ingresar Contraseña"
-                                type="password"
-                                v-model="form.contrasena"
-                                name="password">
+                                value="##########"
+                                name="password"
+                                disabled>
                                 </b-form-input>
                             </b-form-group>
 
@@ -75,8 +78,7 @@
                         </b-card-text>
                     </b-col>
                 </b-row>
-                <b-button type="submit" variant="primary">Crear</b-button>
-                <b-button v-on:click="onReset" type="reset" variant="danger">Limpiar campos</b-button>
+                <b-button type="submit" variant="primary">Actualizar</b-button>
             </b-form>
         </b-card>
     </b-container>

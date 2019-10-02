@@ -7,14 +7,15 @@
 {% endblock %}
 
 <div>
-    
     <div>
         <b-navbar toggleable="lg" type="dark" variant="dark" class="nav-menu">
             <b-navbar-brand href="{% url "Home" %}">
                 <img  src="{% static "ltweb/img/logo2.png" %}" class="d-inline-block align-top" width="300px">
             </b-navbar-brand>
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
-    
+
+            {% if user.is_authenticated %}
+
             <b-collapse id="nav-collapse" is-nav>
                 <b-navbar-nav>
                     <b-nav-item href="{% url "Lista Diputados" %}" class="nav-menu-item" :class="inDiputados">Diputados</b-nav-item>
@@ -24,8 +25,16 @@
             </b-collapse>
 
             <b-navbar-nav class="ml-auto">
-                <b-nav-item href="{% url "Registro de usuario" %}" class="nav-menu-item" :class="inRegistro">Registrarse</b-nav-item>
+                <b-nav-item class="nav-menu-item" disabled>{{ user.username }}</b-nav-item>
+                {% if perms.auth.is_admin %}
+                    <b-nav-item href="{% url "Control de usuario" %}" class="nav-menu-item" :class="inControl">Control de Cuentas</b-nav-item>
+                    <b-nav-item href="{% url "Registro de usuario" %}" class="nav-menu-item" :class="inRegistro">Crear Usuario</b-nav-item>
+                {% endif %}
+                <b-nav-item href="{% url "logout" %}" class="nav-menu-item">Cerrar Sesión</b-nav-item>
             </b-navbar-nav>
+
+
+            {% endif %}
 
         </b-navbar>
 
