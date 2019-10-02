@@ -17,6 +17,7 @@ from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import Permission, Group
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 """
 content_type = ContentType.objects.get_for_model(User)
@@ -41,11 +42,11 @@ permission3 = Permission.objects.create(
 )
 """
 
-class HomeView(TemplateView):
+class HomeView(LoginRequiredMixin,TemplateView):
     template_name = "home.html"
 
 
-class RegistroView(View):
+class RegistroView(LoginRequiredMixin,View):
     template_name = "registro.html"
     context = {}
 
@@ -106,7 +107,7 @@ class RegistroView(View):
             return render(request, self.template_name, self.context)
 
 
-class ActualizarPermisosView(View):
+class ActualizarPermisosView(LoginRequiredMixin,View):
     template_name = "actualizar.html"
     context = {}
 
@@ -134,7 +135,7 @@ class ActualizarPermisosView(View):
         return redirect('Control de usuario')
 
 
-class ControlView(TemplateView):
+class ControlView(LoginRequiredMixin,TemplateView):
     template_name = "control_usuario.html"
 
     def get_context_data(self, **kwargs):
@@ -168,7 +169,7 @@ class ControlView(TemplateView):
         return context
 
 
-class ActualizarView(TemplateView):
+class ActualizarView(LoginRequiredMixin,TemplateView):
     template_name = "actualizar.html"
 
     def get_context_data(self, **kwargs):
@@ -186,7 +187,7 @@ class ActualizarView(TemplateView):
         return context
 
 
-class EliminarUserView(View):
+class EliminarUserView(LoginRequiredMixin,View):
 
     def get(self, request, *args, **kwargs):
         user = User.objects.get(username=self.kwargs['id'])
@@ -194,7 +195,7 @@ class EliminarUserView(View):
         return redirect('Control de usuario')
 
 
-class ViewDeclaracion(TemplateView):
+class ViewDeclaracion(LoginRequiredMixin,TemplateView):
     template_name = "ver.html"
     conn = DBconnection()
     mycol = conn.get_collection("declaraciones")
@@ -211,7 +212,7 @@ class ViewDeclaracion(TemplateView):
         return ctx
 
 
-class SubirDeclaracionView(View):
+class SubirDeclaracionView(LoginRequiredMixin,View):
     context = {}
     initial = {'key': 'value'}
     conn = DBconnection()
@@ -264,7 +265,7 @@ class SubirDeclaracionView(View):
         return redirect('Ver Declaracion', id=x)
 
 
-class DiputadosListView(TemplateView):
+class DiputadosListView(LoginRequiredMixin,TemplateView):
     conn = DBconnection()
     mycol = conn.get_collection("declaraciones")
 
@@ -296,7 +297,7 @@ class DiputadosListView(TemplateView):
         return context
 
 
-class SubirLeyView(View):
+class SubirLeyView(LoginRequiredMixin,View):
     context = {}
     initial = {'key': 'value'}
     conn = DBconnection()
@@ -378,7 +379,7 @@ class SubirLeyView(View):
         return redirect('Conflictos', ley=numero)
 
 
-class LeyesListView(TemplateView):
+class LeyesListView(LoginRequiredMixin,TemplateView):
     conn = DBconnection()
     mycol = conn.get_collection("leyes")
 
@@ -402,7 +403,7 @@ class LeyesListView(TemplateView):
         return context
 
 
-class ConflictoView(TemplateView):
+class ConflictoView(LoginRequiredMixin,TemplateView):
     template_name = "conflict_view.html"
     conn = DBconnection()
     decl = conn.get_collection("declaraciones")
@@ -471,7 +472,7 @@ class ConflictoView(TemplateView):
         return ctx
 
 
-class ConflictoListView(TemplateView):
+class ConflictoListView(LoginRequiredMixin,TemplateView):
     template_name = 'conflictos_list.html'
     conn = DBconnection()
     confl = conn.get_collection("conflictos")
@@ -527,7 +528,7 @@ class ConflictoListView(TemplateView):
         return context
 
 
-class ClusterView(TemplateView):
+class ClusterView(LoginRequiredMixin,TemplateView):
     template_name = "clustest.html"
 
     def get_context_data(self, **kwargs):

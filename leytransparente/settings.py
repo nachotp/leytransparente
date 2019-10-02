@@ -133,7 +133,7 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (os.path.join("ltweb", 'static'),)
 TOOLS_DIR = os.path.join("ltweb", 'tools')
-
+LOGIN_URL = "/login"
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = "/login"
 
