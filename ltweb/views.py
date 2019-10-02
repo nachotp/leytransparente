@@ -409,10 +409,20 @@ class ConflictoListView(TemplateView):
                 "parlamentario": conf["parlamentario"],
                 "partido": conf["partido"],
                 "grado": conf["grado"],
-                "prov_conf": conf["razon"]["prov_conf"],
-                "motivo": conf["razon"]["motivo"],
                 "url": url_ley["url"]
             }
+            if conf["razon"]["prov_conf"] == 'indirecto':
+                conf["razon"]["prov_conf"] = 'Indirecto por ' + conf["razon"]["motivo"]["relacion_diputado"]
+
+                dic["nombre_involucrado"] = conf["razon"]["motivo"]["nombre_involucrado"]
+                dic["relacion_diputado"] = conf["razon"]["motivo"]["relacion_diputado"]
+                dic["razon_social"] = conf["razon"]["motivo"]["razon_social"]
+            else:
+                dic["motivo"] = conf["razon"]["motivo"]
+
+            dic["prov_conf"] = conf["razon"]["prov_conf"]
+
+
 
             if conf["pariente"] is not None:
                 dic["pariente"] = conf["pariente"]
@@ -423,7 +433,6 @@ class ConflictoListView(TemplateView):
         context["conflictos"] = json.dumps(data)
         print(context["conflictos"])
         return context
-
 
 
 
