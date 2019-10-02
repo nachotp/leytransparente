@@ -44,7 +44,7 @@
                         <td class="align-middle">
                             <div class="text-center">
                                 <b-form method="GET" action="{% url 'Eliminar Usuario' id=usuario.username %}" v-if="show">
-                                    <a class="align-middle" v-b-popover.hover.top="'Editar rol'" href="{% url 'Actualizar Usuario' id=usuario.username %}"><i class="fas fa-user-edit"></i></a>
+                                    <a style="color: #007bff" class="align-middle" v-b-popover.hover.top="'Editar rol'" href="{% url 'Actualizar Usuario' id=usuario.username %}"><i class="fas fa-user-edit"></i></a>
                                     <button v-b-popover.hover.top="'Eliminar usuario'" style="color: #007bff" type="submit" class="btn align-middle"><i class="fas fa-trash"></i></button>
                                 </b-form>
                             </div>

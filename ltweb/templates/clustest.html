@@ -6,20 +6,23 @@
 {% if clusters %}
 <body>
 
-<h1>Patrones en conflictos</h1>
+<b-container style="max-width: 1450px">
 
-{% for patron in clusters %}
+    <h1>Patrones en conflictos</h1>
 
-    {% for conflicto in patron %}
+    {% for patron in clusters %}
 
-        <p>{{ conflicto.nombre_ley }}</p>
-        <p>{{ conflicto.razon.prov_conf }}</p>
-        <p>{{ conflicto.razon.motivo }}</p>
-        <p>{{ conflicto.parlamentario }}</p>
+        {% for conflicto in patron %}
+
+            <p>{{ conflicto.nombre_ley }}</p>
+            <p>{{ conflicto.razon.prov_conf }}</p>
+            <p>{{ conflicto.razon.motivo }}</p>
+            <p>{{ conflicto.parlamentario }}</p>
+
+        {% endfor %}
 
     {% endfor %}
-
-{% endfor %}
+</b-container>
 
 </body>
 {% else %}
