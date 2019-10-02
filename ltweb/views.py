@@ -105,6 +105,27 @@ class RegistroView(View):
             return render(request, self.template_name, self.context)
 
 
+class ControlView(TemplateView):
+    template_name = "control_usuario.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        data = []
+        users = User.objects.all()
+
+        for u in users:
+            dic = {}
+            dic['username'] = u.username
+            dic['nombre'] = u.first_name
+            dic['apellido'] = u.last_name
+            dic['email'] = u.email
+
+            data.append(dic)
+
+        context['usuarios'] = data
+        return context
+
+
 class ViewDeclaracion(TemplateView):
     template_name = "ver.html"
     conn = DBconnection()
