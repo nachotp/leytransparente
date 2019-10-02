@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <b-container :class="toRegistro">
+        <b-card header-bg-variant="primary" header-text-variant="white" style="font-size: large;" header="Registrar un nuevo Trabajador">
+            <b-form method="POST" action="{% url 'Registro de usuario' %}" v-if="show">
+                {% csrf_token %}
+                <b-row class="justify-content-center">
+                    <b-col cols="6">
+                        <b-card-text>
+
+                            <b-form-group label="Nombre de usuario:" label-for="textUsername">
+                                <b-form-input id="textUsername"
+                                required
+                                placeholder="Ingresar Nombre de usuario"
+                                v-model="form.nombreUsuario"
+                                name="username">
+                                </b-form-input>
+                            </b-form-group>
+
+                            {% if repetido %}
+                                <p style="color: red;">El nombre de usuario ya existe</p>
+                            {% endif %}
+
+                            <b-form-group label="Nombre:" label-for="textNombre">
+                                <b-form-input id="textNombre"
+                                required
+                                placeholder="Ingresar Nombre"
+                                v-model="form.nombre"
+                                name="name">
+                                </b-form-input>
+                            </b-form-group>
+
+                            <b-form-group label="Apellido:" label-for="textApellido">
+                                <b-form-input id="textApellido"
+                                required
+                                placeholder="Ingresar Apellido"
+                                v-model="form.apellido"
+                                name="apellido">
+                                </b-form-input>
+                            </b-form-group>
+
+                        </b-card-text>
+                    </b-col>
+
+                    <b-col cols="6">
+                        <b-card-text>
+
+                        <b-form-group label="Email:" label-for="textEmail">
+                                <b-form-input id="textEmail"
+                                required
+                                placeholder="Ingresar Email"
+                                v-model="form.email"
+                                type="email"
+                                name="email">
+                                </b-form-input>
+                            </b-form-group>
+
+                            <b-form-group label="Contraseña:" label-for="textPassword">
+                                <b-form-input id="textPassword"
+                                required
+                                placeholder="Ingresar Contraseña"
+                                type="password"
+                                v-model="form.contrasena"
+                                name="password">
+                                </b-form-input>
+                            </b-form-group>
+
+                            <b-form-group label="Roles:">
+                                <b-form-radio-group
+                                    v-model="form.selected"
+                                    :options="opciones"
+                                    name="roles"
+                                    size="lg"
+                                    required
+                                ></b-form-radio-group>
+                            </b-form-group>
+
+                        </b-card-text>
+                    </b-col>
+                </b-row>
+                <b-button type="submit" variant="primary">Crear</b-button>
+                <b-button v-on:click="onReset" type="reset" variant="danger">Limpiar campos</b-button>
+            </b-form>
+        </b-card>
+    </b-container>
+
+{% endblock %}

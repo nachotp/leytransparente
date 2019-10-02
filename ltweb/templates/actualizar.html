@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <b-container>
+        <b-card header-bg-variant="primary" header-text-variant="white" style="font-size: large;" header="Actalizar rol de un trabajador">
+            <b-form method="POST" action="{% url 'Actualizar Permisos' %}" v-if="show">
+                {% csrf_token %}
+                <b-row class="justify-content-center">
+                    <b-col cols="6">
+                        <b-card-text>
+
+                            <b-form-group label="Nombre de usuario:" label-for="textUsername">
+                                <b-form-input id="textUsername"
+                                required
+                                placeholder="Ingresar Nombre de usuario"
+                                name="username"
+                                value="{{ usuarios.username }}"
+                                readonly="readonly">
+                                </b-form-input>
+                            </b-form-group>
+
+                            <b-form-group label="Nombre:" label-for="textNombre">
+                                <b-form-input id="textNombre"
+                                placeholder="Ingresar Nombre"
+                                name="name"
+                                value="{{ usuarios.nombre }}"
+                                disabled>
+                                </b-form-input>
+                            </b-form-group>
+
+                            <b-form-group label="Apellido:" label-for="textApellido">
+                                <b-form-input id="textApellido"
+                                required
+                                placeholder="Ingresar Apellido"
+                                value="{{ usuarios.apellido }}"
+                                name="apellido"
+                                disabled>
+                                </b-form-input>
+                            </b-form-group>
+
+                        </b-card-text>
+                    </b-col>
+
+                    <b-col cols="6">
+                        <b-card-text>
+
+                        <b-form-group label="Email:" label-for="textEmail">
+                                <b-form-input id="textEmail"
+                                required
+                                placeholder="Ingresar Email"
+                                type="email"
+                                value="{{ usuarios.email }}"
+                                name="email"
+                                disabled>
+                                </b-form-input>
+                            </b-form-group>
+
+                            <b-form-group label="Contraseña:" label-for="textPassword">
+                                <b-form-input id="textPassword"
+                                required
+                                placeholder="Ingresar Contraseña"
+                                value="##########"
+                                name="password"
+                                disabled>
+                                </b-form-input>
+                            </b-form-group>
+
+                            <b-form-group label="Roles:">
+                                <b-form-radio-group
+                                    v-model="form.selected"
+                                    :options="opciones"
+                                    name="roles"
+                                    size="lg"
+                                    required
+                                ></b-form-radio-group>
+                            </b-form-group>
+
+                        </b-card-text>
+                    </b-col>
+                </b-row>
+                <b-button type="submit" variant="primary">Actualizar</b-button>
+            </b-form>
+        </b-card>
+    </b-container>
+
+{% endblock %}

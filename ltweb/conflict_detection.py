@@ -72,6 +72,7 @@ def score(porc, cont):
 def conflicto_embedding(tags):
     myclient = DBconnection()
     mycol = myclient.get_collection("declaraciones")
+    mycol2 = myclient.get_collection("indirectos")
     print("BD Conectada")
 
     wp = EmbeddingPredictor()
@@ -80,6 +81,14 @@ def conflicto_embedding(tags):
     query = mycol.find(
         {"meta.actual": True, "Derechos_Acciones_Chile": {"$exists": True}},
         {"_id": 1, "Id_Declaracion": 1, "Datos_del_Declarante": 1, "Derechos_Acciones_Chile": 1}
+    )
+    query_familiar = mycol2.find(
+        {"meta.actual": True, "Derechos_Acciones_Chile": {"$exists": True}},
+        {"_id": 1, "Parlamentario": 1, "Parentesco": 1, "Derechos_Acciones_Chile": 1,"Datos_del_Pariente": 1, "tipo": 1}
+    )
+    query_lobby = mycol2.find(
+        {"meta.actual": True, "Representa": {"$exists": True}},
+        {"_id": 1, "Parlamentario": 1, "Representa": 1, "Datos_del_Lobista": 1,"tipo": 1}
     )
 
     tags = ' '.join(tags)
@@ -134,6 +143,40 @@ def conflicto_embedding(tags):
             if cos_sim > 0.5:
                 scr = score(porc, cont)
                 matches.append((cos_sim, scr, nombre, idec, emp, list(giro_vec)))
+
+    for familiar in query_familiar:
+        nombre = ""
+        for name in familiar["Parlamentario"].split():
+            nombre += name.lower().capitalize() + " "
+        idec = familiar["_id"]
+        for empresa in familiar["Derechos_Acciones_Chile"]:
+            porc = float(empresa["Cantidad_Porcentaje"])
+            giro = empresa["Giro_Registrado_SII"] if "Giro_Registrado_SII" in empresa else ""
+            razon = empresa["Nombre_Razon_Social"]
+
+            giro = giro.lower().translate(str.maketrans('', '', string.punctuation))
+            razon = razon.lower().translate(str.maketrans('', '', string.punctuation))
+            giro_vec = wp.to_vector(giro)
+            cos_sim = wp.similarity(giro_vec, vector_ley)
+
+            if cos_sim > 0.55:
+                matches.append((cos_sim, 0, nombre, idec, empresa))
+
+    for lobby in query_lobby:
+        nombre = ""
+        for name in lobby["Parlamentario"].split():
+            nombre += name.lower().capitalize() + " "
+        idec = lobby["_id"]
+        for empresa in lobby["Representa"]:
+            razon = empresa["Nombre_Razon_Social"]
+            giro = empresa["Giro_Registrado_SII"] if "Giro_Registrado_SII" in empresa else ""
+            giro = giro.lower().translate(str.maketrans('', '', string.punctuation))
+            razon = razon.lower().translate(str.maketrans('', '', string.punctuation))
+            giro_vec = wp.to_vector(giro)
+            cos_sim = wp.similarity(giro_vec, vector_ley)
+
+            if cos_sim > 0.55:
+                matches.append((cos_sim, -1, nombre, idec, empresa))
 
     matches.sort(key=operator.itemgetter(0, 1), reverse=True)
 

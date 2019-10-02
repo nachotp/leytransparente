@@ -12,54 +12,94 @@ const conflictosVue = {
         
         <!--Herramientras de filtrado-->
         
-        <b-row class="mt-3">
-            <b-col>
-                <label for="namesearch" style="display: block"><h5>Nombre parlamentario</h5></label>
-            </b-col>
-            
-            <b-col>
-                <label for="leysearch" style="display: block"><h5>Número o nombre Ley</h5></label>
-            </b-col>
-            
-            <b-col>
-                <label for="partidosearch" style="display: block"><h5>Partido político</h5></label>
-            </b-col>
-        </b-row>
+        <b-card
+        header-bg-variant="secondary"
+        header-text-variant="white"
+        header="Herramientas de filtrado"
+        header-class="h4">
         
-        <b-row>
-            <b-col v-bind="filterCols">
-                <b-form-input  id="namesearch" size="lg" v-model="searchName" placeholder="Buscar por nombre"></b-form-input>
-            </b-col>
-            
-            <b-col v-bind="filterCols">
-                <b-form-input id="leysearch" size="lg" v-model="searchLey" placeholder="Buscar por ley"></b-form-input>
-            </b-col>
-        
-            <b-col v-bind="filterCols">
-            
-                <b-dropdown id="partidosearch" size="lg" variant="outline-dark" style="width:100%" :text="fillDropdown">
-                    <b-dropdown-item @click="searchPartido = ''"> Todos</b-dropdown-item>
-                    <b-dropdown-item v-for="(conflicto, index) in conflictos" 
-                                :key="index" 
-                                :value="conflicto.partido"
-                                @click="searchPartido = conflicto.partido">[[conflicto.partido]]
-                    </b-dropdown-item>
-                </b-dropdown>
+            <b-row class="mt-3">
+                <b-col cols="3">
+                    <label for="namesearch" style="display: block"><h5>Nombre parlamentario</h5></label>
+                </b-col>
                 
-            </b-col>
-        
-        </b-row>
+                <b-col cols="3">
+                    <label for="leysearch" style="display: block"><h5>Número o nombre Ley</h5></label>
+                </b-col>
+                
+                <b-col cols="3">
+                    <label for="partidosearch" style="display: block"><h5>Partido político</h5></label>
+                </b-col>
+                
+                <b-col cols="3">
+                    <label for="conflictosearch" style="display: block"><h5>Tipo Conflicto</h5></label>
+                </b-col>
+            </b-row>
+            
+            <b-row>
+                <b-col cols="3" v-bind="filterCols">
+                    <b-form-input  id="namesearch" size="lg" v-model="searchName" placeholder="Buscar por nombre"></b-form-input>
+                </b-col>
+                
+                <b-col cols="3" v-bind="filterCols">
+                    <b-form-input id="leysearch" size="lg" v-model="searchLey" placeholder="Buscar por ley"></b-form-input>
+                </b-col>
+            
+                <b-col cols="3" v-bind="filterCols">
+                
+                    <b-dropdown id="partidosearch" size="lg" variant="outline-dark" style="width:100%" :text="fillDropdown">
+                        <b-dropdown-item @click="searchPartido = ''"> Todos</b-dropdown-item>
+                        <b-dropdown-item v-for="(partido, index) in getPartidos" 
+                                    :key="index" 
+                                    :value="partido"
+                                    @click="searchPartido = partido">[[partido]]
+                        </b-dropdown-item>
+                    </b-dropdown>
+                    
+                </b-col>
+                
+                <b-col cols="3" v-bind="filterCols">
+                    <b-dropdown id="conflictosearch" size="lg" variant="outline-dark" style="width:100%" :text="fillDropdown2">
+                        <b-dropdown-item @click="searchTipo = ''"> Ambos</b-dropdown-item>
+                        <b-dropdown-item @click="searchTipo = 'Directo'"> Directo</b-dropdown-item>
+                        <b-dropdown-item @click="searchTipo = 'Indirecto'"> Indirecto</b-dropdown-item>
+                    </b-dropdown>
+                </b-col>
+            
+            </b-row>
+        </b-card>
 
         
         <b-row>
             <!--Se muestran todos los conflictos-->
-            <b-col v-for="(conflicto, index) in filterConflictosLey" :key="index" cols="6">
-                <b-card style="margin-top: 20px;" no-body header=" " :header-bg-variant="conflicto.grado == 'leve' ? 'warning' : 'danger' ">
+            <b-col v-for="(conflicto, index) in filterConflictosLey" :key="index" cols="6" >
+                <b-card v-if="conflicto.tipo_conflicto == 'indirecto'" style="margin-top: 20px;" no-body header=" " header-bg-variant="info">
     
                 <b-card-body style="padding-bottom: 0px; padding-top: 12px">
                     <a :href=" '/ver/' + conflicto.id_parlamentario"><h4>[[ conflicto.parlamentario ]]</h4></a>
                     <h4>[[conflicto.partido]]</h4>
                     <b-card-text>
+                        
+                        <b-list-group flush>
+                            <b-list-group-item v-bind="listItem"><b>Ley Nº: </b>
+                            <b-link :href="conflicto.url" class="card-link">[[conflicto.ley]]</b-link>
+                            </b-list-group-item>
+                            <b-list-group-item v-bind="listItem"><b>Nombre de Ley: </b>[[conflicto.nombre_ley|capitalize]]</b-list-group-item>
+                            <b-list-group-item v-bind="listItem"><b>Motivo: </b>[[conflicto.prov_conf|capitalize]]</b-list-group-item>
+                            <b-list-group-item v-bind="listItem"><b>2º Involucrado: </b>[[conflicto.nombre_involucrado|capitalize]]</b-list-group-item>
+                            <b-list-group-item v-bind="listItem"><b>Razon social del Involucrado: </b>[[conflicto.razon_social|capitalize]]</b-list-group-item>
+                        </b-list-group>
+                    </b-card-text>
+                </b-card-body>
+            </b-card>
+            
+            <b-card v-else style="margin-top: 20px;" no-body header=" " :header-bg-variant="conflicto.grado == 'leve' ? 'warning' : 'danger' " >
+    
+                <b-card-body style="padding-bottom: 0px; padding-top: 12px">
+                    <a :href=" '/ver/' + conflicto.id_parlamentario"><h4>[[ conflicto.parlamentario ]]</h4></a>
+                    <h4>[[conflicto.partido]]</h4>
+                    <b-card-text>
+                                                
                         <b-list-group flush>
                             <b-list-group-item v-bind="listItem"><b>Ley Nº: </b>
                             <b-link :href="conflicto.url" class="card-link">[[conflicto.ley]]</b-link>
@@ -69,9 +109,11 @@ const conflictosVue = {
                             <b-list-group-item v-bind="listItem"><b>Patrimonio relacionado: </b>[[conflicto.motivo|capitalize]]</b-list-group-item>
                             <b-list-group-item v-bind="listItem"><b>Grado de Conflicto: </b>[[conflicto.grado|capitalize]]</b-list-group-item>
                         </b-list-group>
+                        
                     </b-card-text>
                 </b-card-body>
             </b-card>
+            
             </b-col>
         </b-row>
     </b-container>
@@ -93,6 +135,7 @@ const conflictosVue = {
             searchName: '',
             searchLey: '',
             searchPartido: '',
+            searchTipo: '',
             filterCols: {
                 cols: '4',
                 style:{
@@ -112,9 +155,17 @@ const conflictosVue = {
         this.conflictos = JSON.parse(document.getElementsByTagName('body')[0].getAttribute('data') || '{}');
     },
     computed: {
+        filterConflictosTipo: function() {
+            return this.conflictos.filter((conflicto) =>{
+                if (this.searchTipo === '')
+                    return true;
+                else
+                    return conflicto.tipo_conflicto.toLowerCase() === this.searchTipo.toLowerCase();
+            });
+        },
         //Filtra los conflictos, tal que sólo se muestran los que calzan parcialmente con el texto en searchName
         filterConflictosName: function () {
-            return this.conflictos.filter((conflicto) =>{
+            return this.filterConflictosTipo.filter((conflicto) =>{
                 var namesearch = conflicto.parlamentario.toLowerCase().indexOf( this.searchName.toLowerCase() ) > -1;
                 return namesearch;
             });
@@ -135,7 +186,18 @@ const conflictosVue = {
         },
         fillDropdown: function () {
             return (this.searchPartido === '') ? "Todos" : this.searchPartido;
+        },
+        fillDropdown2: function () {
+            return (this.searchTipo === '') ? "Ambos" : this.searchTipo;
+        },
+        getPartidos: function () {
+            var partidos = [];
+            for (const conflicto of this.conflictos)
+                if(!(partidos.includes(conflicto.partido)))
+                    partidos.push(conflicto.partido);
+            return partidos
         }
+
     },
     //Ajusta la frase para que la primera letra sea mayúscula
     filters: {

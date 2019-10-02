@@ -44,6 +44,20 @@
             data() {
                 return {
                     actualPage: '',
+                    form: {
+                        nombreUsuario: '',
+                        email: '',
+                        nombre: '',
+                        apellido: '',
+                        contrasena: '',
+                        selected: 'Oficina de Informaciones',
+                    },
+                    show: true,
+                    opciones: [
+                        { text: 'Informaciones', value: 'Oficina de Informaciones' },
+                        { text: 'Revisión', value: 'Comision de Etica' },
+                        { text: 'Administrador', value: 'Administrator' }
+                    ]
                 }
             },
             computed: {
@@ -57,6 +71,14 @@
                 },
                 toProyLey: function(){
                     this.actualPage = 'ProyLey';
+                    return '';
+                },
+                toRegistro: function(){
+                    this.actualPage = 'Registro';
+                    return '';
+                },
+                toControl: function(){
+                    this.actualPage = 'Cuentas';
                     return '';
                 },
 
@@ -77,6 +99,32 @@
                         return 'active';
                     else
                         return '';
+                },
+                inRegistro: function () {
+                    if (this.actualPage === 'Registro')
+                        return 'active';
+                    else
+                        return '';
+                },
+                inControl: function () {
+                    if (this.actualPage === 'Cuentas')
+                        return 'active';
+                    else
+                        return '';
+                }
+            },
+            methods: {
+                onReset: function(evt) {
+                    evt.preventDefault();
+                    this.form.nombreUsuario = '';
+                    this.form.apellido = '';
+                    this.form.email = '';
+                    this.form.nombre = '';
+                    this.form.contrasena = '';
+                    this.form.selected = 'Oficina de Informaciones';
+                    this.$nextTick(() =>{
+                        this.show = true
+                    })
                 }
             },
             components: DEPS

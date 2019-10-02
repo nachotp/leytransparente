@@ -8,11 +8,190 @@ from bson.objectid import ObjectId
 from ltweb import conflict_detection as confd
 from .conn import DBconnection
 from .clustering import VectorClustering
+from .utilities import send_email
 from datetime import datetime
 
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
+from django.db import IntegrityError
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.models import Permission, Group
+from django.contrib.contenttypes.models import ContentType
+
+"""
+content_type = ContentType.objects.get_for_model(User)
+permission = Permission.objects.create(
+    codename='is_oficina',
+    name='Oficina de Informaciones',
+    content_type=content_type,
+)
+
+content_type = ContentType.objects.get_for_model(User)
+permission2 = Permission.objects.create(
+    codename='is_comision',
+    name='Comision de Etica',
+    content_type=content_type,
+)
+
+content_type = ContentType.objects.get_for_model(User)
+permission3 = Permission.objects.create(
+    codename='is_admin',
+    name='Administrador',
+    content_type=content_type,
+)
+"""
 
 class HomeView(TemplateView):
     template_name = "home.html"
+
+
+class RegistroView(View):
+    template_name = "registro.html"
+    context = {}
+
+    def get(self, request, *args, **kwargs):
+        self.context['repetido'] = False
+        return render(request, self.template_name, self.context)
+
+    def post(self, request, *args, **kwargs):
+        try:
+            self.context['repetido'] = False
+            ctx = request.POST
+            print("Registrando...")
+            user = User.objects.create_user(ctx['username'], ctx['email'], ctx['password'])
+            user.first_name = ctx['name']
+            user.last_name = ctx['apellido']
+
+            for perm in ctx.getlist('roles'):
+                if perm == 'Oficina de Informaciones':
+                    print('oficina')
+                    #content_type = ContentType.objects.get_for_model(User)
+                    #permission = Permission.objects.get(
+                        #codename=perm,
+                        #content_type=content_type,
+                    #)
+                    #user.user_permissions.add(permission)
+                    grupo = Group.objects.get(name=perm)
+                    user.groups.add(grupo)
+
+                elif perm == 'is_comision':
+                    print('comision')
+                    #content_type = ContentType.objects.get_for_model(User)
+                    #permission = Permission.objects.get(
+                        #codename=perm,
+                        #content_type=content_type,
+                    #)
+                    #user.user_permissions.add(permission)
+                    grupo = Group.objects.get(name=perm)
+                    user.groups.add(grupo)
+
+                else:
+                    print('admin')
+                    #content_type = ContentType.objects.get_for_model(User)
+                    #permission = Permission.objects.get(
+                        #codename=perm,
+                        #content_type=content_type,
+                    #)
+                    #user.user_permissions.add(permission)
+                    grupo = Group.objects.get(name=perm)
+                    user.groups.add(grupo)
+
+            user.save()
+
+            return redirect('Control de usuario')
+
+        except IntegrityError:
+            self.context['repetido'] = True
+            print("Usuario ya existe")
+            return render(request, self.template_name, self.context)
+
+
+class ActualizarPermisosView(View):
+    template_name = "actualizar.html"
+    context = {}
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name, self.context)
+
+    def post(self, request, *args, **kwargs):
+        print(request.POST)
+        user = User.objects.get(username=request.POST['username'])
+        #print(user.get_all_permissions())
+        #user.user_permissions.clear()
+        user.groups.clear()
+
+        user = User.objects.get(username=request.POST['username'])
+
+        #content_type = ContentType.objects.get_for_model(User)
+        #permission = Permission.objects.get(
+            #codename=request.POST['roles'],
+            #content_type=content_type,
+        #)
+        #user.user_permissions.add(permission)
+        grupo = Group.objects.get(name=request.POST['roles'])
+        user.groups.add(grupo)
+
+        return redirect('Control de usuario')
+
+
+class ControlView(TemplateView):
+    template_name = "control_usuario.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        data = []
+        users = User.objects.all()
+
+        for u in users:
+            if u.is_superuser != True:
+                dic = {}
+                dic['username'] = u.username
+                dic['nombre'] = u.first_name
+                dic['apellido'] = u.last_name
+                dic['email'] = u.email
+                dic['password'] = u.password
+
+                perm = u.get_all_permissions()
+
+                if 'auth.is_oficina' in perm and 'auth.is_comision' in perm:
+                    dic['permiso'] = 'Administrador'
+                elif 'auth.is_oficina' in perm:
+                    dic['permiso'] = 'Oficina de Informaciones'
+                elif 'auth.is_comision' in perm:
+                    dic['permiso'] = 'Comision de Etica'
+                else:
+                    dic['permiso'] = "No Tiene Grupo"
+
+                data.append(dic)
+
+        context['usuarios'] = data
+        return context
+
+
+class ActualizarView(TemplateView):
+    template_name = "actualizar.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = User.objects.get(username=self.kwargs['id'])
+
+        dic = {}
+        dic['username'] = user.username
+        dic['nombre'] = user.first_name
+        dic['apellido'] = user.last_name
+        dic['email'] = user.email
+        dic['password'] = user.password
+
+        context['usuarios'] = dic
+        return context
+
+
+class EliminarUserView(View):
+
+    def get(self, request, *args, **kwargs):
+        user = User.objects.get(username=self.kwargs['id'])
+        user.delete()
+        return redirect('Control de usuario')
 
 
 class ViewDeclaracion(TemplateView):
@@ -320,10 +499,22 @@ class ConflictoListView(TemplateView):
                 "parlamentario": conf["parlamentario"],
                 "partido": conf["partido"],
                 "grado": conf["grado"],
-                "prov_conf": conf["razon"]["prov_conf"],
-                "motivo": conf["razon"]["motivo"],
                 "url": url_ley["url"]
             }
+            if conf["razon"]["prov_conf"] == 'indirecto':
+                conf["razon"]["prov_conf"] = 'Indirecto por ' + conf["razon"]["motivo"]["relacion_diputado"]
+
+                dic["nombre_involucrado"] = conf["razon"]["motivo"]["nombre_involucrado"]
+                dic["relacion_diputado"] = conf["razon"]["motivo"]["relacion_diputado"]
+                dic["razon_social"] = conf["razon"]["motivo"]["razon_social"]
+                dic["tipo_conflicto"] = 'indirecto'
+            else:
+                dic["motivo"] = conf["razon"]["motivo"]
+                dic["tipo_conflicto"] = 'directo'
+
+            dic["prov_conf"] = conf["razon"]["prov_conf"]
+
+
 
             if conf["pariente"] is not None:
                 dic["pariente"] = conf["pariente"]

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <b-container>
+        <b-row class="justify-content-center">
+            <b-col cols="6">
+                <b-card header-bg-variant="primary" header-text-variant="white" style="font-size: large;" header="Iniciar Sesión">
+                    <b-card-text>
+                        <b-form method="POST" action="{% url 'login' %}">
+                            {%  csrf_token %}
+
+                            <b-form-group label="Nombre de usuario:" label-for="textNombre">
+                                {% comment %} Sacar este b-form-input y poner el form.username si no funciona {% endcomment %}
+                                <b-form-input id="textNombre"
+                                required
+                                placeholder="Ingresar Nombre"
+                                name="username">
+                                </b-form-input>
+                            </b-form-group>
+
+                            <b-form-group label="Contraseña:" label-for="textPassword">
+                                <b-form-input id="textPassword"
+                                required
+                                placeholder="Ingresar Contraseña"
+                                type="password"
+                                name="password">
+                                </b-form-input>
+                            </b-form-group>
+
+                            <b-button type="submit" size="large" variant="primary">Ingresar</b-button>
+
+
+                {#            {{ form.username.label_tag }}#}
+                {#            {{ form.username }}#}
+                {##}
+                {#            <br>#}
+                {##}
+                {#            {{ form.password.label_tag }}#}
+                {#            {{ form.password }}#}
+                {##}
+                {#            <br>#}
+                {#            <br>#}
+                {##}
+                {#            {{ form.errors }}#}
+                {#            #}
+                {#            <input type="submit" value="Ingresar">#}
+
+                        </b-form>
+                    </b-card-text>
+                </b-card>
+            </b-col>
+        </b-row>
+    </b-container>
+{% endblock %}
