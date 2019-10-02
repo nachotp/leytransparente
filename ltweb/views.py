@@ -97,7 +97,7 @@ class RegistroView(View):
 
             user.save()
 
-            return redirect('Home')
+            return redirect('Control de usuario')
 
         except IntegrityError:
             self.context['repetido'] = True
@@ -168,6 +168,14 @@ class ActualizarView(TemplateView):
 
         context['usuarios'] = dic
         return context
+
+
+class EliminarUserView(View):
+
+    def get(self, request, *args, **kwargs):
+        user = User.objects.get(username=self.kwargs['id'])
+        user.delete()
+        return redirect('Control de usuario')
 
 
 class ViewDeclaracion(TemplateView):
