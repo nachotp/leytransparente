@@ -15,12 +15,13 @@
 
 {% block content %}
 
-{% if conflictos %}
-<body data='{{ conflictos }}'>
+{% if clusters %}
+<body>
 
-    <conflictos-vue></conflictos-vue>
+    {{ clusters }}
+
 </body>
 {% else %}
-    <h1>No se han encontrado conflictos de interes.</h1>
+    <h1>No se han encontrado patrones de conflictos de interés.</h1>
 {% endif %}
 {% endblock %}

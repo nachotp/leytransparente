@@ -1,10 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body_end %}
+    <script type="text/x-template" id="conflictosVue"></script>
+    <script src="{% static 'lib/vuex/vuex.js' %}"></script>
+    <script src="{% static 'ltweb/js/conflictos_filter.js' %}"></script>
+{% endblock %}
+
+<script>
+{% block vue_dependencies %}
+    const DEPS = {'conflictos-vue': conflictosVue};
+{% endblock %}
+</script>
+
+{% block content %}
+
+{% if clusters %}
 <body>
-{{ clusters }}
+
+    {{ clusters }}
+
 </body>
-</html>
+{% else %}
+    <h1>No se han encontrado patrones de conflictos de interés.</h1>
+{% endif %}
+{% endblock %}
