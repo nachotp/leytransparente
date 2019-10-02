@@ -343,6 +343,11 @@ class ClusterView(TemplateView):
         context = super().get_context_data(**kwargs)
         vc = VectorClustering()
         cls = vc.cluster()
-        context["clusters"] = cls
+
+        conn = DBconnection()
+        clus = conn.get_collection("clusters")
+        obj = clus.find_one({})
+
+        context["clusters"] = obj["clusters"]
 
         return context
