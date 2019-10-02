@@ -50,7 +50,7 @@
                         nombre: '',
                         apellido: '',
                         contrasena: '',
-                        selected: ['is_oficina'],
+                        selected: '',
                     },
                     show: true,
                     opciones: [
@@ -77,6 +77,10 @@
                     this.actualPage = 'Registro';
                     return '';
                 },
+                toControl: function(){
+                    this.actualPage = 'Cuentas';
+                    return '';
+                },
 
                 inConflictos: function () {
                     if (this.actualPage === 'Conflictos')
@@ -101,6 +105,12 @@
                         return 'active';
                     else
                         return '';
+                },
+                inControl: function () {
+                    if (this.actualPage === 'Cuentas')
+                        return 'active';
+                    else
+                        return '';
                 }
             },
             methods: {
@@ -111,7 +121,7 @@
                     this.form.email = '';
                     this.form.nombre = '';
                     this.form.contrasena = '';
-                    this.form.selected = [];
+                    this.form.selected = '';
                     this.$nextTick(() =>{
                         this.show = true
                     })
