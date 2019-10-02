@@ -30,6 +30,10 @@ const conflictosVue = {
                 <b-col>
                     <label for="partidosearch" style="display: block"><h5>Partido político</h5></label>
                 </b-col>
+                
+                <b-col>
+                    <label for="conflictosearch" style="display: block"><h5>Tipo Conflicto</h5></label>
+                </b-col>
             </b-row>
             
             <b-row>
@@ -53,6 +57,10 @@ const conflictosVue = {
                     </b-dropdown>
                     
                 </b-col>
+                
+                <b-col v-bind="filterCols">
+                    <b-form-input id="conflictosearch" size="lg" v-model="searchConflicto" placeholder="Tipo de Conflicto"></b-form-input>
+                </b-col>
             
             </b-row>
         </b-card>
@@ -60,13 +68,34 @@ const conflictosVue = {
         
         <b-row>
             <!--Se muestran todos los conflictos-->
-            <b-col v-for="(conflicto, index) in filterConflictosLey" :key="index" cols="6">
-                <b-card style="margin-top: 20px;" no-body header=" " :header-bg-variant="conflicto.grado == 'leve' ? 'warning' : 'danger' ">
+            <b-col v-for="(conflicto, index) in filterConflictosLey" :key="index" cols="6" >
+                <b-card v-if="conflicto.tipo_conflicto == 'indirecto'" style="margin-top: 20px;" no-body header=" " header-bg-variant="info">
     
                 <b-card-body style="padding-bottom: 0px; padding-top: 12px">
                     <a :href=" '/ver/' + conflicto.id_parlamentario"><h4>[[ conflicto.parlamentario ]]</h4></a>
                     <h4>[[conflicto.partido]]</h4>
                     <b-card-text>
+                        
+                        <b-list-group flush>
+                            <b-list-group-item v-bind="listItem"><b>Ley Nº: </b>
+                            <b-link :href="conflicto.url" class="card-link">[[conflicto.ley]]</b-link>
+                            </b-list-group-item>
+                            <b-list-group-item v-bind="listItem"><b>Nombre de Ley: </b>[[conflicto.nombre_ley|capitalize]]</b-list-group-item>
+                            <b-list-group-item v-bind="listItem"><b>Motivo: </b>[[conflicto.prov_conf|capitalize]]</b-list-group-item>
+                            <b-list-group-item v-bind="listItem"><b>2º Involucrado: </b>[[conflicto.nombre_involucrado|capitalize]]</b-list-group-item>
+                            <b-list-group-item v-bind="listItem"><b>Razon social del Involucrado: </b>[[conflicto.razon_social|capitalize]]</b-list-group-item>
+                        </b-list-group>
+                    </b-card-text>
+                </b-card-body>
+            </b-card>
+            
+            <b-card v-else style="margin-top: 20px;" no-body header=" " :header-bg-variant="conflicto.grado == 'leve' ? 'warning' : 'danger' " >
+    
+                <b-card-body style="padding-bottom: 0px; padding-top: 12px">
+                    <a :href=" '/ver/' + conflicto.id_parlamentario"><h4>[[ conflicto.parlamentario ]]</h4></a>
+                    <h4>[[conflicto.partido]]</h4>
+                    <b-card-text>
+                                                
                         <b-list-group flush>
                             <b-list-group-item v-bind="listItem"><b>Ley Nº: </b>
                             <b-link :href="conflicto.url" class="card-link">[[conflicto.ley]]</b-link>
@@ -76,9 +105,11 @@ const conflictosVue = {
                             <b-list-group-item v-bind="listItem"><b>Patrimonio relacionado: </b>[[conflicto.motivo|capitalize]]</b-list-group-item>
                             <b-list-group-item v-bind="listItem"><b>Grado de Conflicto: </b>[[conflicto.grado|capitalize]]</b-list-group-item>
                         </b-list-group>
+                        
                     </b-card-text>
                 </b-card-body>
             </b-card>
+            
             </b-col>
         </b-row>
     </b-container>
