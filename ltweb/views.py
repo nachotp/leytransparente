@@ -139,14 +139,24 @@ class ControlView(TemplateView):
         users = User.objects.all()
 
         for u in users:
-            dic = {}
-            dic['username'] = u.username
-            dic['nombre'] = u.first_name
-            dic['apellido'] = u.last_name
-            dic['email'] = u.email
-            dic['password'] = u.password
+            if u.is_superuser != True:
+                dic = {}
+                dic['username'] = u.username
+                dic['nombre'] = u.first_name
+                dic['apellido'] = u.last_name
+                dic['email'] = u.email
+                dic['password'] = u.password
 
-            data.append(dic)
+                perm = u.get_all_permissions()
+
+                if 'auth.is_oficina' in perm:
+                    dic['permiso'] = 'Oficina de Informaciones'
+                elif 'auth.is_comision' in perm:
+                    dic['permiso'] = 'Comision de Etica'
+                else:
+                    dic['permiso'] = 'Administrador'
+
+                data.append(dic)
 
         context['usuarios'] = data
         return context

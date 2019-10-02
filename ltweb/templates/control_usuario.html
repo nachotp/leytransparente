@@ -22,28 +22,28 @@
                     <td>Nombre</td>
                     <td>Apellido</td>
                     <td>Correo</td>
+                    <td>Permisos</td>
                     <td></td>
                 </tr>
             </thead>
             <tbody>
                 {% if usuarios %}
                 {% for usuario in usuarios %}
-                    {% ifnotequal usuario.username 'leytransparente' %}
-                        <tr>
-                            <td>{{ usuario.username }}</td>
-                            <td>{{ usuario.nombre|title }}</td>
-                            <td>{{ usuario.apellido|title }}</td>
-                            <td>{{ usuario.email}}</td>
-                            <td class="align-middle">
-                                <div class="text-center">
-                                    <a class="" href="{% url 'Actualizar Usuario' id=usuario.username %}"><b-button variant="primary">Actualizar</b-button></a>
-                                    <b-form method="GET" action="{% url 'Eliminar Usuario' id=usuario.username %}" v-if="show">
-                                        <b-button type = "submit" variant="danger">Eliminar</b-button>
-                                    </b-form>
-                                </div>
-                            </td>
-                        </tr>
-                    {% endifnotequal %}
+                    <tr>
+                        <td>{{ usuario.username }}</td>
+                        <td>{{ usuario.nombre|title }}</td>
+                        <td>{{ usuario.apellido|title }}</td>
+                        <td>{{ usuario.email}}</td>
+                        <td>{{ usuario.permiso}}</td>
+                        <td class="align-middle">
+                            <div class="text-center">
+                                <a class="" href="{% url 'Actualizar Usuario' id=usuario.username %}"><b-button variant="primary">Actualizar</b-button></a>
+                                <b-form method="GET" action="{% url 'Eliminar Usuario' id=usuario.username %}" v-if="show">
+                                    <b-button type = "submit" variant="danger">Eliminar</b-button>
+                                </b-form>
+                            </div>
+                        </td>
+                    </tr>
                 {% endfor %}
 
                 {% else %}
