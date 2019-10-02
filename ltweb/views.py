@@ -17,7 +17,7 @@ from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import Permission, Group
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 """
 content_type = ContentType.objects.get_for_model(User)
@@ -46,9 +46,10 @@ class HomeView(LoginRequiredMixin,TemplateView):
     template_name = "home.html"
 
 
-class RegistroView(LoginRequiredMixin,View):
+class RegistroView(PermissionRequiredMixin,LoginRequiredMixin,View):
     template_name = "registro.html"
     context = {}
+    permission_required = 'auth.is_admin'
 
     def get(self, request, *args, **kwargs):
         self.context['repetido'] = False
@@ -63,6 +64,8 @@ class RegistroView(LoginRequiredMixin,View):
             user.first_name = ctx['name']
             user.last_name = ctx['apellido']
 
+            print(ctx)
+
             for perm in ctx.getlist('roles'):
                 if perm == 'Oficina de Informaciones':
                     print('oficina')
@@ -75,7 +78,7 @@ class RegistroView(LoginRequiredMixin,View):
                     grupo = Group.objects.get(name=perm)
                     user.groups.add(grupo)
 
-                elif perm == 'is_comision':
+                elif perm == 'Comision de Etica':
                     print('comision')
                     #content_type = ContentType.objects.get_for_model(User)
                     #permission = Permission.objects.get(
