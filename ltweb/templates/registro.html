@@ -2,7 +2,7 @@
 
 {% block content %}
     <b-container :class="toRegistro">
-        <b-card header-bg-variant="primary" header-text-variant="white" style="font-size: large;" header="Registrar un nuevo usuario">
+        <b-card header-bg-variant="primary" header-text-variant="white" style="font-size: large;" header="Crear Usuario">
             <b-form method="POST" action="{% url 'Registro de usuario' %}" v-if="show">
                 {% csrf_token %}
                 <b-row class="justify-content-center">
