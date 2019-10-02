@@ -18,7 +18,20 @@
 {% if clusters %}
 <body>
 
-    {{ clusters }}
+<h1>Patrones en conflictos</h1>
+
+{% for patron in clusters %}
+
+    {% for conflicto in patron %}
+
+        {{ conflicto.nombre_ley }}
+        {{ conflicto.razon.prov_conf }}
+        {{ conflicto.razon.motivo }}
+        {{ conflicto.parlamentario }}
+
+    {% endfor %}
+
+{% endfor %}
 
 </body>
 {% else %}

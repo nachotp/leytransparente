@@ -1,24 +1,25 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block body_end %}
-    <script type="text/x-template" id="conflictosVue"></script>
-    <script src="{% static 'lib/vuex/vuex.js' %}"></script>
-    <script src="{% static 'ltweb/js/conflictos_filter.js' %}"></script>
-{% endblock %}
-
-<script>
-{% block vue_dependencies %}
-    const DEPS = {'conflictos-vue': conflictosVue};
-{% endblock %}
-</script>
-
 {% block content %}
 
 {% if clusters %}
 <body>
 
-    {{ clusters }}
+<h1>Patrones en conflictos</h1>
+
+{% for patron in clusters %}
+
+    {% for conflicto in patron %}
+
+        <p>{{ conflicto.nombre_ley }}</p>
+        <p>{{ conflicto.razon.prov_conf }}</p>
+        <p>{{ conflicto.razon.motivo }}</p>
+        <p>{{ conflicto.parlamentario }}</p>
+
+    {% endfor %}
+
+{% endfor %}
 
 </body>
 {% else %}

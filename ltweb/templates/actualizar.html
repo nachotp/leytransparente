@@ -2,7 +2,7 @@
 
 {% block content %}
     <b-container>
-        <b-card header-bg-variant="primary" header-text-variant="white" style="font-size: large;" header="Actalizar rol de un usuario">
+        <b-card header-bg-variant="dark" header-text-variant="white" style="font-size: large;" header="Actalizar rol de un usuario">
             <b-form method="POST" action="{% url 'Actualizar Permisos' %}" v-if="show">
                 {% csrf_token %}
                 <b-row class="justify-content-center">
@@ -81,6 +81,7 @@
                     </b-col>
                 </b-row>
                 <b-button type="submit" variant="primary">Actualizar</b-button>
+                <b-button href="{% url 'Control de usuario' %}" variant="danger">Cancelar</b-button>
             </b-form>
         </b-card>
     </b-container>

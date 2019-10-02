@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <b-container :class="toRegistro">
+    <b-container>
         <b-card header-bg-variant="dark" header-text-variant="white" style="font-size: large;" header="Crear Usuario">
             <b-form method="POST" action="{% url 'Registro de usuario' %}" v-if="show">
                 {% csrf_token %}
@@ -82,7 +82,8 @@
                     </b-col>
                 </b-row>
                 <b-button type="submit" variant="primary">Crear</b-button>
-                <b-button v-on:click="onReset" type="reset" variant="light">Limpiar campos</b-button>
+                <b-button v-on:click="onReset" type="reset" variant="secondary">Limpiar campos</b-button>
+                <b-button href="{% url 'Control de usuario' %}" variant="danger">Cancelar</b-button>
             </b-form>
         </b-card>
     </b-container>

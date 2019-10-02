@@ -9,12 +9,18 @@
 {% endblock %}
 
 {% block content %}
-<b-row :class="toControl">
-    <b-col>
-        <h2>Control de Cuentas</h2>
-    </b-col>
-</b-row>
     <div class="container" style="max-width: 1450px">
+
+    <b-row :class="toControl" align-h="between">
+        <b-col>
+            <h2>Control de Cuentas</h2>
+        </b-col>
+
+        <b-col>
+            <b-button href="{% url 'Registro de usuario' %}" size="lg" class="mb-3 float-right" variant="primary">Crear usuario</b-button>
+        </b-col>
+    </b-row>
+
         <table  class="table table-striped table-bordered compact" id="dip_table" cellspacing="0">
             <thead>
                 <tr>
@@ -37,10 +43,9 @@
                         <td>{{ usuario.permiso}}</td>
                         <td class="align-middle">
                             <div class="text-center">
-                                <a class="" href="{% url 'Actualizar Usuario' id=usuario.username %}"><button type = "submit" class="btn"><i class="fas fa-user-edit"></i></button></a>
+                                <a href="{% url 'Actualizar Usuario' id=usuario.username %}"><button v-b-popover.hover.top="'Editar rol'" type="submit" class="btn"><i class="fas fa-user-edit"></i></button></a>
                                 <b-form method="GET" action="{% url 'Eliminar Usuario' id=usuario.username %}" v-if="show">
-                                    <button type = "submit" class="btn"><i class="fas fa-trash"></i></button>
-                                    
+                                    <button v-b-popover.hover.top="'Eliminar usuario'" type="submit" class="btn"><i class="fas fa-trash"></i></button>
                                 </b-form>
                             </div>
                         </td>
