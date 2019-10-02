@@ -1,7 +1,7 @@
 const conflictosVue = {
     template:`
 <!--Si hay conflictos-->
-<b-container v-if="conflictos">
+<b-container style="max-width: 1450px" v-if="conflictos">
     <b-row>
         <b-col class="ml-auto">
         <h3>Conflictos</h3>
