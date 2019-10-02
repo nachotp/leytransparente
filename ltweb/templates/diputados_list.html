@@ -13,7 +13,7 @@
     <b-col>
         <h2>Diputados</h2>
     </b-col>
-    {% if perms.auth.is_oficina %}
+    {% if perms.auth.is_oficina or perms.auth.is_admin %}
         <b-col>
             <b-button v-b-modal.my-modal size="lg" variant="primary" class="mb-3 float-right"><i class="fas fa-file-upload"></i> <b>Subir Declaración</b></b-button>
 

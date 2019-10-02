@@ -66,7 +66,7 @@
                     <td class="align-middle">
                         <div class="text-center">
                             <a class="" href="{{ ley.url }}"><i class="far fa-file-alt"></i></a>
-                            {% if perms.auth.is_oficina %}
+                            {% if perms.auth.is_oficina or perms.auth.is_admin%}
                                 <a class="" href="{% url "Conflictos" ley=ley.numero %}"><i class="fas fa-exclamation-circle"></i></a>
                             {% endif %}
                         </div>
