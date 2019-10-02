@@ -7,6 +7,7 @@ from bson.objectid import ObjectId
 
 from ltweb import conflict_detection as confd
 from .conn import DBconnection
+from .clustering import VectorClustering
 from datetime import datetime
 
 
@@ -332,4 +333,16 @@ class ConflictoListView(TemplateView):
         # print(data)
         context["conflictos"] = json.dumps(data)
         print(context["conflictos"])
+        return context
+
+
+class ClusterView(TemplateView):
+    template_name = "clustest.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        vc = VectorClustering()
+        cls = vc.cluster()
+        context["clusters"] = cls
+
         return context
