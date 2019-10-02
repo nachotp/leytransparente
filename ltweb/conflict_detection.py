@@ -12,7 +12,7 @@ import numpy as np
 
 class EmbeddingPredictor:
 
-    def __init__(self, filename='fasttext-esp.bin', lim=500000):
+    def __init__(self, filename='fasttext-esp.bin', lim=600000):
         if "JAVAHOME" not in os.environ:
             assert ("JAVA_HOME" in os.environ), "JAVA must be installed and accesible from path."
             os.environ['JAVAHOME'] = str(os.environ['JAVA_HOME'])
