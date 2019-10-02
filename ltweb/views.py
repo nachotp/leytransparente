@@ -13,7 +13,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import Permission, Group
 from django.contrib.contenttypes.models import ContentType
 
 """
@@ -68,32 +68,38 @@ class RegistroView(View):
             user.last_name = ctx['apellido']
 
             for perm in ctx.getlist('roles'):
-                if perm == 'is_oficina':
+                if perm == 'Oficina de Informaciones':
                     print('oficina')
-                    content_type = ContentType.objects.get_for_model(User)
-                    permission = Permission.objects.get(
-                        codename=perm,
-                        content_type=content_type,
-                    )
-                    user.user_permissions.add(permission)
+                    #content_type = ContentType.objects.get_for_model(User)
+                    #permission = Permission.objects.get(
+                        #codename=perm,
+                        #content_type=content_type,
+                    #)
+                    #user.user_permissions.add(permission)
+                    grupo = Group.objects.get(name=perm)
+                    user.groups.add(grupo)
 
                 elif perm == 'is_comision':
                     print('comision')
-                    content_type = ContentType.objects.get_for_model(User)
-                    permission = Permission.objects.get(
-                        codename=perm,
-                        content_type=content_type,
-                    )
-                    user.user_permissions.add(permission)
+                    #content_type = ContentType.objects.get_for_model(User)
+                    #permission = Permission.objects.get(
+                        #codename=perm,
+                        #content_type=content_type,
+                    #)
+                    #user.user_permissions.add(permission)
+                    grupo = Group.objects.get(name=perm)
+                    user.groups.add(grupo)
 
                 else:
                     print('admin')
-                    content_type = ContentType.objects.get_for_model(User)
-                    permission = Permission.objects.get(
-                        codename=perm,
-                        content_type=content_type,
-                    )
-                    user.user_permissions.add(permission)
+                    #content_type = ContentType.objects.get_for_model(User)
+                    #permission = Permission.objects.get(
+                        #codename=perm,
+                        #content_type=content_type,
+                    #)
+                    #user.user_permissions.add(permission)
+                    grupo = Group.objects.get(name=perm)
+                    user.groups.add(grupo)
 
             user.save()
 
@@ -116,16 +122,19 @@ class ActualizarPermisosView(View):
         print(request.POST)
         user = User.objects.get(username=request.POST['username'])
         #print(user.get_all_permissions())
-        user.user_permissions.clear()
+        #user.user_permissions.clear()
+        user.groups.clear()
 
         user = User.objects.get(username=request.POST['username'])
 
-        content_type = ContentType.objects.get_for_model(User)
-        permission = Permission.objects.get(
-            codename=request.POST['roles'],
-            content_type=content_type,
-        )
-        user.user_permissions.add(permission)
+        #content_type = ContentType.objects.get_for_model(User)
+        #permission = Permission.objects.get(
+            #codename=request.POST['roles'],
+            #content_type=content_type,
+        #)
+        #user.user_permissions.add(permission)
+        grupo = Group.objects.get(name=request.POST['roles'])
+        user.groups.add(grupo)
 
         return redirect('Control de usuario')
 
@@ -149,12 +158,14 @@ class ControlView(TemplateView):
 
                 perm = u.get_all_permissions()
 
-                if 'auth.is_oficina' in perm:
+                if 'auth.is_oficina' in perm and 'auth.is_comision' in perm:
+                    dic['permiso'] = 'Administrador'
+                elif 'auth.is_oficina' in perm:
                     dic['permiso'] = 'Oficina de Informaciones'
                 elif 'auth.is_comision' in perm:
                     dic['permiso'] = 'Comision de Etica'
                 else:
-                    dic['permiso'] = 'Administrador'
+                    dic['permiso'] = "No Tiene Grupo"
 
                 data.append(dic)
 

@@ -1,20 +1,20 @@
 [
   {
-  "name": "Oficina",
-  "permissions": [
+    "name": "Oficina de Informaciones",
+    "permissions": [
       "is_oficina"
-      ]
+    ]
   },
   {
-  "name": "Comision",
-  "permissions": [
-      "is_comision"
-      ]
-  },
-  {
-  "name": "Admin",
-  "permissions": [
+    "name": "Administrator",
+    "permissions": [
       "*"
-      ]
+    ]
+  },
+  {
+    "name": "Comision de Etica",
+    "permissions": [
+      "is_comision"
+    ]
   }
 ]
