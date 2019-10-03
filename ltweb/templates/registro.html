@@ -40,12 +40,6 @@
                                 </b-form-input>
                             </b-form-group>
 
-                        </b-card-text>
-                    </b-col>
-
-                    <b-col cols="6">
-                        <b-card-text>
-
                         <b-form-group label="Email:" label-for="textEmail">
                                 <b-form-input id="textEmail"
                                 required
@@ -56,6 +50,12 @@
                                 </b-form-input>
                             </b-form-group>
 
+                        </b-card-text>
+                    </b-col>
+
+                    <b-col cols="6">
+                        <b-card-text>
+
                             <b-form-group label="Contraseña:" label-for="textPassword">
                                 <b-form-input id="textPassword"
                                 required
@@ -63,6 +63,16 @@
                                 type="password"
                                 v-model="form.contrasena"
                                 name="password">
+                                </b-form-input>
+                            </b-form-group>
+
+                            <b-form-group label="Confirmar contraseña:" label-for="textPassword2">
+                                <b-form-input id="textPassword2"
+                                required
+                                placeholder="Ingresar Contraseña"
+                                type="password"
+                                v-model="form.contrasenaConfirm"
+                                name="passwordConfirm">
                                 </b-form-input>
                             </b-form-group>
 

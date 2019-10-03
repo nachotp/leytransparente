@@ -23,8 +23,7 @@
                                 <b-form-input id="textNombre"
                                 placeholder="Ingresar Nombre"
                                 name="name"
-                                value="{{ usuarios.nombre }}"
-                                disabled>
+                                value="{{ usuarios.nombre }}">
                                 </b-form-input>
                             </b-form-group>
 
@@ -33,8 +32,17 @@
                                 required
                                 placeholder="Ingresar Apellido"
                                 value="{{ usuarios.apellido }}"
-                                name="apellido"
-                                disabled>
+                                name="apellido">
+                                </b-form-input>
+                            </b-form-group>
+
+                        <b-form-group label="Email:" label-for="textEmail">
+                                <b-form-input id="textEmail"
+                                required
+                                placeholder="Ingresar Email"
+                                type="email"
+                                value="{{ usuarios.email }}"
+                                name="email">
                                 </b-form-input>
                             </b-form-group>
 
@@ -44,23 +52,22 @@
                     <b-col cols="6">
                         <b-card-text>
 
-                        <b-form-group label="Email:" label-for="textEmail">
-                                <b-form-input id="textEmail"
-                                required
-                                placeholder="Ingresar Email"
-                                type="email"
-                                value="{{ usuarios.email }}"
-                                name="email"
-                                disabled>
-                                </b-form-input>
-                            </b-form-group>
-
                             <b-form-group label="Contraseña:" label-for="textPassword">
                                 <b-form-input id="textPassword"
                                 required
                                 placeholder="Ingresar Contraseña"
                                 value="##########"
                                 name="password"
+                                disabled>
+                                </b-form-input>
+                            </b-form-group>
+
+                            <b-form-group label="Confirmar contraseña:" label-for="textPassword2">
+                                <b-form-input id="textPassword2"
+                                required
+                                placeholder="Ingresar Contraseña"
+                                value="##########"
+                                name="passwordConfirm"
                                 disabled>
                                 </b-form-input>
                             </b-form-group>
