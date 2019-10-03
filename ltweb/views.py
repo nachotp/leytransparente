@@ -526,6 +526,7 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
                 else:
                     low.append(conflicto)
                     dic["grado"] = "leve"
+                dic["vector"] = conflicto[6]
 
 
             dic["pariente"] = 'null'
@@ -536,7 +537,7 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
             #dic["razon"] = {}
             #dic["razon"]["prov_conf"] = "acciones"
             #dic["razon"]["motivo"] = conflicto[4]["Nombre_Razon_Social"]
-            dic["vector"] = conflicto[6]
+            #dic["vector"] = conflicto[6]
 
 
 
