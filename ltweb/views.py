@@ -97,6 +97,41 @@ class RegistroView(PermissionRequiredMixin,LoginRequiredMixin,View):
             return render(request, self.template_name, self.context)
 
 
+class ActualizarPassView(PermissionRequiredMixin,LoginRequiredMixin,View):
+    template_name = "cambiar_pass.html"
+    context = {}
+    permission_required = 'auth.is_admin'
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name, self.context)
+
+    def post(self, request, *args, **kwargs):
+        print(request.POST)
+        self.context['diferente'] = False
+        self.context['no_match'] = False
+
+        user = User.objects.get(username=request.POST['username'])
+
+        if not user.check_password(request.POST['password']):
+            self.context['diferente'] = True
+            dic = {}
+            dic['username'] = request.POST['username']
+            self.context['usuarios'] = dic
+            return render(request, self.template_name, self.context)
+
+        if request.POST['new_password'] != request.POST['new_passwordConfirm']:
+            self.context['no_match'] = True
+            dic = {}
+            dic['username'] = request.POST['username']
+            self.context['usuarios'] = dic
+            return render(request, self.template_name, self.context)
+
+        user.set_password(request.POST['new_password'])
+        user.save()
+
+        return redirect('Control de usuario')
+
+
 class ActualizarPermisosView(PermissionRequiredMixin,LoginRequiredMixin,View):
     template_name = "actualizar.html"
     context = {}
@@ -121,6 +156,25 @@ class ActualizarPermisosView(PermissionRequiredMixin,LoginRequiredMixin,View):
         user.groups.add(grupo)
 
         return redirect('Control de usuario')
+
+
+class PassView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
+    template_name = "cambiar_pass.html"
+    permission_required = 'auth.is_admin'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = User.objects.get(username=self.kwargs['id'])
+
+        dic = {}
+        dic['username'] = user.username
+        dic['nombre'] = user.first_name
+        dic['apellido'] = user.last_name
+        dic['email'] = user.email
+        dic['password'] = user.password
+
+        context['usuarios'] = dic
+        return context
 
 
 class ControlView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
