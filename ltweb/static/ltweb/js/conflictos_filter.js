@@ -148,9 +148,9 @@ const conflictosVue = {
         }
     },
     created: function() {
-        //this.conflictos = JSON.parse(document.getElementsByTagName('body')[0].getAttribute('data') || '{}');
+        this.conflictos = JSON.parse(document.getElementsByTagName('body')[0].getAttribute('data') || '{}');
 
-        const Http = new XMLHttpRequest();
+        /*const Http = new XMLHttpRequest();
         const url = 'http://127.0.0.1:8000/api/conflictos';
         Http.open("GET", url);
         Http.send();
@@ -161,7 +161,7 @@ const conflictosVue = {
         Http.onreadystatechange=(e)=>{
             console.log(Http.responseText);
             this.conflictos = JSON.parse(Http.responseText.toString());
-        }
+        }*/
     },
     computed: {
         filterConflictosTipo: function() {

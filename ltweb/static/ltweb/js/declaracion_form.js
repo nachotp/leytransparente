@@ -1,6 +1,6 @@
 const ParlamentariosForm = {
     template: `
-    <div class="container mw-75">
+    <b-container class="mw-75">
             <b-card no-body class="mb-1">
                 <b-card-body>
                     <b-card-title><h2>[[get_nombre]]</h2></b-card-title>
@@ -204,7 +204,7 @@ const ParlamentariosForm = {
                 
                 </b-col>
             </b-row>
-        </div>
+        </b-container>
     `,
     data() {
         return{
@@ -232,21 +232,22 @@ const ParlamentariosForm = {
                     'padding-bottom': '0px',
                 },
             },
+            //ready: false,
         }
     },
     delimiters: ['[[', ']]'],
     created: function() {
-        //this.$store.state.form_data = JSON.parse(document.getElementsByTagName('body')[0].getAttribute('data') || '{}');
+        this.$store.state.form_data = JSON.parse(document.getElementsByTagName('body')[0].getAttribute('data') || '{}');
 
-        const Http = new XMLHttpRequest();
+        /*const Http = new XMLHttpRequest();
         const url = 'http://127.0.0.1:8000/api/declaracion/' + '5cf759007b90730c2416cf31' + '/';
         Http.open("GET", url);
         Http.send();
 
         Http.onreadystatechange=(e)=>{
-            console.log(Http.responseText);
-            this.$store.form_data = JSON.parse( Http.responseText );
-        };
+            this.$store.state.form_data = JSON.parse( Http.responseText );
+            this.ready = true;
+        };*/
 
     },
     store: declaracion_data,

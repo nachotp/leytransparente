@@ -16,7 +16,7 @@
 {% block content %}
 
 {% if conflictos %}
-<body data>
+<body data="{{ conflictos }}">
 
     <conflictos-vue :class="toConflictos"></conflictos-vue>
 </body>
