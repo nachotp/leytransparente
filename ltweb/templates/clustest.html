@@ -5,7 +5,7 @@
 {% if clusters %}
 <body>
 
-<b-container class="mw-100">
+<b-container class="mw-100" :class="toPatrones">
 
     <h1>Patrones en conflictos</h1>
     {% for patron in clusters %}

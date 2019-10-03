@@ -79,6 +79,10 @@
                     this.actualPage = 'Cuentas';
                     return '';
                 },
+                toPatrones: function(){
+                    this.actualPage = 'Patrones';
+                    return '';
+                },
 
                 inConflictos: function () {
                     if (this.actualPage === 'Conflictos')
@@ -106,10 +110,16 @@
                 },
                 inControl: function () {
                     if (this.actualPage === 'Cuentas')
-                        return 'active link';
+                        return 'active';
                     else
                         return '';
                 },
+                inPatrones: function () {
+                    if (this.actualPage === 'Patrones')
+                        return 'active';
+                    else
+                        return '';
+                }
             },
             methods: {
                 onReset: function(evt) {
