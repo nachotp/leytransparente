@@ -106,3 +106,4 @@ venv.bak/
 # Binaries
 .bin
 *.bin
+db.sqlite3
