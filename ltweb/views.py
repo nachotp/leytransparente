@@ -53,11 +53,13 @@ class RegistroView(PermissionRequiredMixin,LoginRequiredMixin,View):
 
     def get(self, request, *args, **kwargs):
         self.context['repetido'] = False
+        self.context['diferente'] = False
         return render(request, self.template_name, self.context)
 
     def post(self, request, *args, **kwargs):
         try:
             self.context['repetido'] = False
+            self.context['diferente'] = False
             ctx = request.POST
 
             if ctx['password'] != ctx['passwordConfirm']:
@@ -551,7 +553,7 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
         ctx["indirecto"] = indirecto
         print("Conflictos encontrados: " + str(len(conflictos)))
         if(len(conflictos) > 0):
-            send_email("Nuevos conflictos encontrados!", "conflict_mail", ctx, emails)
+            send_email("Nuevos conflictos encontrados!", "conflict_mail", ctx, "franco.zalavari@sansano.usm.cl")
         return ctx
 
 

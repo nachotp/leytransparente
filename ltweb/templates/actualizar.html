@@ -2,7 +2,7 @@
 
 {% block content %}
     <b-container>
-        <b-card header-bg-variant="dark" header-text-variant="white" style="font-size: large;" header="Actalizar rol de un usuario">
+        <b-card header-bg-variant="dark" header-text-variant="white" style="font-size: large;" header="Actalizar datos y rol de un usuario">
             <b-form method="POST" action="{% url 'Actualizar Permisos' %}" v-if="show">
                 {% csrf_token %}
                 <b-row class="justify-content-center">
@@ -36,7 +36,12 @@
                                 </b-form-input>
                             </b-form-group>
 
-                        <b-form-group label="Email:" label-for="textEmail">
+                        </b-card-text>
+                    </b-col>
+
+                    <b-col cols="6">
+                        <b-card-text>
+                            <b-form-group label="Email:" label-for="textEmail">
                                 <b-form-input id="textEmail"
                                 required
                                 placeholder="Ingresar Email"
@@ -46,34 +51,9 @@
                                 </b-form-input>
                             </b-form-group>
 
-                        </b-card-text>
-                    </b-col>
-
-                    <b-col cols="6">
-                        <b-card-text>
-
-                            <b-form-group label="Contraseña:" label-for="textPassword">
-                                <b-form-input id="textPassword"
-                                required
-                                placeholder="Ingresar Contraseña"
-                                value="##########"
-                                name="password"
-                                disabled>
-                                </b-form-input>
-                            </b-form-group>
-
-                            <b-form-group label="Confirmar contraseña:" label-for="textPassword2">
-                                <b-form-input id="textPassword2"
-                                required
-                                placeholder="Ingresar Contraseña"
-                                value="##########"
-                                name="passwordConfirm"
-                                disabled>
-                                </b-form-input>
-                            </b-form-group>
-
                             <b-form-group label="Rol:">
                                 <b-form-radio-group
+                                    required
                                     v-model="form.selected"
                                     :options="opciones"
                                     name="roles"
