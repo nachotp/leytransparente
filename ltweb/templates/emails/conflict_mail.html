@@ -1,27 +1,39 @@
-Hola!
+<p>Hola!</p>   
+<p>Se han detectado {{ cantidad }} conflictos nuevos.</p>
+<h3>Detalles de la ley</h3>
+<p>N°: {{nro_ley}}</p>
+<p>Nombre: {{nombre_ley}}</p>
 
-Se han detectado {{ cantidad }} conflictos nuevos.
+<h3>Detalle de los conflictos</h3>
 
-Detalles de la ley
-N°: {{nro_ley}}
-Nombre: {{nombre_ley}}
-
-Detalle de los conflictos
-
-Conflictos Graves
+<h3>Conflictos Graves</h3>
 {% for diputado in high%}
-Nombre parlamentario: {{ diputado.2 }}
-Nombre Razon Social: {{diputado.4.Nombre_Razon_Social|title}}
-Porcentaje Propiedad: {{diputado.4.Cantidad_Porcentaje|title}}
-Tiene calidad de controlador: {% if diputado.4.Tiene_Calidad_Controlador == "false" %}NO{% else %}SI{% endif %}
+<p>Nombre parlamentario: {{ diputado.2 }}</p>
+<p>Nombre Razon Social: {{diputado.4.Nombre_Razon_Social|title}}</p>
+<p>Porcentaje Propiedad: {{diputado.4.Cantidad_Porcentaje|title}}</p>
+<p>Tiene calidad de controlador: {% if diputado.4.Tiene_Calidad_Controlador == "false" %}NO{% else %}SI{% endif %}</p>
 
 {% endfor %}
 
-Conflictos Leves
-
+<h3>Conflictos Leves</h3>
 {% for diputado in low%}
-Nombre parlamentario: {{ diputado.2 }}
-Nombre Razon Social: {{diputado.4.Nombre_Razon_Social|title}}
-Porcentaje Propiedad: {{diputado.4.Cantidad_Porcentaje|title}}
-Tiene calidad de controlador: {% if diputado.4.Tiene_Calidad_Controlador == "false" %}NO{% else %}SI{% endif %}
+<p>Nombre parlamentario: {{ diputado.2 }}</p>
+<p>Nombre Razon Social: {{diputado.4.Nombre_Razon_Social|title}}</p>
+<p>Porcentaje Propiedad: {{diputado.4.Cantidad_Porcentaje|title}}</p>
+<p>Tiene calidad de controlador: {% if diputado.4.Tiene_Calidad_Controlador == "false" %}NO{% else %}SI{% endif %}</p>
+
+{% endfor %}
+
+<h3>Conflictos Indirectos</h3>
+
+{% for diputado in indirecto%}
+<p>Nombre parlamentario: {{ diputado.2 }}</p>
+<p>2º Involucrado: {{diputado.6|title}}</b-list-group-item></p>
+<p>Razón Social: {{diputado.4.Nombre_Razon_Social|title}}</p>
+{% if diputado.1 == 0 %}
+<p>Relacion con Parlamentario : Familiar</p>
+{% elif diputado.1 == -1 %}
+<p><h>Relacion con Parlamentario : Lobby</p>
+
+{% endif %}
 {% endfor %}
