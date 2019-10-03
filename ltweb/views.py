@@ -7,17 +7,240 @@ from bson.objectid import ObjectId
 
 from ltweb import conflict_detection as confd
 from .conn import DBconnection
+from .clustering import VectorClustering
+from .utilities import send_email
 from datetime import datetime
 
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
+from django.db import IntegrityError
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.models import Permission, Group
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
-class HomeView(TemplateView):
+"""
+content_type = ContentType.objects.get_for_model(User)
+permission = Permission.objects.create(
+    codename='is_oficina',
+    name='Oficina de Informaciones',
+    content_type=content_type,
+)
+
+content_type = ContentType.objects.get_for_model(User)
+permission2 = Permission.objects.create(
+    codename='is_comision',
+    name='Comision de Etica',
+    content_type=content_type,
+)
+
+content_type = ContentType.objects.get_for_model(User)
+permission3 = Permission.objects.create(
+    codename='is_admin',
+    name='Administrador',
+    content_type=content_type,
+)
+"""
+
+class HomeView(LoginRequiredMixin,TemplateView):
     template_name = "home.html"
 
-class RegistroView(TemplateView):
+
+class RegistroView(PermissionRequiredMixin,LoginRequiredMixin,View):
     template_name = "registro.html"
+    context = {}
+    permission_required = 'auth.is_admin'
+
+    def get(self, request, *args, **kwargs):
+        self.context['repetido'] = False
+        return render(request, self.template_name, self.context)
+
+    def post(self, request, *args, **kwargs):
+        try:
+            self.context['repetido'] = False
+            ctx = request.POST
+
+            if ctx['password'] != ctx['passwordConfirm']:
+                self.context['diferente'] = True
+                return render(request, self.template_name, self.context)
+
+            print("Registrando...")
+            user = User.objects.create_user(ctx['username'], ctx['email'], ctx['password'])
+            user.first_name = ctx['name']
+            user.last_name = ctx['apellido']
+
+            print(ctx)
+
+            for perm in ctx.getlist('roles'):
+                if perm == 'Oficina de Informaciones':
+                    print('oficina')
+                    grupo = Group.objects.get(name=perm)
+                    user.groups.add(grupo)
+
+                elif perm == 'Comision de Etica':
+                    print('comision')
+                    grupo = Group.objects.get(name=perm)
+                    user.groups.add(grupo)
+
+                else:
+                    print('admin')
+                    grupo = Group.objects.get(name=perm)
+                    user.groups.add(grupo)
+
+            user.save()
+
+            return redirect('Control de usuario')
+
+        except IntegrityError:
+            self.context['repetido'] = True
+            print("Usuario ya existe")
+            return render(request, self.template_name, self.context)
 
 
-class ViewDeclaracion(TemplateView):
+class ActualizarPassView(PermissionRequiredMixin,LoginRequiredMixin,View):
+    template_name = "cambiar_pass.html"
+    context = {}
+    permission_required = 'auth.is_admin'
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name, self.context)
+
+    def post(self, request, *args, **kwargs):
+        print(request.POST)
+        self.context['diferente'] = False
+        self.context['no_match'] = False
+
+        user = User.objects.get(username=request.POST['username'])
+
+        if not user.check_password(request.POST['password']):
+            self.context['diferente'] = True
+            dic = {}
+            dic['username'] = request.POST['username']
+            self.context['usuarios'] = dic
+            return render(request, self.template_name, self.context)
+
+        if request.POST['new_password'] != request.POST['new_passwordConfirm']:
+            self.context['no_match'] = True
+            dic = {}
+            dic['username'] = request.POST['username']
+            self.context['usuarios'] = dic
+            return render(request, self.template_name, self.context)
+
+        user.set_password(request.POST['new_password'])
+        user.save()
+
+        return redirect('Control de usuario')
+
+
+class ActualizarPermisosView(PermissionRequiredMixin,LoginRequiredMixin,View):
+    template_name = "actualizar.html"
+    context = {}
+    permission_required = 'auth.is_admin'
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name, self.context)
+
+    def post(self, request, *args, **kwargs):
+        print(request.POST)
+        user = User.objects.get(username=request.POST['username'])
+        user.groups.clear()
+        user.first_name = request.POST['name']
+        user.last_name = request.POST['apellido']
+        user.email = request.POST['email']
+
+        user.save()
+
+        user = User.objects.get(username=request.POST['username'])
+
+        grupo = Group.objects.get(name=request.POST['roles'])
+        user.groups.add(grupo)
+
+        return redirect('Control de usuario')
+
+
+class PassView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
+    template_name = "cambiar_pass.html"
+    permission_required = 'auth.is_admin'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = User.objects.get(username=self.kwargs['id'])
+
+        dic = {}
+        dic['username'] = user.username
+        dic['nombre'] = user.first_name
+        dic['apellido'] = user.last_name
+        dic['email'] = user.email
+        dic['password'] = user.password
+
+        context['usuarios'] = dic
+        return context
+
+
+class ControlView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
+    template_name = "control_usuario.html"
+    permission_required = 'auth.is_admin'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        data = []
+        users = User.objects.all()
+
+        for u in users:
+            if u.is_superuser != True:
+                dic = {}
+                dic['username'] = u.username
+                dic['nombre'] = u.first_name
+                dic['apellido'] = u.last_name
+                dic['email'] = u.email
+                dic['password'] = u.password
+
+                perm = u.get_all_permissions()
+
+                if 'auth.is_oficina' in perm and 'auth.is_comision' in perm:
+                    dic['permiso'] = 'Administrador'
+                elif 'auth.is_oficina' in perm:
+                    dic['permiso'] = 'Oficina de Informaciones'
+                elif 'auth.is_comision' in perm:
+                    dic['permiso'] = 'Comision de Etica'
+                else:
+                    dic['permiso'] = "No Tiene Grupo"
+
+                data.append(dic)
+
+        context['usuarios'] = data
+        return context
+
+
+class ActualizarView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
+    template_name = "actualizar.html"
+    permission_required = 'auth.is_admin'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = User.objects.get(username=self.kwargs['id'])
+
+        dic = {}
+        dic['username'] = user.username
+        dic['nombre'] = user.first_name
+        dic['apellido'] = user.last_name
+        dic['email'] = user.email
+        dic['password'] = user.password
+
+        context['usuarios'] = dic
+        return context
+
+
+class EliminarUserView(PermissionRequiredMixin,LoginRequiredMixin,View):
+    permission_required = 'auth.is_admin'
+
+    def get(self, request, *args, **kwargs):
+        user = User.objects.get(username=self.kwargs['id'])
+        user.delete()
+        return redirect('Control de usuario')
+
+
+class ViewDeclaracion(LoginRequiredMixin,TemplateView):
     template_name = "ver.html"
     conn = DBconnection()
     mycol = conn.get_collection("declaraciones")
@@ -34,12 +257,13 @@ class ViewDeclaracion(TemplateView):
         return ctx
 
 
-class SubirDeclaracionView(View):
+class SubirDeclaracionView(PermissionRequiredMixin,LoginRequiredMixin,View):
     context = {}
     initial = {'key': 'value'}
     conn = DBconnection()
     mycol = conn.get_collection("declaraciones")
     template_name = 'declaracion_form.html'
+    permission_required = 'auth.is_oficina'
 
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name, self.context)
@@ -69,7 +293,7 @@ class SubirDeclaracionView(View):
                                          "Apellido_Materno"],
                                      "meta.actual": True})
 
-        if query == None:  # inserta automaticamente porque no existe nadie.
+        if query is None:  # inserta automaticamente porque no existe nadie.
             dic["partido"] = 'null'
             # x=self.mycol.insert(dic)
 
@@ -87,7 +311,7 @@ class SubirDeclaracionView(View):
         return redirect('Ver Declaracion', id=x)
 
 
-class DiputadosListView(TemplateView):
+class DiputadosListView(LoginRequiredMixin,TemplateView):
     conn = DBconnection()
     mycol = conn.get_collection("declaraciones")
 
@@ -119,12 +343,13 @@ class DiputadosListView(TemplateView):
         return context
 
 
-class SubirLeyView(View):
+class SubirLeyView(PermissionRequiredMixin,LoginRequiredMixin,View):
     context = {}
     initial = {'key': 'value'}
     conn = DBconnection()
     mycol = conn.get_collection("leyes")
     template_name = 'ley_form.html'
+    permission_required = 'auth.is_oficina'
 
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name, self.context)
@@ -201,7 +426,7 @@ class SubirLeyView(View):
         return redirect('Conflictos', ley=numero)
 
 
-class LeyesListView(TemplateView):
+class LeyesListView(LoginRequiredMixin,TemplateView):
     conn = DBconnection()
     mycol = conn.get_collection("leyes")
 
@@ -225,12 +450,13 @@ class LeyesListView(TemplateView):
         return context
 
 
-class ConflictoView(TemplateView):
+class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
     template_name = "conflict_view.html"
     conn = DBconnection()
     decl = conn.get_collection("declaraciones")
     leyes = conn.get_collection("leyes")
     confl = conn.get_collection("conflictos")
+    permission_required = 'auth.is_oficina'
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data()
@@ -251,12 +477,12 @@ class ConflictoView(TemplateView):
         indirecto = []
         conflictos = confd.conflicto_embedding(list(tags_ley["tags"]))
         ctx["conflictos"] = conflictos
-
         # Creacion de la lista que almacena diccionarios a insertar en la collecion de conflictos
         diclist = []
-
+        cantidad = 0
         for conflicto in conflictos:
-            duplicado = self.confl.find_one({"ley":ley , "id_declaracion": conflicto[3]})
+            cantidad += 1
+            duplicado = self.confl.find_one({"ley": ley, "id_declaracion": conflicto[3]})
 
             dic = {"ley": ley,
                    "nombre_ley": ctx["nombre_ley"],
@@ -298,28 +524,32 @@ class ConflictoView(TemplateView):
             dic["meta"] = {}
             dic["meta"]["Fecha"] = datetime.today()
 
-            #dic["razon"] = {}
-            #dic["razon"]["prov_conf"] = "acciones"
+
+            dic["razon"] = {}
+            dic["razon"]["prov_conf"] = "acciones"
+            dic["razon"]["motivo"] = conflicto[4]["Nombre_Razon_Social"]
+            dic["vector"] = conflicto[6]
 
 
 
-
-            if duplicado != None:
+            if duplicado is not None:
                 continue
             diclist.append(dic)
 
         if len(diclist) > 0:
             x = self.confl.insert_many(diclist)
-
+        emails = [x.email for x in User.objects.filter(groups__name = "Comision de Etica")]
         ctx["high"] = high
         ctx["low"] = low
+        
         ctx["indirecto"] = indirecto
         print("Conflictos encontrados: " + str(len(conflictos)))
-
+        if(len(conflictos) > 0):
+            send_email("Nuevos conflictos encontrados!", "conflict_mail", ctx, emails)
         return ctx
 
 
-class ConflictoListView(TemplateView):
+class ConflictoListView(LoginRequiredMixin,TemplateView):
     template_name = 'conflictos_list.html'
     conn = DBconnection()
     confl = conn.get_collection("conflictos")
@@ -330,15 +560,19 @@ class ConflictoListView(TemplateView):
 
         query = self.confl.find()
         data = []
-
+        ley_urls = dict()
         for conf in query:
-            print(conf["ley"])
-            url_ley = self.leyes.find_one({"numero": conf["ley"]})
-            if url_ley == None:
-                url_ley={}
-                url_ley["url"]="#"
-            if conf["partido"] == None:
-                conf["partido"] ="Sin información"
+
+            if conf["ley"] not in ley_urls:
+                ley_urls[conf["ley"]] = self.leyes.find_one({"numero": conf["ley"]})
+
+            url_ley = ley_urls[conf["ley"]]
+
+            if url_ley is None:
+                url_ley = {}
+                url_ley["url"] = "#"
+            if conf["partido"] is None:
+                conf["partido"] = "Sin información"
 
             dic = {
                 "ley": conf["ley"],
@@ -346,11 +580,21 @@ class ConflictoListView(TemplateView):
                 "id_parlamentario": str(conf["id_declaracion"]),
                 "parlamentario": conf["parlamentario"],
                 "partido": conf["partido"],
-                "grado": conf["grado"],
-                "prov_conf": conf["razon"]["prov_conf"],
-                "motivo": conf["razon"]["motivo"],
+                "grado": conf.get("grado", "indirecto"),
                 "url": url_ley["url"]
             }
+            if conf["razon"]["prov_conf"] == 'indirecto':
+                conf["razon"]["prov_conf"] = 'Indirecto por ' + conf["razon"]["motivo"]["relacion_diputado"]
+
+                dic["nombre_involucrado"] = conf["razon"]["motivo"]["nombre_involucrado"]
+                dic["relacion_diputado"] = conf["razon"]["motivo"]["relacion_diputado"]
+                dic["razon_social"] = conf["razon"]["motivo"]["razon_social"]
+                dic["tipo_conflicto"] = 'indirecto'
+            else:
+                dic["motivo"] = conf["razon"]["motivo"]
+                dic["tipo_conflicto"] = 'directo'
+
+            dic["prov_conf"] = conf["razon"]["prov_conf"]
 
             if conf["pariente"] is not None:
                 dic["pariente"] = conf["pariente"]
@@ -360,4 +604,21 @@ class ConflictoListView(TemplateView):
         # print(data)
         context["conflictos"] = json.dumps(data)
         print(context["conflictos"])
+        return context
+
+
+class ClusterView(LoginRequiredMixin,TemplateView):
+    template_name = "clustest.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        vc = VectorClustering()
+        cls = vc.cluster()
+
+        conn = DBconnection()
+        clus = conn.get_collection("clusters")
+        obj = clus.find_one({})
+
+        context["clusters"] = obj["clusters"]
+
         return context

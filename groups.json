@@ -1,0 +1,21 @@
+[
+  {
+    "name": "Oficina de Informaciones",
+    "permissions": [
+      "is_oficina"
+    ]
+  },
+  {
+    "name": "Administrator",
+    "permissions": [
+      "is_admin",
+      "*"
+    ]
+  },
+  {
+    "name": "Comision de Etica",
+    "permissions": [
+      "is_comision"
+    ]
+  }
+]

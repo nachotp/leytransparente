@@ -5,7 +5,7 @@ const ParlamentariosForm = {
                 <b-card-body>
                     <b-card-title><h2>[[get_nombre]]</h2></b-card-title>
                     <b-card-sub-title class="mb-2"><h4>[[get_cargo|capitalize]]</h4></b-card-sub-title>
-                    <b-card-text>Asume el cargo : [[get_fechacargo]]<br>
+                    <b-card-text>Asume el cargo: [[get_fechacargo]]<br>
                         Región: [[get_region|capitalize]]<br>
                         Comuna: [[get_comuna|capitalize]]</b-card-text>
                 </b-card-body>
@@ -64,7 +64,7 @@ const ParlamentariosForm = {
                 <b-col v-bind="multipleCols" :style="rightPad">
                 
                     <b-card no-body class="h-100">
-                        <b-card-title class="mb-1 mt-1"><h4>Vehiculos motorizados</h4></b-card-title>
+                        <b-card-title class="mb-1 mt-1"><h4>Vehículos motorizados</h4></b-card-title>
                         <b-list-group-item v-bind="listGroupItem">
                             <div v-if="getVehiculos">Cantidad de vehículos: [[ getVehiculos.length ]]<br>
                             Avalúo Fiscal total: $ [[AvaluoTotal(getVehiculos)|number]]</div>
@@ -74,7 +74,7 @@ const ParlamentariosForm = {
                         <b-button v-if="getVehiculos" variant="dark" v-b-modal.ModalVehiculos>Más info</b-button>
                         <b-button v-else variant="dark" disabled>Más info</b-button>
                         
-                        <b-modal id="ModalVehiculos" centered scrollable size="lg" title="Vehiculos motorizados">
+                        <b-modal id="ModalVehiculos" centered scrollable size="lg" title="Vehículos motorizados">
                         
                             <b-list-group flush>
                                 <b-list-group-item v-for="(auto, index) in getVehiculos" :key="index">

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <b-container>
+        <b-card header-bg-variant="dark" header-text-variant="white" style="font-size: large;" header="Actalizar constraseña del usuario">
+            <b-form method="POST" action="{% url 'Actualizar Pass' %}" v-if="show">
+                {% csrf_token %}
+                <b-row class="justify-content-center">
+                    <b-col cols="6">
+                        <b-card-text>
+
+                            <b-form-group label="Nombre de usuario:" label-for="textUsername">
+                                <b-form-input id="textUsername"
+                                required
+                                placeholder="Ingresar Nombre de usuario"
+                                name="username"
+                                value="{{ usuarios.username }}"
+                                readonly="readonly">
+                                </b-form-input>
+                            </b-form-group>
+
+                            <b-form-group label="Contraseña Actual:" label-for="textPassword">
+                                <b-form-input id="textPassword"
+                                required
+                                placeholder="Ingresar Contraseña Antigua"
+                                value=""
+                                name="password">
+                                </b-form-input>
+                            </b-form-group>
+
+                            {% if diferente %}
+                                <p style="color: red;">Su clave no es correcta, porfavor ingrese su clave antigua</p>
+                            {% endif %}
+
+                            <b-form-group label="Nueva Contraseña:" label-for="textPassword">
+                                <b-form-input id="textPassword"
+                                required
+                                placeholder="Ingresar Nueva Contraseña"
+                                value=""
+                                name="new_password">
+                                </b-form-input>
+                            </b-form-group>
+
+                            <b-form-group label="Confirmar contraseña:" label-for="textPassword2">
+                                <b-form-input id="textPassword2"
+                                required
+                                placeholder="Confirmar Nueva Contraseña"
+                                value=""
+                                name="new_passwordConfirm">
+                                </b-form-input>
+                            </b-form-group>
+                            {% if no_match %}
+                                <p style="color: red;">Las claves no coinciden</p>
+                            {% endif %}
+
+                        </b-card-text>
+                        <b-button type="submit" variant="primary">Actualizar</b-button>
+                        <b-button href="{% url 'Control de usuario' %}" variant="danger">Cancelar</b-button>
+                    </b-col>
+                </b-row>
+            </b-form>
+        </b-card>
+    </b-container>
+
+{% endblock %}

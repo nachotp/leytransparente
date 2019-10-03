@@ -7,25 +7,35 @@
 {% endblock %}
 
 <div>
-    
     <div>
         <b-navbar toggleable="lg" type="dark" variant="dark" class="nav-menu">
             <b-navbar-brand href="{% url "Home" %}">
                 <img  src="{% static "ltweb/img/logo2.png" %}" class="d-inline-block align-top" width="300px">
             </b-navbar-brand>
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
-    
+
+            {% if user.is_authenticated %}
+
             <b-collapse id="nav-collapse" is-nav>
                 <b-navbar-nav>
                     <b-nav-item href="{% url "Lista Diputados" %}" class="nav-menu-item" :class="inDiputados">Diputados</b-nav-item>
                     <b-nav-item href="{% url "Lista Leyes" %}" class="nav-menu-item" :class="inProyLey">Proyectos de Ley</b-nav-item>
                     <b-nav-item href="{% url "Lista Conflictos" %}" class="nav-menu-item" :class="inConflictos">Conflictos</b-nav-item>
+                    <b-nav-item href="{% url "Cluster" %}" class="nav-menu-item" :class="inPatrones">Patrones</b-nav-item>
+                {% if perms.auth.is_admin %}
+                    <b-nav-item href="{% url "Control de usuario" %}" class="nav-menu-item" :class="inControl">Control de Cuentas</b-nav-item>
+                {% endif %}
                 </b-navbar-nav>
             </b-collapse>
+            
 
             <b-navbar-nav class="ml-auto">
-                <b-nav-item href="{% url "Registro de usuario" %}" class="nav-menu-item" :class="inRegistro">Registrarse</b-nav-item>
+                <b-nav-item class="nav-menu-item" disabled><i class="fas fa-user" ></i>&nbsp{{ user.first_name }}</b-nav-item>
+                <b-nav-item href="{% url "logout" %}" class="nav-menu-item">Cerrar Sesión</b-nav-item>
             </b-navbar-nav>
+
+
+            {% endif %}
 
         </b-navbar>
 

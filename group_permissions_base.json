@@ -1,0 +1,52 @@
+[
+  {
+    "name": "Potential Requester",
+    "permissions": []
+  },
+  {
+    "name": "Administrator",
+    "permissions": [
+      "*"
+    ]
+  },
+  {
+    "name": "PSE",
+    "permissions": [
+      "pse_handling"
+    ]
+  },
+  {
+    "name": "HOD - MSE",
+    "permissions": [
+      "hod_handling"
+    ]
+  },
+  {
+    "name": "Planner",
+    "permissions": [
+      "scheduling"
+    ]
+  },
+  {
+    "name": "Secretary",
+    "permissions": []
+  },
+  {
+    "name": "Director",
+    "permissions": [
+      "director_handling",
+      "final_handling",
+      "scheduling"
+    ]
+  },
+  {
+    "name": "Inactive",
+    "permissions": []
+  },
+  {
+    "name": "HOD - PSO",
+    "permissions": [
+      "hod_handling"
+    ]
+  }
+]
