@@ -58,6 +58,7 @@ class RegistroView(PermissionRequiredMixin,LoginRequiredMixin,View):
     def post(self, request, *args, **kwargs):
         try:
             self.context['repetido'] = False
+            self.context['diferente'] = False
             ctx = request.POST
 
             if ctx['password'] != ctx['passwordConfirm']:
