@@ -108,18 +108,15 @@ class ActualizarPermisosView(PermissionRequiredMixin,LoginRequiredMixin,View):
     def post(self, request, *args, **kwargs):
         print(request.POST)
         user = User.objects.get(username=request.POST['username'])
-        #print(user.get_all_permissions())
-        #user.user_permissions.clear()
         user.groups.clear()
+        user.first_name = request.POST['name']
+        user.last_name = request.POST['apellido']
+        user.email = request.POST['email']
+
+        user.save()
 
         user = User.objects.get(username=request.POST['username'])
 
-        #content_type = ContentType.objects.get_for_model(User)
-        #permission = Permission.objects.get(
-            #codename=request.POST['roles'],
-            #content_type=content_type,
-        #)
-        #user.user_permissions.add(permission)
         grupo = Group.objects.get(name=request.POST['roles'])
         user.groups.add(grupo)
 
