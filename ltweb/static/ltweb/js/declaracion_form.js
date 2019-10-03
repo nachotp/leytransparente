@@ -5,7 +5,7 @@ const ParlamentariosForm = {
                 <b-card-body>
                     <b-card-title><h2>[[get_nombre]]</h2></b-card-title>
                     <b-card-sub-title class="mb-2"><h4>[[get_cargo|capitalize]]</h4></b-card-sub-title>
-                    <b-card-text>Asume el cargo : [[get_fechacargo]]<br>
+                    <b-card-text>Asume el cargo: [[get_fechacargo]]<br>
                         Región: [[get_region|capitalize]]<br>
                         Comuna: [[get_comuna|capitalize]]</b-card-text>
                 </b-card-body>
