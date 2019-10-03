@@ -491,8 +491,11 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
                    }
             dic["razon"] = {}
 
-
             if int(conflicto[1]) <= 0:
+                apellido_pat = conflicto[2].upper().split()[-2]
+                apellido_mat = conflicto[2].upper().split()[-1]
+                query = self.decl.find_one({"Datos_del_Declarante.Apellido_Paterno": apellido_pat, "Datos_del_Declarante.Apellido_Materno": apellido_mat})
+                dic["partido"] = query["partido"]
                 dic["razon"]["prov_conf"] = "indirecto"
                 dic["razon"]["motivo"]={}
                 dic["razon"]["motivo"]["nombre_involucrado"] = conflicto[6]
@@ -510,8 +513,10 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
             else:
                 query = self.decl.find_one({"_id": conflicto[3]})
                 dic["partido"] = query["partido"]
+
                 dic["razon"]["prov_conf"] = "acciones"
                 dic["razon"]["motivo"] = conflicto[4]["Nombre_Razon_Social"]
+                dic["razon"]["prov_conf"] = "acciones"
 
                 if conflicto[0] * conflicto[1] > 100:
                     high.append(conflicto)
@@ -520,14 +525,15 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
                     low.append(conflicto)
                     dic["grado"] = "leve"
 
+
             dic["pariente"] = 'null'
             dic["meta"] = {}
             dic["meta"]["Fecha"] = datetime.today()
 
 
-            dic["razon"] = {}
-            dic["razon"]["prov_conf"] = "acciones"
-            dic["razon"]["motivo"] = conflicto[4]["Nombre_Razon_Social"]
+            #dic["razon"] = {}
+            #dic["razon"]["prov_conf"] = "acciones"
+            #dic["razon"]["motivo"] = conflicto[4]["Nombre_Razon_Social"]
             dic["vector"] = conflicto[6]
 
 
