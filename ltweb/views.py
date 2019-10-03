@@ -422,11 +422,11 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
         low = []
         conflictos = confd.conflicto_embedding(list(tags_ley["tags"]))
         ctx["conflictos"] = conflictos
-
         # Creacion de la lista que almacena diccionarios a insertar en la collecion de conflictos
         diclist = []
-
+        cantidad = 0
         for conflicto in conflictos:
+            cantidad += 1
             duplicado = self.confl.find_one({"ley": ley, "id_declaracion": conflicto[3]})
 
             dic = {"ley": ley,
@@ -458,11 +458,13 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
 
         if len(diclist) > 0:
             x = self.confl.insert_many(diclist)
-
+        emails = [x.email for x in User.objects.filter(groups__name = "Comision de Etica")]
         ctx["high"] = high
         ctx["low"] = low
+        ctx["cantidad"] = cantidad
         print("Conflictos encontrados: " + str(len(conflictos)))
-
+        if(len(conflictos) > 0):
+            send_email("Nuevos conflictos encontrados!", "conflict_mail", ctx, emails)
         return ctx
 
 
