@@ -20,4 +20,5 @@ def send_email(subject, mail, context, to):
 
     message = render_to_string(path.resolve(), context)
     msg = EmailMessage(subject, message, to=to)
+    msg.content_subtype = "html"
     return msg.send()
