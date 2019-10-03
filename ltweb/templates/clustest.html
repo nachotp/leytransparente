@@ -5,32 +5,37 @@
 {% if clusters %}
 <body>
 
-<b-container style="max-width: 1450px">
+<b-container class="mw-100">
 
     <h1>Patrones en conflictos</h1>
-    <div class="container">
     {% for patron in clusters %}
-    <div class="col-sm-12" >
-        
-    <div class="row">
-            <div class="card" >
-                 <div class="card-group">
+    <b-col sm="12" class="mt-4">
+
+        <b-row>
+            <b-card header="Patrón {{ forloop.counter }}"
+                    header-bg-variant="dark"
+                    header-text-variant="white"
+                    header-class="h2">
+                 <b-card-group>
                      {% for conflicto in patron %}
-                        <div class="col-sm-4"style=" padding-left: 0px;  padding-right: 0px;">
-                            <div class="card">
-                                <div class="card-body">
-                                    <p>{{ conflicto.parlamentario }}</p>
-                                    <p>{{ conflicto.nombre_ley }}</p>
-            <p>{{ conflicto.razon.prov_conf }}</p>
-            <p>{{ conflicto.razon.motivo }}</p>
-                                </div>
-                            </div>
-                        </div>
+                        <b-col cols="4" style="padding-left: 0px;  padding-right: 0px;">
+                            <b-card>
+                                <b-card-text>
+                                    <b-card-title>{{ conflicto.parlamentario }}</b-card-title>
+                                    <b-list-group flush>
+                                        <b-list-group-item><b>Nombre Ley: </b>{{ conflicto.nombre_ley|title }}</b-list-group-item>
+                                        <b-list-group-item><b>Razón conflicto: </b>{{ conflicto.razon.prov_conf|title }}</b-list-group-item>
+                                        <b-list-group-item><b>Motivo: </b>{{ conflicto.razon.motivo|title }}</b-list-group-item>
+                                    </b-list-group>
+                                </b-card-text>
+                            </b-card>
+                        </b-col>
                     {% endfor %}
-                </div>
-            </div>
-    {% endfor %}
-</div>
+                </b-card-group>
+            </b-card>
+        {% endfor %}
+        </b-row>
+    </b-col>
 </b-container>
 
 </body>
