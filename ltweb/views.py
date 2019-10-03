@@ -53,6 +53,7 @@ class RegistroView(PermissionRequiredMixin,LoginRequiredMixin,View):
 
     def get(self, request, *args, **kwargs):
         self.context['repetido'] = False
+        self.context['diferente'] = False
         return render(request, self.template_name, self.context)
 
     def post(self, request, *args, **kwargs):
