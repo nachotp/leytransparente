@@ -10,7 +10,7 @@
     <h1>Patrones en conflictos</h1>
     <div class="container">
     {% for patron in clusters %}
-    <div class="col-sm-6" >
+    <div class="col-sm-12" >
         
     <div class="row">
             <div class="card" >
@@ -20,6 +20,9 @@
                             <div class="card">
                                 <div class="card-body">
                                     <p>{{ conflicto.parlamentario }}</p>
+                                    <p>{{ conflicto.nombre_ley }}</p>
+            <p>{{ conflicto.razon.prov_conf }}</p>
+            <p>{{ conflicto.razon.motivo }}</p>
                                 </div>
                             </div>
                         </div>
