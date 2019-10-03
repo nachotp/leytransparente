@@ -76,6 +76,10 @@
                                 </b-form-input>
                             </b-form-group>
 
+                            {% if diferente %}
+                                <p style="color: red;">Las claves no coinciden</p>
+                            {% endif %}
+
                             <b-form-group label="Rol:">
                                 <b-form-radio-group
                                     v-model="form.selected"

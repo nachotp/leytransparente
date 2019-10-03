@@ -59,6 +59,11 @@ class RegistroView(PermissionRequiredMixin,LoginRequiredMixin,View):
         try:
             self.context['repetido'] = False
             ctx = request.POST
+
+            if ctx['password'] != ctx['passwordConfirm']:
+                self.context['diferente'] = True
+                return render(request, self.template_name, self.context)
+
             print("Registrando...")
             user = User.objects.create_user(ctx['username'], ctx['email'], ctx['password'])
             user.first_name = ctx['name']
@@ -69,34 +74,16 @@ class RegistroView(PermissionRequiredMixin,LoginRequiredMixin,View):
             for perm in ctx.getlist('roles'):
                 if perm == 'Oficina de Informaciones':
                     print('oficina')
-                    #content_type = ContentType.objects.get_for_model(User)
-                    #permission = Permission.objects.get(
-                        #codename=perm,
-                        #content_type=content_type,
-                    #)
-                    #user.user_permissions.add(permission)
                     grupo = Group.objects.get(name=perm)
                     user.groups.add(grupo)
 
                 elif perm == 'Comision de Etica':
                     print('comision')
-                    #content_type = ContentType.objects.get_for_model(User)
-                    #permission = Permission.objects.get(
-                        #codename=perm,
-                        #content_type=content_type,
-                    #)
-                    #user.user_permissions.add(permission)
                     grupo = Group.objects.get(name=perm)
                     user.groups.add(grupo)
 
                 else:
                     print('admin')
-                    #content_type = ContentType.objects.get_for_model(User)
-                    #permission = Permission.objects.get(
-                        #codename=perm,
-                        #content_type=content_type,
-                    #)
-                    #user.user_permissions.add(permission)
                     grupo = Group.objects.get(name=perm)
                     user.groups.add(grupo)
 
