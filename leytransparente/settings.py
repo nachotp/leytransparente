@@ -137,3 +137,9 @@ LOGIN_URL = "/login"
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = "/login"
 
+EMAIL_HOST = 'smtp.zoho.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'ignacio.tampe@sansano.usm.cl'
+EMAIL_HOST_PASSWORD = 'leytransparente2019'
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'LeyTransparente <leytransparente@zoho.com>'
