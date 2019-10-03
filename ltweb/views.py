@@ -110,9 +110,10 @@ class RegistroView(PermissionRequiredMixin,LoginRequiredMixin,View):
             return render(request, self.template_name, self.context)
 
 
-class ActualizarPermisosView(LoginRequiredMixin,View):
+class ActualizarPermisosView(PermissionRequiredMixin,LoginRequiredMixin,View):
     template_name = "actualizar.html"
     context = {}
+    permission_required = 'auth.is_admin'
 
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name, self.context)
@@ -138,8 +139,9 @@ class ActualizarPermisosView(LoginRequiredMixin,View):
         return redirect('Control de usuario')
 
 
-class ControlView(LoginRequiredMixin,TemplateView):
+class ControlView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
     template_name = "control_usuario.html"
+    permission_required = 'auth.is_admin'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -172,8 +174,9 @@ class ControlView(LoginRequiredMixin,TemplateView):
         return context
 
 
-class ActualizarView(LoginRequiredMixin,TemplateView):
+class ActualizarView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
     template_name = "actualizar.html"
+    permission_required = 'auth.is_admin'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -190,7 +193,8 @@ class ActualizarView(LoginRequiredMixin,TemplateView):
         return context
 
 
-class EliminarUserView(LoginRequiredMixin,View):
+class EliminarUserView(PermissionRequiredMixin,LoginRequiredMixin,View):
+    permission_required = 'auth.is_admin'
 
     def get(self, request, *args, **kwargs):
         user = User.objects.get(username=self.kwargs['id'])
@@ -215,12 +219,13 @@ class ViewDeclaracion(LoginRequiredMixin,TemplateView):
         return ctx
 
 
-class SubirDeclaracionView(LoginRequiredMixin,View):
+class SubirDeclaracionView(PermissionRequiredMixin,LoginRequiredMixin,View):
     context = {}
     initial = {'key': 'value'}
     conn = DBconnection()
     mycol = conn.get_collection("declaraciones")
     template_name = 'declaracion_form.html'
+    permission_required = 'auth.is_oficina'
 
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name, self.context)
@@ -300,12 +305,13 @@ class DiputadosListView(LoginRequiredMixin,TemplateView):
         return context
 
 
-class SubirLeyView(LoginRequiredMixin,View):
+class SubirLeyView(PermissionRequiredMixin,LoginRequiredMixin,View):
     context = {}
     initial = {'key': 'value'}
     conn = DBconnection()
     mycol = conn.get_collection("leyes")
     template_name = 'ley_form.html'
+    permission_required = 'auth.is_oficina'
 
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name, self.context)
@@ -406,12 +412,13 @@ class LeyesListView(LoginRequiredMixin,TemplateView):
         return context
 
 
-class ConflictoView(LoginRequiredMixin,TemplateView):
+class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
     template_name = "conflict_view.html"
     conn = DBconnection()
     decl = conn.get_collection("declaraciones")
     leyes = conn.get_collection("leyes")
     confl = conn.get_collection("conflictos")
+    permission_required = 'auth.is_oficina'
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data()
