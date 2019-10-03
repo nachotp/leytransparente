@@ -8,6 +8,7 @@ import string
 import os
 import operator
 import numpy as np
+import pprint
 
 
 class EmbeddingPredictor:
@@ -83,13 +84,17 @@ def conflicto_embedding(tags):
         {"_id": 1, "Id_Declaracion": 1, "Datos_del_Declarante": 1, "Derechos_Acciones_Chile": 1}
     )
     query_familiar = mycol2.find(
-        {"meta.actual": True, "Derechos_Acciones_Chile": {"$exists": True}},
+        {"Derechos_Acciones_Chile": {"$exists": True}},
         {"_id": 1, "Parlamentario": 1, "Parentesco": 1, "Derechos_Acciones_Chile": 1,"Datos_del_Pariente": 1, "tipo": 1}
     )
+
     query_lobby = mycol2.find(
-        {"meta.actual": True, "Representa": {"$exists": True}},
+        {"Representa": {"$exists": True}},
         {"_id": 1, "Parlamentario": 1, "Representa": 1, "Datos_del_Lobista": 1,"tipo": 1}
     )
+   #print("lobby")
+   #for document in query_familiar:
+   #    pprint(document)
 
     tags = ' '.join(tags)
     sust = wp.extract_nouns(tags)
@@ -119,6 +124,7 @@ def conflicto_embedding(tags):
     print("Filtrando candidatos")
     for person in prematch:
         name = ""
+        tipo = "directo"
         for nombre in person["Datos_del_Declarante"]["nombre"].split():
             name += nombre.lower().capitalize() + " "
         nombre = name + person["Datos_del_Declarante"]["Apellido_Paterno"].lower().capitalize() + " " + \
@@ -142,14 +148,19 @@ def conflicto_embedding(tags):
             print(giro, ">", cos_sim)
             if cos_sim > 0.5:
                 scr = score(porc, cont)
-                matches.append((cos_sim, scr, nombre, idec, emp, list(giro_vec)))
+                matches.append((cos_sim, scr, nombre, idec, emp,tipo , list(giro_vec)))
 
     for familiar in query_familiar:
         nombre = ""
+        tipo = "indirecto"
         for name in familiar["Parlamentario"].split():
+            print("en conflicto indirecto familiar:" + familiar["Parlamentario"])
             nombre += name.lower().capitalize() + " "
         idec = familiar["_id"]
+        involucrado = familiar["Datos_del_Pariente"]["nombre"] + " " + familiar["Datos_del_Pariente"]["Apellido_Paterno"] + " " + familiar["Datos_del_Pariente"]["Apellido_Materno"]
+
         for empresa in familiar["Derechos_Acciones_Chile"]:
+            print(list(empresa))
             porc = float(empresa["Cantidad_Porcentaje"])
             giro = empresa["Giro_Registrado_SII"] if "Giro_Registrado_SII" in empresa else ""
             razon = empresa["Nombre_Razon_Social"]
@@ -158,16 +169,19 @@ def conflicto_embedding(tags):
             razon = razon.lower().translate(str.maketrans('', '', string.punctuation))
             giro_vec = wp.to_vector(giro)
             cos_sim = wp.similarity(giro_vec, vector_ley)
-
+            print(cos_sim)
             if cos_sim > 0.55:
-                matches.append((cos_sim, 0, nombre, idec, empresa))
+                matches.append((cos_sim, 0, nombre, idec, empresa, tipo, involucrado))
 
     for lobby in query_lobby:
         nombre = ""
+        tipo = "indirecto"
         for name in lobby["Parlamentario"].split():
             nombre += name.lower().capitalize() + " "
         idec = lobby["_id"]
+        involucrado = lobby["Datos_del_Lobista"]["nombre"] + " " + lobby["Datos_del_Lobista"]["Apellido_Paterno"] + " " + lobby["Datos_del_Lobista"]["Apellido_Materno"]
         for empresa in lobby["Representa"]:
+            print(empresa["Nombre_Razon_Social"])
             razon = empresa["Nombre_Razon_Social"]
             giro = empresa["Giro_Registrado_SII"] if "Giro_Registrado_SII" in empresa else ""
             giro = giro.lower().translate(str.maketrans('', '', string.punctuation))
@@ -175,8 +189,9 @@ def conflicto_embedding(tags):
             giro_vec = wp.to_vector(giro)
             cos_sim = wp.similarity(giro_vec, vector_ley)
 
+            print(cos_sim)
             if cos_sim > 0.55:
-                matches.append((cos_sim, -1, nombre, idec, empresa))
+                matches.append((cos_sim, -1, nombre, idec, empresa ,tipo , involucrado))
 
     matches.sort(key=operator.itemgetter(0, 1), reverse=True)
 

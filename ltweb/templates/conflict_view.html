@@ -79,6 +79,28 @@
         </b-col>
     {% endfor %}
     </b-row>
+
+    <b-row style="justify-content: center"><h4>Conflictos Indirectos</h4></b-row>
+    <b-row>
+    {% for diputado in indirecto%}
+        <b-col class="col-6">
+            <b-card class="mb-3" header=" " header-bg-variant="info">
+                <a href="{% url 'Ver Declaracion' id=diputado.3 %}"><h4>{{ diputado.2 }}</h4></a>
+                <b-list-group flush>
+                    <b-list-group-item class="conflictViewListItem"><b>2º Involucrado : </b>{{diputado.6|title}}</b-list-group-item>
+                    <b-list-group-item class="conflictViewListItem"><b>Razón Social : </b>{{diputado.4.Nombre_Razon_Social|title}}</b-list-group-item>
+                    {% if diputado.1 == 0 %}
+                        <b-list-group-item class="conflictViewListItem"><b>Relacion con Parlamentario : </b>Familiar</b-list-group-item>
+                    {% elif diputado.1 == -1 %}
+                        <b-list-group-item class="conflictViewListItem"><b>Relacion con Parlamentario : </b>Lobby</b-list-group-item>
+                    {% endif %}
+
+                </b-list-group>
+                <br>
+            </b-card>
+        </b-col>
+    {% endfor %}
+    </b-row>
 </b-container>
 
 {% else %}
