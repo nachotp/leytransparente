@@ -248,6 +248,7 @@ class ConflictoView(TemplateView):
         ctx["url_ley"] = tags_ley["url"]
         high = []
         low = []
+        indirecto = []
         conflictos = confd.conflicto_embedding(list(tags_ley["tags"]))
         ctx["conflictos"] = conflictos
 
@@ -262,22 +263,46 @@ class ConflictoView(TemplateView):
                    "id_declaracion": conflicto[3],
                    "parlamentario": conflicto[2]
                    }
-            query = self.decl.find_one({"_id": conflicto[3]})
-            dic["partido"] = query["partido"]
+            dic["razon"] = {}
+
+
+            if int(conflicto[1]) <= 0:
+                dic["razon"]["prov_conf"] = "indirecto"
+                dic["razon"]["motivo"]={}
+                dic["razon"]["motivo"]["nombre_involucrado"] = conflicto[6]
+
+                if conflicto[1] == 0:
+                    dic["razon"]["motivo"]["relacion_diputado"] = "familiar"
+                elif conflicto[1] == -1:
+                    dic["razon"]["motivo"]["relacion_diputado"] = "lobby"
+
+                dic["razon"]["motivo"]["razon_social"] = conflicto[4]["Nombre_Razon_Social"]
+
+                dic["indirecto"] = "indirecto"
+                indirecto.append(conflicto)
+
+            else:
+                query = self.decl.find_one({"_id": conflicto[3]})
+                dic["partido"] = query["partido"]
+                dic["razon"]["prov_conf"] = "acciones"
+                dic["razon"]["motivo"] = conflicto[4]["Nombre_Razon_Social"]
+
+                if conflicto[0] * conflicto[1] > 100:
+                    high.append(conflicto)
+                    dic["grado"] = "grave"
+                else:
+                    low.append(conflicto)
+                    dic["grado"] = "leve"
+
             dic["pariente"] = 'null'
             dic["meta"] = {}
             dic["meta"]["Fecha"] = datetime.today()
 
-            dic["razon"] = {}
-            dic["razon"]["prov_conf"] = "acciones"
-            dic["razon"]["motivo"] = conflicto[4]["Nombre_Razon_Social"]
+            #dic["razon"] = {}
+            #dic["razon"]["prov_conf"] = "acciones"
 
-            if conflicto[0] * conflicto[1] > 100:
-                high.append(conflicto)
-                dic["grado"] = "grave"
-            else:
-                low.append(conflicto)
-                dic["grado"] = "leve"
+
+
 
             if duplicado != None:
                 continue
@@ -288,6 +313,7 @@ class ConflictoView(TemplateView):
 
         ctx["high"] = high
         ctx["low"] = low
+        ctx["indirecto"] = indirecto
         print("Conflictos encontrados: " + str(len(conflictos)))
 
         return ctx
