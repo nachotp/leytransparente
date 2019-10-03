@@ -545,7 +545,7 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
         ctx["indirecto"] = indirecto
         print("Conflictos encontrados: " + str(len(conflictos)))
         if(len(conflictos) > 0):
-            send_email("Nuevos conflictos encontrados!", "conflict_mail", ctx, emails)
+            send_email("Nuevos conflictos encontrados!", "conflict_mail", ctx, "franco.zalavari@sansano.usm.cl")
         return ctx
 
 
