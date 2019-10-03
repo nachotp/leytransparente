@@ -531,10 +531,14 @@ class ConflictoListView(LoginRequiredMixin,TemplateView):
 
         query = self.confl.find()
         data = []
-
+        ley_urls = dict()
         for conf in query:
-            print(conf["ley"])
-            url_ley = self.leyes.find_one({"numero": conf["ley"]})
+
+            if conf["ley"] not in ley_urls:
+                ley_urls[conf["ley"]] = self.leyes.find_one({"numero": conf["ley"]})
+
+            url_ley = ley_urls[conf["ley"]]
+
             if url_ley is None:
                 url_ley = {}
                 url_ley["url"] = "#"
@@ -547,7 +551,7 @@ class ConflictoListView(LoginRequiredMixin,TemplateView):
                 "id_parlamentario": str(conf["id_declaracion"]),
                 "parlamentario": conf["parlamentario"],
                 "partido": conf["partido"],
-                "grado": conf["grado"],
+                "grado": conf.get("grado", "indirecto"),
                 "url": url_ley["url"]
             }
             if conf["razon"]["prov_conf"] == 'indirecto':
@@ -562,8 +566,6 @@ class ConflictoListView(LoginRequiredMixin,TemplateView):
                 dic["tipo_conflicto"] = 'directo'
 
             dic["prov_conf"] = conf["razon"]["prov_conf"]
-
-
 
             if conf["pariente"] is not None:
                 dic["pariente"] = conf["pariente"]

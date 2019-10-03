@@ -15,13 +15,13 @@
             <b-card header="Patrón {{ forloop.counter }}"
                     header-bg-variant="dark"
                     header-text-variant="white"
-                    header-class="h2">
+                    header-class="h2"
+                    border-variant="dark">
                  <b-card-group>
                      {% for conflicto in patron %}
                         <b-col cols="4" style="padding-left: 0px;  padding-right: 0px;">
-                            <b-card>
+                            <b-card title="{{ conflicto.parlamentario }}" sub-title="{{ conflicto.partido }}">
                                 <b-card-text>
-                                    <b-card-title>{{ conflicto.parlamentario }}</b-card-title>
                                     <b-list-group flush>
                                         <b-list-group-item><b>Nombre Ley: </b>{{ conflicto.nombre_ley|title }}</b-list-group-item>
                                         <b-list-group-item><b>Razón conflicto: </b>{{ conflicto.razon.prov_conf|title }}</b-list-group-item>
