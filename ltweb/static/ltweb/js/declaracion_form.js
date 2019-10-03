@@ -236,8 +236,18 @@ const ParlamentariosForm = {
     },
     delimiters: ['[[', ']]'],
     created: function() {
-        //this.$store.state.form_data = JSON.parse(declaraciones || '{}');
-        this.$store.state.form_data = JSON.parse(document.getElementsByTagName('body')[0].getAttribute('data') || '{}');
+        //this.$store.state.form_data = JSON.parse(document.getElementsByTagName('body')[0].getAttribute('data') || '{}');
+
+        const Http = new XMLHttpRequest();
+        const url = 'http://127.0.0.1:8000/api/declaracion/' + '5cf759007b90730c2416cf31' + '/';
+        Http.open("GET", url);
+        Http.send();
+
+        Http.onreadystatechange=(e)=>{
+            console.log(Http.responseText);
+            this.$store.form_data = JSON.parse( Http.responseText );
+        };
+
     },
     store: declaracion_data,
     filters: {
@@ -364,7 +374,7 @@ const ParlamentariosForm = {
             for (const elem of lista ){
                 Avaluo += parseInt(elem.Avaluo_Fiscal, 10)
             }
-            return Avaluo
+            return Avaluo;
         }
     },
 };

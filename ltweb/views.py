@@ -701,6 +701,8 @@ class ApiDereclaracionView(TemplateView):
 
         query = self.mycol.find_one({"_id": ObjectId(ctx['id'])})
         query.pop('_id')
-        ctx['declaracion'] = json.dumps(query)
+        ctx['declaracion'] = json.dumps(query).encode('latin-1').decode('utf-8')
+
+        print(ctx['declaracion'])
 
         return ctx
