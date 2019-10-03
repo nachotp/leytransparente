@@ -631,3 +631,76 @@ class ClusterView(LoginRequiredMixin,TemplateView):
         context["clusters"] = obj["clusters"]
 
         return context
+
+class ApiConflictosView(TemplateView):
+    template_name = "api/conflictos.html"
+    conn = DBconnection()
+    confl = conn.get_collection("conflictos")
+    leyes = conn.get_collection("leyes")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        query = self.confl.find()
+        data = []
+        ley_urls = dict()
+        for conf in query:
+
+            if conf["ley"] not in ley_urls:
+                ley_urls[conf["ley"]] = self.leyes.find_one({"numero": conf["ley"]})
+
+            url_ley = ley_urls[conf["ley"]]
+
+            if url_ley is None:
+                url_ley = {}
+                url_ley["url"] = "#"
+            if conf["partido"] is None:
+                conf["partido"] = "Sin información"
+
+            dic = {
+                "ley": conf["ley"],
+                "nombre_ley": conf["nombre_ley"],
+                "id_parlamentario": str(conf["id_declaracion"]),
+                "parlamentario": conf["parlamentario"],
+                "partido": conf["partido"],
+                "grado": conf.get("grado", "indirecto"),
+                "url": url_ley["url"]
+            }
+            if conf["razon"]["prov_conf"] == 'indirecto':
+                conf["razon"]["prov_conf"] = 'Indirecto por ' + conf["razon"]["motivo"]["relacion_diputado"]
+
+                dic["nombre_involucrado"] = conf["razon"]["motivo"]["nombre_involucrado"]
+                dic["relacion_diputado"] = conf["razon"]["motivo"]["relacion_diputado"]
+                dic["razon_social"] = conf["razon"]["motivo"]["razon_social"]
+                dic["tipo_conflicto"] = 'indirecto'
+            else:
+                dic["motivo"] = conf["razon"]["motivo"]
+                dic["tipo_conflicto"] = 'directo'
+
+            dic["prov_conf"] = conf["razon"]["prov_conf"]
+
+            if conf["pariente"] is not None:
+                dic["pariente"] = conf["pariente"]
+
+            data.append(dic)
+
+        # print(data)
+        context["conflictos"] = json.dumps(data)
+        print(context["conflictos"])
+        return context
+
+class ApiDereclaracionView(TemplateView):
+    template_name = "api/declaraciones.html"
+    conn = DBconnection()
+    mycol = conn.get_collection("declaraciones")
+
+    def get_context_data(self, **kwargs):
+        # Eso es get, para que sea más seguro, usar POST
+        ctx = super().get_context_data()
+        ctx['id'] = self.kwargs['id']
+
+        query = self.mycol.find_one({"_id": ObjectId(ctx['id'])})
+        query.pop('_id')
+        ctx['declaracion'] = json.dumps(query)
+
+        return ctx

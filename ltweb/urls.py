@@ -22,6 +22,8 @@ urlpatterns = [
     path(r'actualizar_permisos/', views.ActualizarPermisosView.as_view(), name='Actualizar Permisos'),
     path(r'eliminar_usuario/<str:id>/', views.EliminarUserView.as_view(), name='Eliminar Usuario'),
     path(r'actualizar_pass/<str:id>/', views.PassView.as_view(), name='Actualizar Clave'),
-    path(r'actualizar_password/', views.ActualizarPassView.as_view(), name='Actualizar Pass')
+    path(r'actualizar_password/', views.ActualizarPassView.as_view(), name='Actualizar Pass'),
+    path(r'api/conflictos/', views.ApiConflictosView.as_view(), name='Api Conflictos'),
+    path(r'api/declaracion/', views.ApiDereclaracionView.as_view(), name='Api Declaraciones')
 ]
 
