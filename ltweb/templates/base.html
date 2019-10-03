@@ -58,7 +58,8 @@
                         { text: 'Revisión', value: 'Comision de Etica' },
                         { text: 'Administrador', value: 'Administrator' }
                     ],
-                    show: true
+                    show: true,
+                    spinner: false
                 }
             },
             computed: {
@@ -105,7 +106,7 @@
                 },
                 inControl: function () {
                     if (this.actualPage === 'Cuentas')
-                        return 'active';
+                        return 'active link';
                     else
                         return '';
                 },
@@ -121,6 +122,9 @@
                     this.$nextTick(() =>{
                         this.show = true
                     })
+                },
+                startSpinner: function (evt) {
+                    this.spinner = true;
                 }
             },
             components: DEPS
