@@ -15,12 +15,8 @@
 
 {% block content %}
 
-{% if conflictos %}
-<body data="{{ conflictos }}">
+<body>
 
     <conflictos-vue :class="toConflictos"></conflictos-vue>
 </body>
-{% else %}
-    <h1>No se han encontrado conflictos de interes.</h1>
-{% endif %}
 {% endblock %}

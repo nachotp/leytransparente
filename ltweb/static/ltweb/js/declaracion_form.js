@@ -1,6 +1,180 @@
 const ParlamentariosForm = {
+    data() {
+        return{
+            leftPad:{
+                'padding-left': "0px"
+            },
+            rightPad:{
+                'padding-right': "0px"
+            },
+            multipleCols: {
+                class: 'mt-4',
+                cols: '6',
+            },
+            listGroupItem:{
+                class: 'h-100',
+                style:{
+                    'display': 'flex',
+                    'justify-content': 'center',
+                    'align-items': 'center',
+                }
+            },
+            modalStyle:{
+                style: {
+                    'padding-top': '0px',
+                    'padding-bottom': '0px',
+                },
+            },
+            ready: false,
+        }
+    },
+    delimiters: ['[[', ']]'],
+    created: function() {
+        //this.$store.state.form_data = JSON.parse(document.getElementsByTagName('body')[0].getAttribute('data') || '{}');
+
+        const Http = new XMLHttpRequest();
+        const url = 'http://127.0.0.1:8000/api/declaracion/' + document.getElementsByTagName('body')[0].getAttribute('data') + '/';
+        Http.open("GET", url);
+        Http.send();
+
+        Http.onreadystatechange=(e)=>{
+            if(Http.responseText !== '') {
+                this.$store.state.form_data = JSON.parse(Http.responseText);
+                this.ready = true;
+            }
+        };
+
+    },
+    store: declaracion_data,
+    filters: {
+        capitalize: function (value) {
+            if (value !== undefined){
+                value = value.toString().toLowerCase();
+                return value.charAt(0).toUpperCase() + value.slice(1);
+            }
+        },
+        dateOnly: function (value) {
+            if (value !== undefined)
+                return value.split(' ')[0];
+            else
+                return "No hay información";
+        },
+        yesNo: function (value) {
+            if (value !== undefined)
+            return ((value === false || value === "No" || value === "false" || value === "False") ? 'No' : 'Si');
+        },
+        number: function (value) {
+            if (value !== undefined)
+            return parseInt(value, 10).toLocaleString('es');
+            if (value === "RESERVADO")
+            return "Reservado";
+        },
+        name: function (value) {
+            if (value !== undefined){
+            value = value.toLowerCase().split(' ')
+            var name = '';
+            for (let i = 0; i < value.length; i++) {
+                    name += value[i].charAt(0).toUpperCase() + value[i].slice(1) + ' ';
+                }
+                return name;
+            }
+        },
+        reservado: function (value) {
+            return (value === "RESERVADO") ? "Reservado" : value;
+        }
+    },
+    computed: {
+        get_editable(){
+            return this.$store.state.editable;
+        },
+        form_data(){
+            return this.$store.state.form_data;
+        },
+        form_base(){
+            return this.$store.state.form_base.template;
+        },
+        get_state(){
+            return this.$store.state;
+        },
+        get_nombre(){
+            var names = this.$store.state.form_data.Datos_del_Declarante.nombre.toLowerCase().split(' ')
+            var name = '';
+            for (let i = 0; i < names.length; i++) {
+                name += names[i].charAt(0).toUpperCase() + names[i].slice(1) + ' ';
+            }
+            var ApellidoP = this.$store.state.form_data.Datos_del_Declarante.Apellido_Paterno.toLowerCase();
+            ApellidoP = ApellidoP.charAt(0).toUpperCase() + ApellidoP.slice(1);
+
+            var ApellidoM = this.$store.state.form_data.Datos_del_Declarante.Apellido_Materno.toLowerCase();
+            ApellidoM = ApellidoM.charAt(0).toUpperCase() + ApellidoM.slice(1);
+
+            return name + ' ' + ApellidoP + ' ' + ApellidoM;
+        },
+        get_nombreConyuge(){
+            var names = this.$store.state.form_data.Datos_del_Conyuge.nombre.toLowerCase().split(' ')
+            var name = '';
+            for (let i = 0; i < names.length; i++) {
+                name += names[i].charAt(0).toUpperCase() + names[i].slice(1) + ' ';
+            }
+            var ApellidoP = this.$store.state.form_data.Datos_del_Conyuge.Apellido_Paterno.toLowerCase();
+            ApellidoP = ApellidoP.charAt(0).toUpperCase() + ApellidoP.slice(1);
+
+            var ApellidoM = this.$store.state.form_data.Datos_del_Conyuge.Apellido_Materno.toLowerCase();
+            ApellidoM = ApellidoM.charAt(0).toUpperCase() + ApellidoM.slice(1);
+
+            return name + ' ' + ApellidoP + ' ' + ApellidoM;
+        },
+        get_cargo(){
+            return this.$store.state.form_data.Datos_Entidad_Por_La_Que_Declara.Cargo_Funcion.nombre
+        },
+        get_profesion(){
+            return this.$store.state.form_data.Datos_del_Declarante.Profesion_Oficio.nombre;
+        },
+        get_estadoc(){
+            return this.$store.state.form_data.Datos_del_Declarante.Estado_Civil.nombre;
+        },
+        get_regimenp(){
+            return this.$store.state.form_data.Datos_del_Declarante.Regimen_Patrimonial.nombre;
+        },
+        get_fechacargo(){
+            return this.$store.state.form_data.Datos_Entidad_Por_La_Que_Declara.Fecha_Asuncion_Cargo.split(' ')[0];
+        },
+        get_regiondesempeno(){
+            return this.$store.state.form_data.Datos_Entidad_Por_La_Que_Declara.Region_Desempeno_Chile.nombre;
+        },
+        get_region(){
+            return this.$store.state.form_data.Region.nombre;
+        },
+        get_comuna(){
+            return this.$store.state.form_data.Comuna.nombre;
+        },
+        get_fechadecla(){
+            return this.$store.state.form_data.Fecha_de_la_Declaracion.split(' ')[0];
+        },
+        getDerechos(){
+            return this.$store.state.form_data.Derechos_Acciones_Chile;
+        },
+        getFechaAdquisicionDerecho(){
+            return this.$store.state.form_data.Derechos_Acciones_Chile.Fecha_Adquisicion;
+        },
+        getBienesChile(){
+            return this.$store.state.form_data.Bienes_Inmuebles_Situados_En_Chile;
+        },
+        getVehiculos(){
+            return this.$store.state.form_data.Vehiculos_Motorizados;
+        }
+    },
+    methods:{
+        AvaluoTotal: function(lista) {
+            var Avaluo = 0;
+            for (const elem of lista ){
+                Avaluo += parseInt(elem.Avaluo_Fiscal, 10)
+            }
+            return Avaluo;
+        }
+    },
     template: `
-    <b-container class="mw-75">
+    <b-container class="mw-75" v-if="ready">
             <b-card no-body class="mb-1">
                 <b-card-body>
                     <b-card-title><h2>[[get_nombre]]</h2></b-card-title>
@@ -16,7 +190,6 @@ const ParlamentariosForm = {
                     Regimen Patrimonial: [[get_regimenp|capitalize]] </b-list-group-item>
                 </b-list-group>
             </b-card>
-<!--            <b-list-group-item v-for="(item,key,index) in form_data" :key="key">[[key]]: [[item]]</b-list-group-item>-->
         
             <b-row
             align-h="center"
@@ -206,176 +379,4 @@ const ParlamentariosForm = {
             </b-row>
         </b-container>
     `,
-    data() {
-        return{
-            leftPad:{
-                'padding-left': "0px"
-            },
-            rightPad:{
-                'padding-right': "0px"
-            },
-            multipleCols: {
-                class: 'mt-4',
-                cols: '6',
-            },
-            listGroupItem:{
-                class: 'h-100',
-                style:{
-                    'display': 'flex',
-                    'justify-content': 'center',
-                    'align-items': 'center',
-                }
-            },
-            modalStyle:{
-                style: {
-                    'padding-top': '0px',
-                    'padding-bottom': '0px',
-                },
-            },
-            //ready: false,
-        }
-    },
-    delimiters: ['[[', ']]'],
-    created: function() {
-        this.$store.state.form_data = JSON.parse(document.getElementsByTagName('body')[0].getAttribute('data') || '{}');
-
-        /*const Http = new XMLHttpRequest();
-        const url = 'http://127.0.0.1:8000/api/declaracion/' + '5cf759007b90730c2416cf31' + '/';
-        Http.open("GET", url);
-        Http.send();
-
-        Http.onreadystatechange=(e)=>{
-            this.$store.state.form_data = JSON.parse( Http.responseText );
-            this.ready = true;
-        };*/
-
-    },
-    store: declaracion_data,
-    filters: {
-        capitalize: function (value) {
-            if (value !== undefined){
-                value = value.toString().toLowerCase();
-                return value.charAt(0).toUpperCase() + value.slice(1);
-            }
-        },
-        dateOnly: function (value) {
-            if (value !== undefined)
-                return value.split(' ')[0];
-            else
-                return "No hay información";
-        },
-        yesNo: function (value) {
-            if (value !== undefined)
-            return ((value === false || value === "No" || value === "false" || value === "False") ? 'No' : 'Si');
-        },
-        number: function (value) {
-            if (value !== undefined)
-            return parseInt(value, 10).toLocaleString('es');
-            if (value === "RESERVADO")
-            return "Reservado";
-        },
-        name: function (value) {
-            if (value !== undefined){
-            value = value.toLowerCase().split(' ')
-            var name = '';
-            for (let i = 0; i < value.length; i++) {
-                    name += value[i].charAt(0).toUpperCase() + value[i].slice(1) + ' ';
-                }
-                return name;
-            }
-        },
-        reservado: function (value) {
-            return (value === "RESERVADO") ? "Reservado" : value;
-        }
-    },
-    computed: {
-        get_editable(){
-            return this.$store.state.editable;
-        },
-        form_data(){
-            return this.$store.state.form_data;
-        },
-        form_base(){
-            return this.$store.state.form_base.template;
-        },
-        get_state(){
-            return this.$store.state;
-        },
-        get_nombre(){
-            var names = this.$store.state.form_data.Datos_del_Declarante.nombre.toLowerCase().split(' ')
-            var name = '';
-            for (let i = 0; i < names.length; i++) {
-                name += names[i].charAt(0).toUpperCase() + names[i].slice(1) + ' ';
-            }
-            var ApellidoP = this.$store.state.form_data.Datos_del_Declarante.Apellido_Paterno.toLowerCase();
-            ApellidoP = ApellidoP.charAt(0).toUpperCase() + ApellidoP.slice(1);
-
-            var ApellidoM = this.$store.state.form_data.Datos_del_Declarante.Apellido_Materno.toLowerCase();
-            ApellidoM = ApellidoM.charAt(0).toUpperCase() + ApellidoM.slice(1);
-
-            return name + ' ' + ApellidoP + ' ' + ApellidoM;
-        },
-        get_nombreConyuge(){
-            var names = this.$store.state.form_data.Datos_del_Conyuge.nombre.toLowerCase().split(' ')
-            var name = '';
-            for (let i = 0; i < names.length; i++) {
-                name += names[i].charAt(0).toUpperCase() + names[i].slice(1) + ' ';
-            }
-            var ApellidoP = this.$store.state.form_data.Datos_del_Conyuge.Apellido_Paterno.toLowerCase();
-            ApellidoP = ApellidoP.charAt(0).toUpperCase() + ApellidoP.slice(1);
-
-            var ApellidoM = this.$store.state.form_data.Datos_del_Conyuge.Apellido_Materno.toLowerCase();
-            ApellidoM = ApellidoM.charAt(0).toUpperCase() + ApellidoM.slice(1);
-
-            return name + ' ' + ApellidoP + ' ' + ApellidoM;
-        },
-        get_cargo(){
-            return this.$store.state.form_data.Datos_Entidad_Por_La_Que_Declara.Cargo_Funcion.nombre
-        },
-        get_profesion(){
-            return this.$store.state.form_data.Datos_del_Declarante.Profesion_Oficio.nombre;
-        },
-        get_estadoc(){
-            return this.$store.state.form_data.Datos_del_Declarante.Estado_Civil.nombre;
-        },
-        get_regimenp(){
-            return this.$store.state.form_data.Datos_del_Declarante.Regimen_Patrimonial.nombre;
-        },
-        get_fechacargo(){
-            return this.$store.state.form_data.Datos_Entidad_Por_La_Que_Declara.Fecha_Asuncion_Cargo.split(' ')[0];
-        },
-        get_regiondesempeno(){
-            return this.$store.state.form_data.Datos_Entidad_Por_La_Que_Declara.Region_Desempeno_Chile.nombre;
-        },
-        get_region(){
-            return this.$store.state.form_data.Region.nombre;
-        },
-        get_comuna(){
-            return this.$store.state.form_data.Comuna.nombre;
-        },
-        get_fechadecla(){
-            return this.$store.state.form_data.Fecha_de_la_Declaracion.split(' ')[0];
-        },
-        getDerechos(){
-            return this.$store.state.form_data.Derechos_Acciones_Chile;
-        },
-        getFechaAdquisicionDerecho(){
-            return this.$store.state.form_data.Derechos_Acciones_Chile.Fecha_Adquisicion;
-        },
-        getBienesChile(){
-            return this.$store.state.form_data.Bienes_Inmuebles_Situados_En_Chile;
-        },
-        getVehiculos(){
-            return this.$store.state.form_data.Vehiculos_Motorizados;
-        }
-    },
-    methods:{
-        AvaluoTotal: function(lista) {
-            var Avaluo = 0;
-            for (const elem of lista ){
-                Avaluo += parseInt(elem.Avaluo_Fiscal, 10)
-            }
-            return Avaluo;
-        }
-    },
 };
