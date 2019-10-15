@@ -34,15 +34,16 @@ const ParlamentariosForm = {
 
         const Http = new XMLHttpRequest();
         const url = 'http://127.0.0.1:8000/api/declaracion/' + document.getElementsByTagName('body')[0].getAttribute('data') + '/';
-        Http.open("GET", url);
-        Http.send();
 
         Http.onreadystatechange=(e)=>{
-            if(Http.responseText !== '') {
+            if(Http.status === 200 && Http.readyState === 4) {
                 this.$store.state.form_data = JSON.parse(Http.responseText);
                 this.ready = true;
             }
         };
+
+        Http.open("GET", url);
+        Http.send();
 
     },
     store: declaracion_data,

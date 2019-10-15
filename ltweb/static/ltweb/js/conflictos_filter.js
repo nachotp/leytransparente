@@ -28,17 +28,21 @@ const conflictosVue = {
 
         const Http = new XMLHttpRequest();
         const url = 'http://127.0.0.1:8000/api/conflictos';
-        Http.open("GET", url);
-        Http.send();
 
         var response = Http.responseText;
 
         Http.onreadystatechange=(e)=>{
-            if(Http.responseText !== ''){
+            if(Http.status === 200 && Http.readyState === 4){
                 this.conflictos = JSON.parse(Http.responseText);
                 this.ready = true;
             }
-        }
+        };
+
+        Http.open("GET", url);
+        Http.send(null);
+
+
+
     },
     computed: {
         filterConflictosTipo: function() {

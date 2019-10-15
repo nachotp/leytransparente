@@ -20,7 +20,7 @@
                  <b-card-group>
                      {% for conflicto in patron %}
                         <b-col cols="4" style="padding-left: 0px;  padding-right: 0px;">
-                            <b-card title="{{ conflicto.parlamentario }}" sub-title="{{ conflicto.partido }}">
+                            <b-card class="rounded-0" title="{{ conflicto.parlamentario }}" sub-title="{{ conflicto.partido }}">
                                 <b-card-text>
                                     <b-list-group flush>
                                         <b-list-group-item><b>Nombre Ley: </b>{{ conflicto.nombre_ley|title }}</b-list-group-item>
