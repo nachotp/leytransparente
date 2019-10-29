@@ -258,6 +258,7 @@ class SubirDeclaracionView(PermissionRequiredMixin,LoginRequiredMixin,View):
     initial = {'key': 'value'}
     conn = DBconnection()
     mycol = conn.get_collection("declaraciones")
+    log = conn.get_collection("changeLog") # Coleccion que almacenará los cambios
     template_name = 'declaracion_form.html'
     permission_required = 'auth.is_oficina'
 
@@ -304,6 +305,14 @@ class SubirDeclaracionView(PermissionRequiredMixin,LoginRequiredMixin,View):
                 dic["partido"] = query["partido"]
         x = self.mycol.insert(dic)
 
+        # Registro del cambio realizado
+        change = {}
+        change['usuario'] = request.user.get_full_name()
+        change['cambio'] = "Actualización de declaración diputado " + dic["Datos_del_Declarante"]["nombre"] + " " + dic["Datos_del_Declarante"]["Apellido_Paterno"] + " " + dic["Datos_del_Declarante"]["Apellido_Materno"]
+        change["fecha"] = datetime.now()
+
+        self.log.insert(change)
+
         return redirect('Ver Declaracion', id=x)
 
 
@@ -344,6 +353,7 @@ class SubirLeyView(PermissionRequiredMixin,LoginRequiredMixin,View):
     initial = {'key': 'value'}
     conn = DBconnection()
     mycol = conn.get_collection("leyes")
+    log = conn.get_collection("changeLog")
     template_name = 'ley_form.html'
     permission_required = 'auth.is_oficina'
 
@@ -416,6 +426,14 @@ class SubirLeyView(PermissionRequiredMixin,LoginRequiredMixin,View):
                 print("ley insertada correctamente")
             except:
                 print("problemas agregando la ley a la base")
+
+            # Registro del cambio realizado
+            change = {}
+            change['usuario'] = request.user.get_full_name()
+            change['cambio'] = "Actualización de proyecto ley Nº " + dic["numero"]
+            change["fecha"] = datetime.now()
+
+            self.log.insert(change)
 
         """SEGMENTO AGREGADO EN BASE AL TRABAJO DE OBTENCION DE DATOS"""
         # matches = confd.conflicto_patrimonio(lista_tags)
@@ -623,6 +641,7 @@ class ClusterView(LoginRequiredMixin,TemplateView):
 
         return context
 
+
 class ApiConflictosView(TemplateView):
     template_name = "api/conflictos.html"
     conn = DBconnection()
@@ -679,6 +698,7 @@ class ApiConflictosView(TemplateView):
         context["conflictos"] = json.dumps(data)
         print(context["conflictos"])
         return context
+
 
 class ApiDereclaracionView(TemplateView):
     template_name = "api/declaraciones.html"
