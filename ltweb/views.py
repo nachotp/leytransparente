@@ -50,6 +50,8 @@ class RegistroView(PermissionRequiredMixin,LoginRequiredMixin,View):
     template_name = "registro.html"
     context = {}
     permission_required = 'auth.is_admin'
+    conn = DBconnection()
+    log = conn.get_collection("changeLog")  # Coleccion que almacenará los cambios
 
     def get(self, request, *args, **kwargs):
         self.context['repetido'] = False
@@ -91,6 +93,16 @@ class RegistroView(PermissionRequiredMixin,LoginRequiredMixin,View):
 
             user.save()
 
+            # Registro del cambio realizado
+            change = {}
+            change['usuario'] = request.user.get_username()
+            change['cambio'] = "Creación de un nuevo usuario: " + ctx['username']
+            change["fecha"] = datetime.now()
+            change['id'] = ctx['username']
+            change['tipo'] = 'user'
+
+            self.log.insert(change)
+
             return redirect('Control de usuario')
 
         except IntegrityError:
@@ -103,6 +115,8 @@ class ActualizarPassView(PermissionRequiredMixin,LoginRequiredMixin,View):
     template_name = "cambiar_pass.html"
     context = {}
     permission_required = 'auth.is_admin'
+    conn = DBconnection()
+    log = conn.get_collection("changeLog")  # Coleccion que almacenará los cambios
 
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name, self.context)
@@ -131,6 +145,16 @@ class ActualizarPassView(PermissionRequiredMixin,LoginRequiredMixin,View):
         user.set_password(request.POST['new_password'])
         user.save()
 
+        # Registro del cambio realizado
+        change = {}
+        change['usuario'] = request.user.get_username()
+        change['cambio'] = "Actualización contraseña del usuario: " + request.POST['username'] + " por: " + request.POST['new_password']
+        change["fecha"] = datetime.now()
+        change['id'] = request.POST['username']
+        change['tipo'] = 'user'
+
+        self.log.insert(change)
+
         return redirect('Control de usuario')
 
 
@@ -138,6 +162,8 @@ class ActualizarPermisosView(PermissionRequiredMixin,LoginRequiredMixin,View):
     template_name = "actualizar.html"
     context = {}
     permission_required = 'auth.is_admin'
+    conn = DBconnection()
+    log = conn.get_collection("changeLog")  # Coleccion que almacenará los cambios
 
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name, self.context)
@@ -156,6 +182,16 @@ class ActualizarPermisosView(PermissionRequiredMixin,LoginRequiredMixin,View):
 
         grupo = Group.objects.get(name=request.POST['roles'])
         user.groups.add(grupo)
+
+        # Registro del cambio realizado
+        change = {}
+        change['usuario'] = request.user.get_username()
+        change['cambio'] = "Actualización de permisos del usuario: " + request.POST['username'] + "a usuario tipo: " + request.POST['roles']
+        change["fecha"] = datetime.now()
+        change['id'] = request.POST['username']
+        change['tipo'] = 'user'
+
+        self.log.insert(change)
 
         return redirect('Control de usuario')
 
@@ -235,10 +271,23 @@ class ActualizarView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
 
 class EliminarUserView(PermissionRequiredMixin,LoginRequiredMixin,View):
     permission_required = 'auth.is_admin'
+    conn = DBconnection()
+    log = conn.get_collection("changeLog")  # Coleccion que almacenará los cambios
 
     def get(self, request, *args, **kwargs):
         user = User.objects.get(username=self.kwargs['id'])
         user.delete()
+
+        # Registro del cambio realizado
+        change = {}
+        change['usuario'] = request.user.get_username()
+        change['cambio'] = "Se elimina el usuario: " + self.kwargs['id']
+        change["fecha"] = datetime.now()
+        change['id'] = self.kwargs['id']
+        change['tipo'] = 'user'
+
+        self.log.insert(change)
+
         return redirect('Control de usuario')
 
 
@@ -307,9 +356,11 @@ class SubirDeclaracionView(PermissionRequiredMixin,LoginRequiredMixin,View):
 
         # Registro del cambio realizado
         change = {}
-        change['usuario'] = request.user.get_full_name()
+        change['usuario'] = request.user.get_username()
         change['cambio'] = "Actualización de declaración diputado " + dic["Datos_del_Declarante"]["nombre"] + " " + dic["Datos_del_Declarante"]["Apellido_Paterno"] + " " + dic["Datos_del_Declarante"]["Apellido_Materno"]
         change["fecha"] = datetime.now()
+        change['id'] = x
+        change['tipo'] = 'file'
 
         self.log.insert(change)
 
@@ -429,9 +480,11 @@ class SubirLeyView(PermissionRequiredMixin,LoginRequiredMixin,View):
 
             # Registro del cambio realizado
             change = {}
-            change['usuario'] = request.user.get_full_name()
+            change['usuario'] = request.user.get_username()
             change['cambio'] = "Actualización de proyecto ley Nº " + dic["numero"]
             change["fecha"] = datetime.now()
+            change['id'] = x
+            change['tipo'] = 'file'
 
             self.log.insert(change)
 
@@ -717,3 +770,25 @@ class ApiDereclaracionView(TemplateView):
         print(ctx['declaracion'])
 
         return ctx
+
+
+class ChangeLogView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
+    template_name = "lista_cambios.html"
+    permission_required = 'auth.is_admin'
+    conn = DBconnection()
+    log = conn.get_collection("changeLog")  # Coleccion que almacenará los cambios
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        query = self.log.find()
+        data = []
+
+        for cl in query:
+            dic = {'usuario':cl['usuario'],
+                   'cambio':cl['cambio'],
+                   'fecha':cl['fecha']}
+            data.append(dic)
+
+        context['cambios'] = data
+        return context

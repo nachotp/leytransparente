@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head_end %}
+  <link rel="stylesheet" href="{% static 'lib/DataTables/dataTables.bootstrap4.min.css' %}">
+  <script type="text/javascript" charset="utf8" src="{% static 'lib/DataTables/jquery-3.3.1.min.js' %}"></script>
+  <script type="text/javascript" charset="utf8" src="{% static 'lib/DataTables/jquery.dataTables.min.js' %}"></script>
+  <script type="text/javascript" charset="utf8" src="{% static 'lib/DataTables/dataTables.bootstrap4.min.js' %}"></script>
+  <script type="text/javascript" charset="utf8" src="{% static 'lib/DataTables/Spanish.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="container" style="max-width: 1450px">
+
+    <b-row :class="toControl" align-h="between">
+        <b-col>
+            <h2>Historial de Cambios</h2>
+        </b-col>
+    </b-row>
+
+        <table  class="table table-striped table-bordered compact" id="dip_table" cellspacing="0">
+            <thead>
+                <tr>
+                    <td>Usuarios del Cambio</td>
+                    <td>Cambio Realizado</td>
+                    <td>Fecha del Cambio</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% if cambios %}
+                {% for cambio in cambios %}
+                    <tr>
+                        <td>{{ cambio.usuario }}</td>
+                        <td>{{ cambio.cambio }}</td>
+                        <td>{{ cambio.fecha }}</td>
+                    </tr>
+                {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+{% endblock%}
+
+{% block body_end %}
+<script>
+
+$(document).ready(function() {
+    var table = "#dip_table";
+    console.log('creating table '+table);
+
+    var diputable = $(table).DataTable({
+        "language": langSpanish,
+        orderCellsTop: true,
+        "order": [[ 0, "desc" ]],
+        "paging":         true,
+
+    });
+});
+</script>
+{% endblock %}
