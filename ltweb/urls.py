@@ -24,6 +24,7 @@ urlpatterns = [
     path(r'actualizar_pass/<str:id>/', views.PassView.as_view(), name='Actualizar Clave'),
     path(r'actualizar_password/', views.ActualizarPassView.as_view(), name='Actualizar Pass'),
     path(r'api/conflictos/', views.ApiConflictosView.as_view(), name='Api Conflictos'),
-    path(r'api/declaracion/<str:id>/', views.ApiDereclaracionView.as_view(), name='Api Declaraciones')
+    path(r'api/declaracion/<str:id>/', views.ApiDereclaracionView.as_view(), name='Api Declaraciones'),
+    path(r'api/patrones/', views.ApiClusterView.as_view(), name='Api Patrones'),
 ]
 

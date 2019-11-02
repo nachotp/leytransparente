@@ -612,6 +612,14 @@ class ClusterView(LoginRequiredMixin,TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        return context
+
+
+class ApiClusterView(LoginRequiredMixin,TemplateView):
+    template_name = "api/patrones.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         vc = VectorClustering()
         cls = vc.cluster()
 
@@ -619,9 +627,18 @@ class ClusterView(LoginRequiredMixin,TemplateView):
         clus = conn.get_collection("clusters")
         obj = clus.find_one({})
 
-        context["clusters"] = obj["clusters"]
+        for cluster in obj["clusters"]:
+            for conflicto in cluster:
+                del conflicto['_id']
+                del conflicto['id_declaracion']
+                del conflicto['meta']
+
+        print(obj["clusters"])
+
+        context["patrones"] = json.dumps(obj["clusters"])
 
         return context
+
 
 class ApiConflictosView(TemplateView):
     template_name = "api/conflictos.html"

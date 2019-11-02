@@ -1,45 +1,19 @@
 {% extends 'base.html' %}
 {% load static %}
+
+{% block body_end %}
+    <script type="text/x-template" id="patronesVue"></script>
+    <script src="{% static 'ltweb/js/patrones.js' %}"></script>
+{% endblock %}
+
+<script>
+{% block vue_dependencies %}
+    const DEPS = {'patrones-vue': patronesVue};
+{% endblock %}
+</script>
+
 {% block content %}
-
-{% if clusters %}
 <body>
-
-<b-container class="mw-100" :class="toPatrones">
-
-    <h1>Patrones</h1>
-    {% for patron in clusters %}
-    <b-col sm="12" class="mt-4">
-
-        <b-row>
-            <b-card header="Patrón {{ forloop.counter }}"
-                    header-bg-variant="dark"
-                    header-text-variant="white"
-                    header-class="h2"
-                    border-variant="dark">
-                 <b-card-group>
-                     {% for conflicto in patron %}
-                        <b-col cols="4" style="padding-left: 0px;  padding-right: 0px;">
-                            <b-card class="rounded-0" title="{{ conflicto.parlamentario }}" sub-title="{{ conflicto.partido }}">
-                                <b-card-text>
-                                    <b-list-group flush>
-                                        <b-list-group-item><b>Nombre Ley: </b>{{ conflicto.nombre_ley|title }}</b-list-group-item>
-                                        <b-list-group-item><b>Razón conflicto: </b>{{ conflicto.razon.prov_conf|title }}</b-list-group-item>
-                                        <b-list-group-item><b>Motivo: </b>{{ conflicto.razon.motivo|title }}</b-list-group-item>
-                                    </b-list-group>
-                                </b-card-text>
-                            </b-card>
-                        </b-col>
-                    {% endfor %}
-                </b-card-group>
-            </b-card>
-        {% endfor %}
-        </b-row>
-    </b-col>
-</b-container>
-
+    <patrones-vue :class="toPatrones"></patrones-vue>
 </body>
-{% else %}
-    <h1>No se han encontrado patrones de conflictos de interés.</h1>
-{% endif %}
 {% endblock %}
