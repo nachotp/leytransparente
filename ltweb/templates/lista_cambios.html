@@ -23,6 +23,7 @@
                     <td>Usuarios del Cambio</td>
                     <td>Cambio Realizado</td>
                     <td>Fecha del Cambio</td>
+                    <td></td>
                 </tr>
             </thead>
             <tbody>
@@ -32,6 +33,18 @@
                         <td>{{ cambio.usuario }}</td>
                         <td>{{ cambio.cambio }}</td>
                         <td>{{ cambio.fecha }}</td>
+                        <td class="align-middle">
+                            {% if cambio.tipo == 'user' %}
+                                <a style="color: #007bff" class="align-middle" href="{% url 'Control de usuario' %}"><i class="fas fa-eye"></i></a>
+
+                            {% elif cambio.tipo == 'ley_file' %}
+                                <a style="color: #007bff" class="align-middle" href="{% url 'Lista Leyes' %}"><i class="fas fa-eye"></i></a>
+
+                            {% elif cambio.tipo == 'dipu_file' %}
+                                <a style="color: #007bff" class="align-middle" href="{% url 'Ver Declaracion' id=cambio.id %}"><i class="fas fa-eye"></i></a>
+
+                            {% endif %}
+                        </td>
                     </tr>
                 {% endfor %}
                 {% endif %}

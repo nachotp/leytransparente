@@ -357,10 +357,10 @@ class SubirDeclaracionView(PermissionRequiredMixin,LoginRequiredMixin,View):
         # Registro del cambio realizado
         change = {}
         change['usuario'] = request.user.get_username()
-        change['cambio'] = "Actualización de declaración diputado " + dic["Datos_del_Declarante"]["nombre"] + " " + dic["Datos_del_Declarante"]["Apellido_Paterno"] + " " + dic["Datos_del_Declarante"]["Apellido_Materno"]
+        change['cambio'] = "Actualización de la declaración del diputado " + dic["Datos_del_Declarante"]["nombre"] + " " + dic["Datos_del_Declarante"]["Apellido_Paterno"] + " " + dic["Datos_del_Declarante"]["Apellido_Materno"]
         change["fecha"] = datetime.now()
         change['id'] = x
-        change['tipo'] = 'file'
+        change['tipo'] = 'dipu_file'
 
         self.log.insert(change)
 
@@ -483,8 +483,8 @@ class SubirLeyView(PermissionRequiredMixin,LoginRequiredMixin,View):
             change['usuario'] = request.user.get_username()
             change['cambio'] = "Actualización de proyecto ley Nº " + dic["numero"]
             change["fecha"] = datetime.now()
-            change['id'] = x
-            change['tipo'] = 'file'
+            change['id'] = numero
+            change['tipo'] = 'ley_file'
 
             self.log.insert(change)
 
@@ -785,9 +785,12 @@ class ChangeLogView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
         data = []
 
         for cl in query:
-            dic = {'usuario':cl['usuario'],
-                   'cambio':cl['cambio'],
-                   'fecha':cl['fecha']}
+            dic = {'usuario': cl['usuario'],
+                   'cambio': cl['cambio'],
+                   'fecha': cl['fecha'],
+                   'tipo': cl['tipo'],
+                   'id': cl['id']
+                   }
             data.append(dic)
 
         context['cambios'] = data
