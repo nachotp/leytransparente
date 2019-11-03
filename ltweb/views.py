@@ -627,6 +627,7 @@ class ApiClusterView(LoginRequiredMixin,TemplateView):
         clus = conn.get_collection("clusters")
         obj = clus.find_one({})
 
+        #Se eliminan cosas con ObjectID(), ya que causan problemas, y no se usan
         for cluster in obj["clusters"]:
             for conflicto in cluster:
                 del conflicto['_id']

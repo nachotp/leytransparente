@@ -23,7 +23,44 @@ const patronesVue = {
         Http.send(null);
     },
     computed: {
+        getLey: function () {
 
+            clusters = [];
+            for (const patron of this.patrones){
+                var counting = {};
+                alto = 0;
+                newmax = '';
+                //Contamos las leyes diferentes que hay y nos quedamos con la más alta
+                for (const conflicto of patron){
+
+                    //Si la ley ya está, sumamos 1, si no, iniciamos el dict con un 1
+                    if(conflicto.nombre_ley in Object.keys(counting))
+                        counting[conflicto.nombre_ley] += 1;
+                    else
+                        counting[conflicto.nombre_ley] = 1;
+
+                    //Se encuentra el mayor
+                    if(counting[conflicto.nombre_ley] > alto){
+                        alto = counting[conflicto.nombre_ley];
+                        newmax = conflicto.nombre_ley;
+                    }
+                }
+                mayorPartido = [];
+                others = [];
+                //Se separan en la ley dominante y el resto
+                for (const conflicto of patron){
+
+                    if (conflicto.nombre_ley === newmax)
+                        mayorPartido.push(conflicto);
+                    else
+                        others.push(conflicto);
+                }
+                //Se agrega a la lista
+
+                clusters.push({"most": mayorPartido, "least": others});
+            }
+            return clusters;
+        },
     },
     method: {
     },
@@ -35,36 +72,70 @@ const patronesVue = {
                 return value.charAt(0).toUpperCase() + value.slice(1);
             }
         },
+        Patron: function (value) {
+            return "Patrón " + value;
+        },
+        isNull: function (value) {
+            if(value === undefined || value === null || value === ''){
+                return "N/A";
+            }
+            else
+                return value;
+        }
     },
     template:`
 <div v-if="ready">
     <b-container v-if="patrones.length > 0" class="mw-100">
-    
+        
         <h1>Patrones</h1>
         <h5>Los siguientes patrones son agrupaciones de conflictos, que son semejantes en el giro del Servicio Impuestos Interno, o en el "Motivo" listado</h5>
-        <b-col v-for="(patron, index) in patrones" :key="index" sm="12" class="mt-4">
+        <b-col v-for="(patron, index) in getLey" :key="index" sm="12" class="mt-4">
     
-            <b-row>
-                <b-card :header="'Patrón ' + index"
+                <b-card :header="index + 1|Patron"
                         header-bg-variant="dark"
                         header-text-variant="white"
                         header-class="h2"
                         border-variant="dark">
                      <b-card-group >
-                        <b-col v-for="(conflicto, index) in patron" :key="index"  cols="4" style="padding-left: 0px;  padding-right: 0px;">
-                            <b-card class="rounded-0" :title="conflicto.parlamentario" :sub-title="conflicto.partido">
+                        <b-col cols="12">
+                            <b-card :header="'Ley: ' + patron['most'][0].nombre_ley|capitalize"
+                                    header-bg-variant="light"
+                                    header-class="h3"
+                                    border-variant="dark">
                                 <b-card-text>
                                     <b-list-group flush>
-                                        <b-list-group-item><b>Nombre Ley: </b>[[ conflicto.nombre_ley|capitalize ]]</b-list-group-item>
-                                        <b-list-group-item><b>Razón conflicto: </b>[[ conflicto.razon.prov_conf|capitalize ]]</b-list-group-item>
-                                        <b-list-group-item><b>Motivo: </b>[[ conflicto.razon.motivo|capitalize ]]</b-list-group-item>
+                                        <b-list-group-item v-for="(conflicto, index) in patron['most']" :key="index">
+                                            <h5>[[conflicto.parlamentario]] ([[conflicto.partido|isNull]])</h5>
+                                            <b>Razón conflicto: </b>[[conflicto.razon.motivo|capitalize]]<br>
+                                            <b>Motivo: </b>[[conflicto.razon.prov_conf|capitalize]]<br>
+                                        </b-list-group-item>
                                     </b-list-group>
                                 </b-card-text>
                             </b-card>
                         </b-col>
+                        
+                        <b-col cols="12" class="mt-4">
+                            <b-card header="Otras leyes"
+                                    header-bg-variant="light"
+                                    header-class="h3"
+                                    border-variant="dark"
+                                    v-if="patron['least'].length > 0" >
+                        
+                                <b-card-text>
+                                    <b-list-group flush>
+                                        <b-list-group-item v-for="(conflicto, index) in patron['least']" :key="index">
+                                            <h5>[[conflicto.parlamentario]] ([[conflicto.partido|isNull]])</h5>
+                                            <b>Nombre Ley: </b>[[conflicto.nombre_ley|capitalize]]<br>
+                                            <b>Razón conflicto: </b>[[conflicto.razon.motivo|capitalize]]<br>
+                                            <b>Motivo: </b>[[conflicto.razon.prov_conf|capitalize]]<br>
+                                        </b-list-group-item>
+                                    </b-list-group>
+                                </b-card-text>
+                            </b-card>
+                        </b-col>
+                        
                     </b-card-group>
                 </b-card>
-            </b-row>
         </b-col>
     </b-container>
 
