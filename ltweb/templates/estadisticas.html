@@ -1,12 +1,30 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block head_end %}
     <link type="text/css" rel="stylesheet" href="{%  static "lib/chartist/chartist.min.css" %}"/>
     <script type="text/javascript" charset="utf8" src="{% static 'lib/chartist/chartist.min.js' %}"></script>
+    <script type="text/javascript" charset="utf8" src="{% static 'lib/DataTables/jquery-3.3.1.min.js' %}"></script>
 {% endblock %}
 
 {% block content %}
 
+    <div class="ct-chart ct-golden-section" id="chart1"></div>
 
+{% endblock %}
 
+{% block body_end %}
+    <script type="text/javascript">
+        $( document ).ready(function() {
+            console.log("creating chart");
+            // Create a new line chart object where as first parameter we pass in a selector
+            // that is resolving to our chart container element. The Second parameter
+            // is the actual data object.
+            new Chartist.Line('#chart1', {
+              labels: [1, 2, 3, 4],
+              series: [[1, 2, 3, 4]]
+            });
+        });
+
+    </script>
 {% endblock %}

@@ -42,6 +42,7 @@ permission3 = Permission.objects.create(
 )
 """
 
+
 class HomeView(LoginRequiredMixin,TemplateView):
     template_name = "home.html"
 
@@ -631,3 +632,7 @@ class ClusterView(LoginRequiredMixin,TemplateView):
         context["clusters"] = obj["clusters"]
 
         return context
+
+
+class StatsView(LoginRequiredMixin,TemplateView):
+    template_name = "estadisticas.html"
