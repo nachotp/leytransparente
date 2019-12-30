@@ -4,7 +4,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.decorators import login_required, permission_required
 
 urlpatterns = [
-    path("", views.HomeView.as_view(), name="Home"),
+    path("", views.DashboardView.as_view(), name="Home"),
     path(r'ley', views.SubirLeyView.as_view(), name='Subir Ley'),
     path(r'leyes', views.LeyesListView.as_view(), name='Lista Leyes'),
     path(r'declaracion/', views.SubirDeclaracionView.as_view(), name='Subir declaracion'),

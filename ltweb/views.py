@@ -42,9 +42,13 @@ permission3 = Permission.objects.create(
 )
 """
 
-class HomeView(LoginRequiredMixin,TemplateView):
-    template_name = "home.html"
 
+class DashboardView(LoginRequiredMixin,TemplateView):
+    template_name = "dashboard.html"
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data()
+
+        return ctx
 
 class RegistroView(PermissionRequiredMixin,LoginRequiredMixin,View):
     template_name = "registro.html"
