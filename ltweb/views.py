@@ -459,6 +459,7 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
     decl = conn.get_collection("declaraciones")
     leyes = conn.get_collection("leyes")
     confl = conn.get_collection("conflictos")
+    stats = conn.get_collection("estadistica")
     permission_required = 'auth.is_oficina'
 
     def get_context_data(self, **kwargs):
@@ -739,7 +740,8 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
                                                               "total_indirectos" : total_indirectos} })
 
 
-
+        if len(stat_diclist) > 0:
+            x = self.stats.insert_many(stat_diclist)
 
         ctx["indirecto"] = indirecto
         print("Conflictos encontrados: " + str(len(conflictos)))
