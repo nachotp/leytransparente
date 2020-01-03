@@ -527,6 +527,8 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
                 dic["razon"]["motivo"] = conflicto[4]["Nombre_Razon_Social"]
                 dic["razon"]["prov_conf"] = "acciones"
 
+                regiones.append(query["Region"]["nombre"])
+
                 if conflicto[0] * conflicto[1] > 100:
                     high.append(conflicto)
                     dic["grado"] = "grave"
@@ -571,7 +573,8 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
                     indice_list = i
                     flag_list = False
 
-            if len(stat_query) == 0: # si no esta en la BD hay que crear el partido
+
+            if stat_query == None: # si no esta en la BD hay que crear el partido
                 if flag_list: # si el partido no esta en la stat_diclist se crea
                     stat_dic = {
                         "Partido": conflicto["partido"],
@@ -615,6 +618,9 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
                         dipu_datos["directos"] += 1
 
                     stat_dic["lista_diputados"].append(dipu_datos)
+
+                    stat_diclist.append(stat_dic)
+
 
                 else: #si el partido esta en la lista va y actualiza los datos
                     stat_diclist[indice_list]["total_conflictos"] += 1
@@ -682,6 +688,7 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
                 total_leves = stat_query["total_leves"]
                 total_directos = stat_query["total_directos"]
                 total_indirectos = stat_query["total_indirectos"]
+                total_conflictos = stat_query["total_conflictos"]
 
                 flag_nbd = True  # diputado no esta en la lista
                 j = 0
@@ -713,7 +720,7 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
                         total_indirectos += 1
                     if conflicto["razon"]["prov_conf"] != "indirecto":
                         dipu_datos["directos"] += 1
-                        total_graves += 1
+                        total_directos += 1
 
                     lista_d.append(dipu_datos)
 
@@ -732,13 +739,13 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
                     if conflicto["razon"]["prov_conf"] != "indirecto":
                         lista_d[indice]["directos"] += 1
                         total_graves += 1
-
+                total_conflictos+=1
                 self.stats.update_one({"_id": id}, {"$set" : {"lista_diputados" : lista_d ,
                                                               "total_graves" : total_graves,
                                                               "total_leves" : total_leves,
                                                               "total_directos" : total_directos,
-                                                              "total_indirectos" : total_indirectos} })
-
+                                                              "total_indirectos" : total_indirectos,
+                                                              "total_conflictos": total_conflictos} })
 
         if len(stat_diclist) > 0:
             x = self.stats.insert_many(stat_diclist)
