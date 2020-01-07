@@ -587,14 +587,16 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
                     }
                     stat_dic["total_conflictos"] += 1
 
-                    if conflicto["grado"] == "leve":
-                        stat_dic["total_leves"] += 1
-                    if conflicto["grado"] == "grave":
-                        stat_dic["total_graves"] += 1
+
                     if conflicto["razon"]["prov_conf"] == "indirecto":
                         stat_dic["total_indirectos"] += 1
                     if conflicto["razon"]["prov_conf"] != "indirecto":
                         stat_dic["total_directos"] += 1
+                        if conflicto["grado"] == "leve":
+                            stat_dic["total_leves"] += 1
+                        if conflicto["grado"] == "grave":
+                            stat_dic["total_graves"] += 1
+
 
                     # y se le crea el diputado del conflcito para agregarlo a la lista
                     dipu_datos = {
@@ -608,14 +610,15 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
                     }
                     dipu_datos["cant_conflictos"] += 1
 
-                    if conflicto["grado"] == "leve":
-                        dipu_datos["leves"] += 1
-                    if conflicto["grado"] == "grave":
-                        dipu_datos["graves"] += 1
+
                     if conflicto["razon"]["prov_conf"] == "indirecto":
                         dipu_datos["indirectos"] += 1
                     if conflicto["razon"]["prov_conf"] != "indirecto":
                         dipu_datos["directos"] += 1
+                        if conflicto["grado"] == "leve":
+                            dipu_datos["leves"] += 1
+                        if conflicto["grado"] == "grave":
+                            dipu_datos["graves"] += 1
 
                     stat_dic["lista_diputados"].append(dipu_datos)
 
@@ -625,14 +628,15 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
                 else: #si el partido esta en la lista va y actualiza los datos
                     stat_diclist[indice_list]["total_conflictos"] += 1
 
-                    if conflicto["grado"] == "leve":
-                        stat_diclist[indice_list]["total_leves"] += 1
-                    if conflicto["grado"] == "grave":
-                        stat_diclist[indice_list]["total_graves"] += 1
+
                     if conflicto["razon"]["prov_conf"] == "indirecto":
                         stat_diclist[indice_list]["total_indirectos"] += 1
                     if conflicto["razon"]["prov_conf"] != "indirecto":
                         stat_diclist[indice_list]["total_directos"] += 1
+                        if conflicto["grado"] == "leve":
+                            stat_diclist[indice_list]["total_leves"] += 1
+                        if conflicto["grado"] == "grave":
+                            stat_diclist[indice_list]["total_graves"] += 1
 
                     #revisar si el diputado del conflicto ya esta en la lista del partido
                     flag = True #diputado no esta en la lista
@@ -655,14 +659,15 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
                         }
                         dipu_datos["cant_conflictos"] += 1
 
-                        if conflicto["grado"] == "leve":
-                            dipu_datos["leves"] += 1
-                        if conflicto["grado"] == "grave":
-                            dipu_datos["graves"] += 1
+
                         if conflicto["razon"]["prov_conf"] == "indirecto":
                             dipu_datos["indirectos"] += 1
                         if conflicto["razon"]["prov_conf"] != "indirecto":
                             dipu_datos["directos"] += 1
+                            if conflicto["grado"] == "leve":
+                                dipu_datos["leves"] += 1
+                            if conflicto["grado"] == "grave":
+                                dipu_datos["graves"] += 1
 
                         stat_diclist[indice_list]["lista_diputados"].append(dipu_datos)
 
@@ -671,14 +676,15 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
 
                         stat_diclist[indice_list]["lista_diputados"][indice]["cant_conflictos"] += 1
 
-                        if conflicto["grado"] == "leve":
-                            stat_diclist[indice_list]["lista_diputados"][indice]["leves"] += 1
-                        if conflicto["grado"] == "grave":
-                            stat_diclist[indice_list]["lista_diputados"][indice]["graves"] += 1
+
                         if conflicto["razon"]["prov_conf"] == "indirecto":
                             stat_diclist[indice_list]["lista_diputados"][indice]["indirectos"] += 1
                         if conflicto["razon"]["prov_conf"] != "indirecto":
                             stat_diclist[indice_list]["lista_diputados"][indice]["directos"] += 1
+                            if conflicto["grado"] == "leve":
+                                stat_diclist[indice_list]["lista_diputados"][indice]["leves"] += 1
+                            if conflicto["grado"] == "grave":
+                                stat_diclist[indice_list]["lista_diputados"][indice]["graves"] += 1
                 
 
             else: #condicion si el partido ya esta en el base
@@ -709,36 +715,38 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
                     }
                     dipu_datos["cant_conflictos"] += 1
 
-                    if conflicto["grado"] == "leve":
-                        dipu_datos["leves"] += 1
-                        total_leves += 1
-                    if conflicto["grado"] == "grave":
-                        dipu_datos["graves"] += 1
-                        total_graves += 1
+
                     if conflicto["razon"]["prov_conf"] == "indirecto":
                         dipu_datos["indirectos"] += 1
                         total_indirectos += 1
                     if conflicto["razon"]["prov_conf"] != "indirecto":
                         dipu_datos["directos"] += 1
                         total_directos += 1
+                        if conflicto["grado"] == "leve":
+                            dipu_datos["leves"] += 1
+                            total_leves += 1
+                        if conflicto["grado"] == "grave":
+                            dipu_datos["graves"] += 1
+                            total_graves += 1
 
                     lista_d.append(dipu_datos)
 
                 else:
                     lista_d[indice]["cant_conflictos"] += 1
 
-                    if conflicto["grado"] == "leve":
-                        lista_d[indice]["leves"] += 1
-                        total_leves += 1
-                    if conflicto["grado"] == "grave":
-                        lista_d[indice]["graves"] += 1
-                        total_graves += 1
+
                     if conflicto["razon"]["prov_conf"] == "indirecto":
                         lista_d[indice]["indirectos"] += 1
                         total_indirectos += 1
                     if conflicto["razon"]["prov_conf"] != "indirecto":
                         lista_d[indice]["directos"] += 1
-                        total_graves += 1
+                        total_directos += 1
+                        if conflicto["grado"] == "leve":
+                            lista_d[indice]["leves"] += 1
+                            total_leves += 1
+                        if conflicto["grado"] == "grave":
+                            lista_d[indice]["graves"] += 1
+                            total_graves += 1
                 total_conflictos+=1
                 self.stats.update_one({"_id": id}, {"$set" : {"lista_diputados" : lista_d ,
                                                               "total_graves" : total_graves,
