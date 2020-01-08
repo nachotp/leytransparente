@@ -842,3 +842,22 @@ class ClusterView(LoginRequiredMixin,TemplateView):
 
 class StatsView(LoginRequiredMixin,TemplateView):
     template_name = "estadisticas.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        conn = DBconnection()
+        col = conn.get_collection("estadistica")
+        partidos = col.find()
+        stats = {
+            "partidos": [],
+            "partidos_total": []
+        }
+        for p in partidos:
+            print(p)
+            stats["partidos"].append(p["Partido"] if p["Partido"] is not None else "N/A")
+            stats["partidos_total"].append(p["total_conflictos"])
+
+        context["stats"] = stats
+
+        return context
