@@ -957,14 +957,21 @@ class StatsView(LoginRequiredMixin,TemplateView):
         partidos = col.find()
         stats = {
             "partidos": [],
-            "partidos_total": []
+            "partidos_total": [],
+            "region": [],
+            "region_total": []
         }
         for p in partidos:
-            print(p)
             stats["partidos"].append(p["Partido"] if p["Partido"] is not None else "N/A")
             stats["partidos_total"].append(p["total_conflictos"])
-
+            for dip in p["lista_diputados"]:
+                if dip["region"] not in stats["region"]:
+                    print(dip["Nombre_completo"], dip["region"])
+                    stats["region"].append(dip["region"])
+                    stats["region_total"].append(0)
+                stats["region_total"][stats["region"].index(dip["region"])] += dip["cant_conflictos"]
         context["stats"] = stats
+        print(stats)
 
         return context
 

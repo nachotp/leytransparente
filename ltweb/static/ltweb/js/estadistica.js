@@ -22,8 +22,8 @@ const EstadisticasVue = {
     `,
     data() {
         return {
-            tabs: ['Según partido', 'Second'],
-            graph_names: ["Conflictos detectados según partido político", "Beefs"],
+            tabs: ['Conflictos según partido', 'Conflictos según Región'],
+            graph_names: ["Conflictos detectados según partido político", "Conflictos detectados según Región"],
             curr_tab: 0,
         }
     },
@@ -83,13 +83,14 @@ const EstadisticasVue = {
             }       //Agregar otros valores de tab para hacer los gráficos
             else if( tab === 1){
                 new Chartist.Bar('#chart1', {
-                    labels: ["Beef","Chris"],
-                    series: [[3,2],[4, 6]]},{
+                    labels: stats.region,
+                    series: [stats.region_total]
+                    },{
                     chartPadding: {
                         top: 20,
                         right: 0,
                         bottom: 30,
-                        left: 0
+                        left: 20
                     },
                     axisY: {
                         onlyInteger: true
@@ -97,7 +98,7 @@ const EstadisticasVue = {
                     plugins: [
                     Chartist.plugins.ctAxisTitle({
                       axisX: {
-                        axisTitle: 'Time (mins)',
+                        axisTitle: 'Región Administrativa',
                         axisClass: 'ct-axis-title',
                         offset: {
                             x: 0,
@@ -106,7 +107,7 @@ const EstadisticasVue = {
                         textAnchor: 'middle'
                       },
                       axisY: {
-                        axisTitle: 'Goals',
+                        axisTitle: 'Total de Conflictos Detectados',
                         axisClass: 'ct-axis-title',
                         offset: {
                             x: 0,
