@@ -43,11 +43,28 @@ permission3 = Permission.objects.create(
 """
 
 
-class DashboardView(LoginRequiredMixin,TemplateView):
+class DashboardView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
     template_name = "dashboard.html"
+    conn = DBconnection()
+    decl = conn.get_collection("estadistica")
+    confl = conn.get_collection("conflictos")
+    permission_required = 'auth.is_oficina'
+
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data()
+        sorted_conflicts = self.confl.find(sort=[( 'meta.fecha', -1 )]).limit(5)
+        today = datetime.now()
+        for i in sorted_conflicts:
+            try:
+                conflict_date = i["meta"]["fecha"]
+                i["meta"]["fecha"] = (today-conflict_date).days
+            except:
+                conflict_date = i["meta"]["Fecha"]
+                i["meta"]["fecha"] = (today-conflict_date).days
+        ctx["conflictos"] = sorted_conflicts
 
+            
+            
         return ctx
 
 class RegistroView(PermissionRequiredMixin,LoginRequiredMixin,View):
@@ -719,3 +736,4 @@ class ApiDereclaracionView(TemplateView):
         print(ctx['declaracion'])
 
         return ctx
+
