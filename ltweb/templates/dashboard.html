@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head_end %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+      <div class="col-md-12 col-lg-8 B">
+        <div>
+            <b-card bg-variant="light"title="Conflictos recientes">
+              <b-card-text>
+                <b-list-group>
+                  {% for conflicto in conflictos %}
+                    <b-list-group-item href="#" class="flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between align-items-center">
+                          <h5 class="mb-1">Ley {{ conflicto.ley }}: {{ conflicto.nombre_ley }}</h5>
+                          {% if conflicto.grado == "leve" %}
+                          <b-badge variant="warning" pill>Leve</b-badge>
+                          {% else %}
+                          <b-badge variant="danger" pill>Grave</b-badge>
+                          {% endif %}
+                        </div>
+                        <small class="text-muted">Hace conflicto.meta.fecha días</small>
+                    </b-list-group-item>
+                  {% endfor %}
+                  </b-list-group>
+              </b-card-text>
+            </b-card>
+          </div>
+
+      </div>
+      <div class="col-md-4 col-lg-3 G">
+        <div class="row" style="margin-bottom: 15px;">
+        <div>
+            <b-card title="Parlamentarios con más conflictos" sub-title="Card subtitle">
+              <b-card-text>
+                Some quick example text to build on the <em>card title</em> and make up the bulk of the card's
+                content.
+              </b-card-text>
+          
+              <b-card-text>A second paragraph of text in the card.</b-card-text>
+          
+              <a href="#" class="card-link">Card link</a>
+              <b-link href="#" class="card-link">Another link</b-link>
+            </b-card>
+          </div>
+        </div>
+
+        <div class="row">
+            <div>
+                <b-card title="Partidos con más conflictos" sub-title="Card subtitle">
+                  <b-card-text>
+                    Some quick example text to build on the <em>card title</em> and make up the bulk of the card's
+                    content.
+                  </b-card-text>
+              
+                  <b-card-text>A second paragraph of text in the card.</b-card-text>
+              
+                  <a href="#" class="card-link">Card link</a>
+                  <b-link href="#" class="card-link">Another link</b-link>
+                </b-card>
+              </div>
+            </div>
+      </div>
+      </div>
+    </div>
+</div>
+
+{% endblock%}
+
+{% block body_end %}
+{% endblock %}

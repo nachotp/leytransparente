@@ -42,10 +42,29 @@ permission3 = Permission.objects.create(
 )
 """
 
+class DashboardView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
+    template_name = "dashboard.html"
+    conn = DBconnection()
+    decl = conn.get_collection("estadistica")
+    confl = conn.get_collection("conflictos")
+    permission_required = 'auth.is_oficina'
 
-class HomeView(LoginRequiredMixin,TemplateView):
-    template_name = "home.html"
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data()
+        sorted_conflicts = self.confl.find(sort=[( 'meta.fecha', -1 )]).limit(5)
+        today = datetime.now()
+        for i in sorted_conflicts:
+            try:
+                conflict_date = i["meta"]["fecha"]
+                i["meta"]["fecha"] = (today-conflict_date).days
+            except:
+                conflict_date = i["meta"]["Fecha"]
+                i["meta"]["fecha"] = (today-conflict_date).days
+        ctx["conflictos"] = sorted_conflicts
 
+            
+            
+        return ctx
 
 class RegistroView(PermissionRequiredMixin,LoginRequiredMixin,View):
     template_name = "registro.html"
@@ -245,17 +264,11 @@ class EliminarUserView(PermissionRequiredMixin,LoginRequiredMixin,View):
 
 class ViewDeclaracion(LoginRequiredMixin,TemplateView):
     template_name = "ver.html"
-    conn = DBconnection()
-    mycol = conn.get_collection("declaraciones")
 
     def get_context_data(self, **kwargs):
         # Eso es get, para que sea más seguro, usar POST
         ctx = super().get_context_data()
         ctx['id'] = self.kwargs['id']
-
-        query = self.mycol.find_one({"_id": ObjectId(ctx['id'])})
-        query.pop('_id')
-        ctx['declaracion'] = json.dumps(query)
 
         return ctx
 
@@ -498,6 +511,7 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
                    }
             dic["razon"] = {}
             stat_dic = {}
+
             if int(conflicto[1]) <= 0:
                 apellido_pat = conflicto[2].upper().split()[-2]
                 apellido_mat = conflicto[2].upper().split()[-1]
@@ -526,6 +540,7 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
                 dic["razon"]["prov_conf"] = "acciones"
                 dic["razon"]["motivo"] = conflicto[4]["Nombre_Razon_Social"]
                 dic["razon"]["prov_conf"] = "acciones"
+
 
                 regiones.append(query["Region"]["nombre"])
 
@@ -559,6 +574,7 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
         emails = [x.email for x in User.objects.filter(groups__name = "Comision de Etica")]
         ctx["high"] = high
         ctx["low"] = low
+
 
         stat_diclist = []
         for conflicto in diclist:
@@ -767,6 +783,95 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
 
 class ConflictoListView(LoginRequiredMixin,TemplateView):
     template_name = 'conflictos_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # query = self.confl.find()
+        # data = []
+        # ley_urls = dict()
+        # for conf in query:
+        #
+        #     if conf["ley"] not in ley_urls:
+        #         ley_urls[conf["ley"]] = self.leyes.find_one({"numero": conf["ley"]})
+        #
+        #     url_ley = ley_urls[conf["ley"]]
+        #
+        #     if url_ley is None:
+        #         url_ley = {}
+        #         url_ley["url"] = "#"
+        #     if conf["partido"] is None:
+        #         conf["partido"] = "Sin información"
+        #
+        #     dic = {
+        #         "ley": conf["ley"],
+        #         "nombre_ley": conf["nombre_ley"],
+        #         "id_parlamentario": str(conf["id_declaracion"]),
+        #         "parlamentario": conf["parlamentario"],
+        #         "partido": conf["partido"],
+        #         "grado": conf.get("grado", "indirecto"),
+        #         "url": url_ley["url"]
+        #     }
+        #     if conf["razon"]["prov_conf"] == 'indirecto':
+        #         conf["razon"]["prov_conf"] = 'Indirecto por ' + conf["razon"]["motivo"]["relacion_diputado"]
+        #
+        #         dic["nombre_involucrado"] = conf["razon"]["motivo"]["nombre_involucrado"]
+        #         dic["relacion_diputado"] = conf["razon"]["motivo"]["relacion_diputado"]
+        #         dic["razon_social"] = conf["razon"]["motivo"]["razon_social"]
+        #         dic["tipo_conflicto"] = 'indirecto'
+        #     else:
+        #         dic["motivo"] = conf["razon"]["motivo"]
+        #         dic["tipo_conflicto"] = 'directo'
+        #
+        #     dic["prov_conf"] = conf["razon"]["prov_conf"]
+        #
+        #     if conf["pariente"] is not None:
+        #         dic["pariente"] = conf["pariente"]
+        #
+        #     data.append(dic)
+        #
+        # # print(data)
+        # context["conflictos"] = json.dumps(data)
+        # print(context["conflictos"])
+        return context
+
+
+class ClusterView(LoginRequiredMixin,TemplateView):
+    template_name = "clustest.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+
+class ApiClusterView(LoginRequiredMixin,TemplateView):
+    template_name = "api/patrones.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        vc = VectorClustering()
+        cls = vc.cluster()
+
+        conn = DBconnection()
+        clus = conn.get_collection("clusters")
+        obj = clus.find_one({})
+
+        #Se eliminan cosas con ObjectID(), ya que causan problemas, y no se usan
+        for cluster in obj["clusters"]:
+            for conflicto in cluster:
+                del conflicto['_id']
+                del conflicto['id_declaracion']
+                del conflicto['meta']
+
+        print(obj["clusters"])
+
+        context["patrones"] = json.dumps(obj["clusters"])
+
+        return context
+
+
+class ApiConflictosView(TemplateView):
+    template_name = "api/conflictos.html"
     conn = DBconnection()
     confl = conn.get_collection("conflictos")
     leyes = conn.get_collection("leyes")
@@ -822,24 +927,25 @@ class ConflictoListView(LoginRequiredMixin,TemplateView):
         print(context["conflictos"])
         return context
 
-
-class ClusterView(LoginRequiredMixin,TemplateView):
-    template_name = "clustest.html"
+class ApiDereclaracionView(TemplateView):
+    template_name = "api/declaraciones.html"
+    conn = DBconnection()
+    mycol = conn.get_collection("declaraciones")
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        vc = VectorClustering()
-        cls = vc.cluster()
+        # Eso es get, para que sea más seguro, usar POST
+        ctx = super().get_context_data()
+        ctx['id'] = self.kwargs['id']
 
-        conn = DBconnection()
-        clus = conn.get_collection("clusters")
-        obj = clus.find_one({})
+        query = self.mycol.find_one({"_id": ObjectId(ctx['id'])})
+        query.pop('_id')
+        ctx['declaracion'] = json.dumps(query).encode('latin-1').decode('utf-8')
 
-        context["clusters"] = obj["clusters"]
+        print(ctx['declaracion'])
 
-        return context
+        return ctx
 
-
+      
 class StatsView(LoginRequiredMixin,TemplateView):
     template_name = "estadisticas.html"
 
@@ -861,3 +967,4 @@ class StatsView(LoginRequiredMixin,TemplateView):
         context["stats"] = stats
 
         return context
+
