@@ -1,13 +1,11 @@
 const EstadisticasVue = {
     template: `
-    <b-container style="max-width: 1450px">
+    <b-container fluid>
         <b-row>
             <b-col md="3">
                 <b-card>
-                    <b-tabs content-class="" vertical pills fill nav-wrapper-class="w-100" v-on:input="metodo">
-                        <b-tab title-item-class="h1"  title="First" ></b-tab>
-                        <b-tab title-item-class="h1" title="Second" active></b-tab>
-                        <b-tab title-item-class="h1" title="Disabled" disabled></b-tab>
+                    <b-tabs vertical pills fill nav-wrapper-class="w-100" v-on:input="metodo">
+                        <b-tab v-for="(tab,index) in tabs" :key="index" title-item-class="h1" :title="tab" :class="isFirst(index)" ></b-tab>
                     </b-tabs>
                 </b-card>
             </b-col>
@@ -22,7 +20,7 @@ const EstadisticasVue = {
     `,
     data() {
         return {
-
+            tabs: ['First', 'Second'],
         }
     },
     delimiters: ['[[', ']]'],
@@ -44,6 +42,10 @@ const EstadisticasVue = {
                   series: [[4,3,2,1]]
                 });
             }
+        },
+        isFirst: function(index) {
+            if(index === 0)
+                return 'active';
         }
     },
 };
