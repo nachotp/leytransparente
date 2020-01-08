@@ -4,10 +4,11 @@ const EstadisticasVue = {
         <b-row>
             <b-col md="3">
                 <b-card>
+                <h4>Gráficos</h4>
                     <b-tabs content-class="" vertical pills fill nav-wrapper-class="w-100" v-on:input="metodo">
-                        <b-tab title-item-class="h1"  title="First" ></b-tab>
-                        <b-tab title-item-class="h1" title="Second" active></b-tab>
-                        <b-tab title-item-class="h1" title="Disabled" disabled></b-tab>
+                        <b-tab title-item-class="h5"  title="First" active></b-tab>
+                        <b-tab title-item-class="h5" title="Second" ></b-tab>
+                        <b-tab title-item-class="h5" title="VueVueVue" ></b-tab>
                     </b-tabs>
                 </b-card>
             </b-col>
@@ -34,14 +35,80 @@ const EstadisticasVue = {
         metodo: function (tab) {
             if( tab === 0){
                 new Chartist.Line('#chart1', {
-                  labels: [1, 2, 3, 4],
-                  series: [[1,2,3,4]]
+                    labels: [1, 2, 3, 4],
+                    series: [[1,2,3,4]]
+                    }
+                    ,{
+                    chartPadding: {
+                        top: 20,
+                        right: 0,
+                        bottom: 30,
+                        left: 0
+                    },
+                    axisY: {
+                        onlyInteger: true
+                      },
+                    plugins: [
+                    Chartist.plugins.ctAxisTitle({
+                      axisX: {
+                        axisTitle: 'Time (mins)',
+                        axisClass: 'ct-axis-title',
+                        offset: {
+                            x: 0,
+                            y: 50
+                        },
+                        textAnchor: 'middle'
+                      },
+                      axisY: {
+                        axisTitle: 'Goals',
+                        axisClass: 'ct-axis-title',
+                        offset: {
+                            x: 0,
+                            y: -1
+                        },
+                        textAnchor: 'middle',
+                        flip: true
+                      }
+                    })
+                  ]
                 });
             }       //Agregar otros valores de tab para hacer los gráficos
             else if( tab === 1){
-                new Chartist.Line('#chart1', {
-                  labels: [1, 2, 3, 4],
-                  series: [[4,3,2,1]]
+                new Chartist.Bar('#chart1', {
+                    labels: ["Beef","Chris"],
+                    series: [[3,2],[4, 6]]},{
+                    chartPadding: {
+                        top: 20,
+                        right: 0,
+                        bottom: 30,
+                        left: 0
+                    },
+                    axisY: {
+                        onlyInteger: true
+                      },
+                    plugins: [
+                    Chartist.plugins.ctAxisTitle({
+                      axisX: {
+                        axisTitle: 'Time (mins)',
+                        axisClass: 'ct-axis-title',
+                        offset: {
+                            x: 0,
+                            y: 50
+                        },
+                        textAnchor: 'middle'
+                      },
+                      axisY: {
+                        axisTitle: 'Goals',
+                        axisClass: 'ct-axis-title',
+                        offset: {
+                            x: 0,
+                            y: -1
+                        },
+                        textAnchor: 'middle',
+                        flip: true
+                      }
+                    })
+                  ]
                 });
             }
         }
