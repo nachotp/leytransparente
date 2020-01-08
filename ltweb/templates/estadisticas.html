@@ -3,28 +3,28 @@
 
 {% block head_end %}
     <link type="text/css" rel="stylesheet" href="{%  static "lib/chartist/chartist.min.css" %}"/>
+    <link rel="stylesheet" href="{% static 'ltweb/style.css' %}">
+    <script type="text/x-template" id="EstadisticasVue"></script>
+    <script src="{% static 'ltweb/js/estadistica.js' %}"></script>
     <script type="text/javascript" charset="utf8" src="{% static 'lib/chartist/chartist.min.js' %}"></script>
     <script type="text/javascript" charset="utf8" src="{% static 'lib/DataTables/jquery-3.3.1.min.js' %}"></script>
 {% endblock %}
 
+<script>
+{% block vue_dependencies %}
+    const DEPS = {'estadisticas-vue': EstadisticasVue};
+{% endblock %}
+</script>
+
 {% block content %}
 
-    <div class="ct-chart ct-golden-section" id="chart1" :class="toEstadisticas"></div>
+    <estadisticas-vue :class="toEstadisticas"></estadisticas-vue>
 
 {% endblock %}
 
-{% block body_end %}
-    <script type="text/javascript">
-        $( document ).ready(function() {
-            console.log("creating chart");
-            // Create a new line chart object where as first parameter we pass in a selector
-            // that is resolving to our chart container element. The Second parameter
-            // is the actual data object.
-            new Chartist.Line('#chart1', {
-              labels: [1, 2, 3, 4],
-              series: [[1, 2, 3, 4]]
-            });
-        });
 
-    </script>
+
+{% block body_end %}
+
+
 {% endblock %}
