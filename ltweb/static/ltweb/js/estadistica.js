@@ -13,6 +13,7 @@ const EstadisticasVue = {
 
             <b-col>
                 <b-card>
+                <h1>[[graph_title]]</h1>
                     <div class="ct-chart ct-golden-section" id="chart1"></div>
                 </b-card>
             </b-col>
@@ -22,15 +23,21 @@ const EstadisticasVue = {
     data() {
         return {
             tabs: ['First', 'Second'],
+            graph_names: ["meeemes", "Beefs"],
+            curr_tab: 0,
         }
     },
     delimiters: ['[[', ']]'],
     filters: {
     },
     computed: {
+        graph_title: function () {
+            return this.graph_names[this.curr_tab];
+        }
     },
     methods:{
         metodo: function (tab) {
+            this.curr_tab = tab;
             if( tab === 0){
                 new Chartist.Line('#chart1', {
                     labels: [1, 2, 3, 4],
