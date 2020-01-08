@@ -18,6 +18,7 @@ urlpatterns = [
     path(r'logout/', LogoutView.as_view(), name='logout'),
     path(r'control/', views.ControlView.as_view(), name='Control de usuario'),
     path(r'cluster/', views.ClusterView.as_view(), name='Cluster'),
+    path(r'estadisticas/', views.StatsView.as_view(), name='Estadisticas'),
     path(r'actualizar/<str:id>/', views.ActualizarView.as_view(), name='Actualizar Usuario'),
     path(r'actualizar_permisos/', views.ActualizarPermisosView.as_view(), name='Actualizar Permisos'),
     path(r'eliminar_usuario/<str:id>/', views.EliminarUserView.as_view(), name='Eliminar Usuario'),
