@@ -37,12 +37,16 @@ class DashboardView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
         partidos.sort(reverse = True)
         top_dip = diputados[:3]
         top_par = partidos[:3]
-        sorted_conflicts = confl.find(sort=[( 'meta.fecha', -1 )])
+        sorted_conflicts = confl.find()
+        conflicts = list(sorted_conflicts)
+        conflicts = sorted(conflicts, key = lambda i: i['meta']['Fecha'], reverse=True)
         cont = 0
         leyes = {}
         today = datetime.now()
-        for conflicto in sorted_conflicts:
+        for conflicto in conflicts:
             if conflicto["ley"] not in leyes:
+                if(cont == 5):
+                    break
                 try:
                     if(conflicto["grado"] == "leve"):
                         grade = -1
@@ -65,8 +69,7 @@ class DashboardView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
                         leyes[conflicto["ley"]][3] += 1
                 except:
                     print("Indirecto")
-            if(cont == 5):
-                break
+            
         leyes_list = []
         for key in leyes:
             value = leyes[key]
