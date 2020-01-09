@@ -175,6 +175,7 @@ const ParlamentariosForm = {
         }
     },
     template: `
+<div v-if="ready">
     <b-container class="mw-75" v-if="ready">
             <b-card no-body class="mb-1">
                 <b-card-body>
@@ -379,5 +380,12 @@ const ParlamentariosForm = {
                 </b-col>
             </b-row>
         </b-container>
+</div>
+
+<div v-else>
+    <b-container style="max-width: 1450px">
+        <h3>Cargando información...</h3>
+    </b-container>
+</div>
     `,
 };

@@ -88,6 +88,10 @@
                     this.actualPage = 'Estadisticas';
                     return '';
                 },
+                toChangeLog: function(){
+                    this.actualPage = 'ChangeLog';
+                    return '';
+                },
 
                 inConflictos: function () {
                     if (this.actualPage === 'Conflictos')
@@ -130,6 +134,12 @@
                         return 'active';
                     else
                         return '';
+                },
+                inChangeLog: function () {
+                    if (this.actualPage === 'ChangeLog')
+                        return 'active';
+                    else
+                        return ''
                 }
             },
             methods: {
