@@ -1,27 +1,26 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block head_end %}
-{% endblock %}
-
 {% block content %}
 <div class="container">
     <div class="row">
       <div class="col-md-12 col-lg-8 B">
         <div>
-            <b-card bg-variant="light"title="Conflictos recientes">
+            <b-card bg-variant="light"title="Leyes con conflictos recientes">
               <b-card-text>
                 <b-list-group>
-                  {% for conflicto in conflictos %}
-                    <b-list-group-item href="#" class="flex-column align-items-start">
+                  {% for numero, day, nombre, cant, grado in conflictos %}
+                    <b-list-group-item class="flex-column align-items-start">
                         <div class="d-flex w-100 justify-content-between align-items-center">
-                          <h5 class="mb-1">Ley {{ conflicto.ley }}: {{ conflicto.nombre_ley }}</h5>
-                          {% if conflicto.grado == "leve" %}
-                          <b-badge variant="warning" pill>Leve</b-badge>
+                          <h5 class="mb-1">Ley {{ numero }}: {{ nombre }}</h5>
+                          {% if grado < 0  %}
+                          <b-badge variant="warning" pill>{{ cant }} conflictos</b-badge>
+                          {% elif grado > 0 %}
+                          <b-badge variant="danger" pill>{{ cant }} conflictos</b-badge>
                           {% else %}
-                          <b-badge variant="danger" pill>Grave</b-badge>
+                          <b-badge variant="info" pill>{{ cant }} conflictos</b-badge>
                           {% endif %}
                         </div>
-                        <small class="text-muted">Hace conflicto.meta.fecha días</small>
+                        <small class="text-muted">Hace {{ day }} días</small>
                     </b-list-group-item>
                   {% endfor %}
                   </b-list-group>
@@ -30,44 +29,63 @@
           </div>
 
       </div>
-      <div class="col-md-4 col-lg-3 G">
+      <div class="col-md-6 col-lg-4 G">
         <div class="row" style="margin-bottom: 15px;">
-        <div>
-            <b-card title="Parlamentarios con más conflictos" sub-title="Card subtitle">
+          <div>
+            <b-card title="Parlamentarios con más conflictos">
               <b-card-text>
-                Some quick example text to build on the <em>card title</em> and make up the bulk of the card's
-                content.
+                <table align="center">
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Cantidad</th>
+                  </tr>
+                    {% for cant, nombre, partido in diputados %}
+                    <tr style="border-bottom: 1px solid #ddd;">
+                    <td>{{ nombre }}</td>
+                    <td style="text-align:center">{{ cant }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
               </b-card-text>
-          
-              <b-card-text>A second paragraph of text in the card.</b-card-text>
-          
-              <a href="#" class="card-link">Card link</a>
-              <b-link href="#" class="card-link">Another link</b-link>
             </b-card>
           </div>
         </div>
 
         <div class="row">
             <div>
-                <b-card title="Partidos con más conflictos" sub-title="Card subtitle">
+                <b-card title="Partidos con más conflictos">
                   <b-card-text>
-                    Some quick example text to build on the <em>card title</em> and make up the bulk of the card's
-                    content.
+                    <table>
+                      <tr>
+                        <th style="text-align:center ; padding-right: 2rem;">Partido</th>
+                        <th style="text-align:center ; padding-right: 2rem;">Total</th>
+                        <th style="text-align:center ; padding-right: 2rem;">Graves</th>
+                        <th style="text-align:center ; padding-right: 2rem;">Leves</th>
+                      </tr>
+                        {% for total, graves, leves, partido in partidos %}
+                        <tr style="border-bottom: 1px solid #ddd;">
+                        <td style= "padding-right: 2rem; ">{{ partido }}</tdpadding-right: 7.5px;>
+                        <td  style="text-align:center ; padding-right: 2rem;">{{ total }}</td>
+                        <td  style="text-align:center; padding-right: 2rem;">{{ graves }}</td>
+                        <td  style="text-align:center; padding-right: 2rem;">{{ leves }}</td>
+                        </tr>
+                        {% endfor %}
+                      </table>
                   </b-card-text>
-              
-                  <b-card-text>A second paragraph of text in the card.</b-card-text>
-              
-                  <a href="#" class="card-link">Card link</a>
-                  <b-link href="#" class="card-link">Another link</b-link>
                 </b-card>
               </div>
             </div>
       </div>
       </div>
     </div>
+    <estadisticas-vue :class="toEstadisticas"></estadisticas-vue>
+
 </div>
 
 {% endblock%}
 
 {% block body_end %}
+      <script type="text/javascript">
+        var stats = {{stats|safe}};
+      </script>
 {% endblock %}

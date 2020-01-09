@@ -17,26 +17,65 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 
-class DashboardView(PermissionRequiredMixin, LoginRequiredMixin, TemplateView):
+class DashboardView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
     template_name = "dashboard.html"
-    conn = DBconnection()
-    decl = conn.get_collection("estadistica")
-    confl = conn.get_collection("conflictos")
     permission_required = 'auth.is_oficina'
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data()
-        sorted_conflicts = self.confl.find(sort=[('meta.fecha', -1)]).limit(5)
+        conn = DBconnection()
+        confl = conn.get_collection("conflictos")
+        col = conn.get_collection("estadistica")
+        stats = col.find()
+        diputados = []
+        partidos = []
+        for partido in stats:
+            partidos.append((partido["total_conflictos"], partido["total_graves"], partido["total_leves"], partido["Partido"]))
+            for diputado in partido["lista_diputados"]:
+                diputados.append((diputado["cant_conflictos"], diputado["Nombre_completo"], partido["Partido"]))
+        diputados.sort(reverse = True)
+        partidos.sort(reverse = True)
+        top_dip = diputados[:3]
+        top_par = partidos[:3]
+        sorted_conflicts = confl.find(sort=[( 'meta.fecha', -1 )])
+        cont = 0
+        leyes = {}
         today = datetime.now()
-        for i in sorted_conflicts:
-            try:
-                conflict_date = i["meta"]["fecha"]
-                i["meta"]["fecha"] = (today - conflict_date).days
-            except:
-                conflict_date = i["meta"]["Fecha"]
-                i["meta"]["fecha"] = (today - conflict_date).days
-        ctx["conflictos"] = sorted_conflicts
-
+        for conflicto in sorted_conflicts:
+            if conflicto["ley"] not in leyes:
+                try:
+                    if(conflicto["grado"] == "leve"):
+                        grade = -1
+                    else:
+                        grade = 1
+                except:
+                    print("Indirecto")
+                try:
+                    conflict_date = conflicto["meta"]["fecha"]
+                except: 
+                    conflict_date = conflicto["meta"]["Fecha"]
+                leyes[conflicto["ley"]] = [int((today-conflict_date).days), conflicto["nombre_ley"], 1, grade]
+                cont += 1
+            else:
+                leyes[conflicto["ley"]][2] += 1
+                try:
+                    if(conflicto["grado"] == "leve"):
+                        leyes[conflicto["ley"]][3] -= 1
+                    else:
+                        leyes[conflicto["ley"]][3] += 1
+                except:
+                    print("Indirecto")
+            if(cont == 5):
+                break
+        leyes_list = []
+        for key in leyes:
+            value = leyes[key]
+            temp = [key]
+            leyes_list.append(temp + value)  
+        print(leyes_list)
+        ctx["conflictos"] = leyes_list
+        ctx["diputados"] = top_dip
+        ctx["partidos"] = top_par
         return ctx
 
 
