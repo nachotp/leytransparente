@@ -42,7 +42,8 @@ permission3 = Permission.objects.create(
 )
 """
 
-class DashboardView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
+
+class DashboardView(PermissionRequiredMixin, LoginRequiredMixin, TemplateView):
     template_name = "dashboard.html"
     conn = DBconnection()
     decl = conn.get_collection("estadistica")
@@ -51,22 +52,21 @@ class DashboardView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data()
-        sorted_conflicts = self.confl.find(sort=[( 'meta.fecha', -1 )]).limit(5)
+        sorted_conflicts = self.confl.find(sort=[('meta.fecha', -1)]).limit(5)
         today = datetime.now()
         for i in sorted_conflicts:
             try:
                 conflict_date = i["meta"]["fecha"]
-                i["meta"]["fecha"] = (today-conflict_date).days
+                i["meta"]["fecha"] = (today - conflict_date).days
             except:
                 conflict_date = i["meta"]["Fecha"]
-                i["meta"]["fecha"] = (today-conflict_date).days
+                i["meta"]["fecha"] = (today - conflict_date).days
         ctx["conflictos"] = sorted_conflicts
 
-            
-            
         return ctx
 
-class RegistroView(PermissionRequiredMixin,LoginRequiredMixin,View):
+
+class RegistroView(PermissionRequiredMixin, LoginRequiredMixin, View):
     template_name = "registro.html"
     context = {}
     permission_required = 'auth.is_admin'
@@ -131,7 +131,7 @@ class RegistroView(PermissionRequiredMixin,LoginRequiredMixin,View):
             return render(request, self.template_name, self.context)
 
 
-class ActualizarPassView(PermissionRequiredMixin,LoginRequiredMixin,View):
+class ActualizarPassView(PermissionRequiredMixin, LoginRequiredMixin, View):
     template_name = "cambiar_pass.html"
     context = {}
     permission_required = 'auth.is_admin'
@@ -168,17 +168,18 @@ class ActualizarPassView(PermissionRequiredMixin,LoginRequiredMixin,View):
         # Registro del cambio realizado
         change = {}
         change['usuario'] = request.user.get_username()
-        change['cambio'] = "Actualización contraseña del usuario: " + request.POST['username'] + " por: " + request.POST['new_password']
+        change['cambio'] = "Actualización contraseña del usuario: " + request.POST['username'] + " por: " + \
+                           request.POST['new_password']
         change["fecha"] = datetime.now()
         change['id'] = request.POST['username']
         change['tipo'] = 'user'
 
         self.log.insert(change)
-
+        self.conn.close()
         return redirect('Control de usuario')
 
 
-class ActualizarPermisosView(PermissionRequiredMixin,LoginRequiredMixin,View):
+class ActualizarPermisosView(PermissionRequiredMixin, LoginRequiredMixin, View):
     template_name = "actualizar.html"
     context = {}
     permission_required = 'auth.is_admin'
@@ -206,17 +207,18 @@ class ActualizarPermisosView(PermissionRequiredMixin,LoginRequiredMixin,View):
         # Registro del cambio realizado
         change = {}
         change['usuario'] = request.user.get_username()
-        change['cambio'] = "Actualización de permisos del usuario: " + request.POST['username'] + "a usuario tipo: " + request.POST['roles']
+        change['cambio'] = "Actualización de permisos del usuario: " + request.POST['username'] + "a usuario tipo: " + \
+                           request.POST['roles']
         change["fecha"] = datetime.now()
         change['id'] = request.POST['username']
         change['tipo'] = 'user'
 
         self.log.insert(change)
-
+        self.conn.close()
         return redirect('Control de usuario')
 
 
-class PassView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
+class PassView(PermissionRequiredMixin, LoginRequiredMixin, TemplateView):
     template_name = "cambiar_pass.html"
     permission_required = 'auth.is_admin'
 
@@ -235,7 +237,7 @@ class PassView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
         return context
 
 
-class ControlView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
+class ControlView(PermissionRequiredMixin, LoginRequiredMixin, TemplateView):
     template_name = "control_usuario.html"
     permission_required = 'auth.is_admin'
 
@@ -270,7 +272,7 @@ class ControlView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
         return context
 
 
-class ActualizarView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
+class ActualizarView(PermissionRequiredMixin, LoginRequiredMixin, TemplateView):
     template_name = "actualizar.html"
     permission_required = 'auth.is_admin'
 
@@ -289,7 +291,7 @@ class ActualizarView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
         return context
 
 
-class EliminarUserView(PermissionRequiredMixin,LoginRequiredMixin,View):
+class EliminarUserView(PermissionRequiredMixin, LoginRequiredMixin, View):
     permission_required = 'auth.is_admin'
     conn = DBconnection()
     log = conn.get_collection("changeLog")  # Coleccion que almacenará los cambios
@@ -311,7 +313,7 @@ class EliminarUserView(PermissionRequiredMixin,LoginRequiredMixin,View):
         return redirect('Control de usuario')
 
 
-class ViewDeclaracion(LoginRequiredMixin,TemplateView):
+class ViewDeclaracion(LoginRequiredMixin, TemplateView):
     template_name = "ver.html"
 
     def get_context_data(self, **kwargs):
@@ -322,12 +324,12 @@ class ViewDeclaracion(LoginRequiredMixin,TemplateView):
         return ctx
 
 
-class SubirDeclaracionView(PermissionRequiredMixin,LoginRequiredMixin,View):
+class SubirDeclaracionView(PermissionRequiredMixin, LoginRequiredMixin, View):
     context = {}
     initial = {'key': 'value'}
     conn = DBconnection()
     mycol = conn.get_collection("declaraciones")
-    log = conn.get_collection("changeLog") # Coleccion que almacenará los cambios
+    log = conn.get_collection("changeLog")  # Coleccion que almacenará los cambios
     template_name = 'declaracion_form.html'
     permission_required = 'auth.is_oficina'
 
@@ -377,17 +379,19 @@ class SubirDeclaracionView(PermissionRequiredMixin,LoginRequiredMixin,View):
         # Registro del cambio realizado
         change = {}
         change['usuario'] = request.user.get_username()
-        change['cambio'] = "Actualización de la declaración del diputado " + dic["Datos_del_Declarante"]["nombre"] + " " + dic["Datos_del_Declarante"]["Apellido_Paterno"] + " " + dic["Datos_del_Declarante"]["Apellido_Materno"]
+        change['cambio'] = "Actualización de la declaración del diputado " + dic["Datos_del_Declarante"][
+            "nombre"] + " " + dic["Datos_del_Declarante"]["Apellido_Paterno"] + " " + dic["Datos_del_Declarante"][
+                               "Apellido_Materno"]
         change["fecha"] = datetime.now()
         change['id'] = x
         change['tipo'] = 'dipu_file'
 
         self.log.insert(change)
-
+        self.conn.close()
         return redirect('Ver Declaracion', id=x)
 
 
-class DiputadosListView(LoginRequiredMixin,TemplateView):
+class DiputadosListView(LoginRequiredMixin, TemplateView):
     conn = DBconnection()
     mycol = conn.get_collection("declaraciones")
 
@@ -419,7 +423,7 @@ class DiputadosListView(LoginRequiredMixin,TemplateView):
         return context
 
 
-class SubirLeyView(PermissionRequiredMixin,LoginRequiredMixin,View):
+class SubirLeyView(PermissionRequiredMixin, LoginRequiredMixin, View):
     context = {}
     initial = {'key': 'value'}
     conn = DBconnection()
@@ -513,16 +517,14 @@ class SubirLeyView(PermissionRequiredMixin,LoginRequiredMixin,View):
         return redirect('Conflictos', ley=numero)
 
 
-class LeyesListView(LoginRequiredMixin,TemplateView):
-    conn = DBconnection()
-    mycol = conn.get_collection("leyes")
-
+class LeyesListView(LoginRequiredMixin, TemplateView):
     template_name = 'leyes_list.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
-        query = self.mycol.find()
+        conn = DBconnection()
+        mycol = conn.get_collection("leyes")
+        query = mycol.find()
         data = []
 
         for par in query:
@@ -537,17 +539,20 @@ class LeyesListView(LoginRequiredMixin,TemplateView):
         return context
 
 
-class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
+class ConflictoView(PermissionRequiredMixin, LoginRequiredMixin, TemplateView):
     template_name = "conflict_view.html"
-    conn = DBconnection()
-    decl = conn.get_collection("declaraciones")
-    leyes = conn.get_collection("leyes")
-    confl = conn.get_collection("conflictos")
-    stats = conn.get_collection("estadistica")
+
     permission_required = 'auth.is_oficina'
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data()
+
+        conn = DBconnection()
+        decl = conn.get_collection("declaraciones")
+        leyes = conn.get_collection("leyes")
+        confl = conn.get_collection("conflictos")
+        stats = conn.get_collection("estadistica")
+
         ley = self.kwargs['ley']
         print(f"Buscando Ley {ley}")
         tags_ley = self.leyes.find_one({"numero": ley}, {"tags": 1, "nombre": 1, "resumen": 1, "url": 1})
@@ -567,7 +572,7 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
         ctx["conflictos"] = conflictos
         # Creacion de la lista que almacena diccionarios a insertar en la collecion de conflictos
         diclist = []
-        stat_diclist=[]
+        stat_diclist = []
         cantidad = 0
         generos = []
         regiones = []
@@ -586,10 +591,11 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
             if int(conflicto[1]) <= 0:
                 apellido_pat = conflicto[2].upper().split()[-2]
                 apellido_mat = conflicto[2].upper().split()[-1]
-                query = self.decl.find_one({"Datos_del_Declarante.Apellido_Paterno": apellido_pat, "Datos_del_Declarante.Apellido_Materno": apellido_mat})
+                query = self.decl.find_one({"Datos_del_Declarante.Apellido_Paterno": apellido_pat,
+                                            "Datos_del_Declarante.Apellido_Materno": apellido_mat})
                 dic["partido"] = query["partido"]
                 dic["razon"]["prov_conf"] = "indirecto"
-                dic["razon"]["motivo"]={}
+                dic["razon"]["motivo"] = {}
                 dic["razon"]["motivo"]["nombre_involucrado"] = conflicto[6]
 
                 regiones.append(query["Region"]["nombre"])
@@ -612,7 +618,6 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
                 dic["razon"]["motivo"] = conflicto[4]["Nombre_Razon_Social"]
                 dic["razon"]["prov_conf"] = "acciones"
 
-
                 regiones.append(query["Region"]["nombre"])
 
                 if conflicto[0] * conflicto[1] > 100:
@@ -623,18 +628,14 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
                     dic["grado"] = "leve"
                 dic["vector"] = conflicto[6]
 
-
             dic["pariente"] = 'null'
             dic["meta"] = {}
             dic["meta"]["Fecha"] = datetime.today()
 
-
-            #dic["razon"] = {}
-            #dic["razon"]["prov_conf"] = "acciones"
-            #dic["razon"]["motivo"] = conflicto[4]["Nombre_Razon_Social"]
-            #dic["vector"] = conflicto[6]
-
-
+            # dic["razon"] = {}
+            # dic["razon"]["prov_conf"] = "acciones"
+            # dic["razon"]["motivo"] = conflicto[4]["Nombre_Razon_Social"]
+            # dic["vector"] = conflicto[6]
 
             if duplicado is not None:
                 continue
@@ -642,16 +643,15 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
 
         if len(diclist) > 0:
             x = self.confl.insert_many(diclist)
-        emails = [x.email for x in User.objects.filter(groups__name = "Comision de Etica")]
+        emails = [x.email for x in User.objects.filter(groups__name="Comision de Etica")]
         ctx["high"] = high
         ctx["low"] = low
-
 
         stat_diclist = []
         for conflicto in diclist:
             stat_query = self.stats.find_one({"Partido": conflicto["partido"]})
 
-            #revisar si el partido ya esta en la lista para actualizarlo
+            # revisar si el partido ya esta en la lista para actualizarlo
             flag_list = True
             i = -1
             for partido in stat_diclist:
@@ -660,20 +660,18 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
                     indice_list = i
                     flag_list = False
 
-
-            if stat_query == None: # si no esta en la BD hay que crear el partido
-                if flag_list: # si el partido no esta en la stat_diclist se crea
+            if stat_query == None:  # si no esta en la BD hay que crear el partido
+                if flag_list:  # si el partido no esta en la stat_diclist se crea
                     stat_dic = {
                         "Partido": conflicto["partido"],
                         "total_conflictos": 0,
                         "total_graves": 0,
                         "total_leves": 0,
-                        "total_directos" : 0,
-                        "total_indirectos" : 0,
-                        "lista_diputados" : []
+                        "total_directos": 0,
+                        "total_indirectos": 0,
+                        "lista_diputados": []
                     }
                     stat_dic["total_conflictos"] += 1
-
 
                     if conflicto["razon"]["prov_conf"] == "indirecto":
                         stat_dic["total_indirectos"] += 1
@@ -683,7 +681,6 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
                             stat_dic["total_leves"] += 1
                         if conflicto["grado"] == "grave":
                             stat_dic["total_graves"] += 1
-
 
                     # y se le crea el diputado del conflcito para agregarlo a la lista
                     dipu_datos = {
@@ -696,7 +693,6 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
                         "indirectos": 0
                     }
                     dipu_datos["cant_conflictos"] += 1
-
 
                     if conflicto["razon"]["prov_conf"] == "indirecto":
                         dipu_datos["indirectos"] += 1
@@ -712,9 +708,8 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
                     stat_diclist.append(stat_dic)
 
 
-                else: #si el partido esta en la lista va y actualiza los datos
+                else:  # si el partido esta en la lista va y actualiza los datos
                     stat_diclist[indice_list]["total_conflictos"] += 1
-
 
                     if conflicto["razon"]["prov_conf"] == "indirecto":
                         stat_diclist[indice_list]["total_indirectos"] += 1
@@ -725,27 +720,26 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
                         if conflicto["grado"] == "grave":
                             stat_diclist[indice_list]["total_graves"] += 1
 
-                    #revisar si el diputado del conflicto ya esta en la lista del partido
-                    flag = True #diputado no esta en la lista
+                    # revisar si el diputado del conflicto ya esta en la lista del partido
+                    flag = True  # diputado no esta en la lista
                     j = 0
                     for diputado in stat_diclist[indice_list]["lista_diputados"]:
 
                         if conflicto["parlamentario"] == diputado["Nombre_completo"]:
                             indice = j
-                            flag = False #diputado si esta en la lista
+                            flag = False  # diputado si esta en la lista
                         j += 1
-                    if flag:#diputado no esta en la lista y hay que crearlo
+                    if flag:  # diputado no esta en la lista y hay que crearlo
                         dipu_datos = {
-                            "Nombre_completo" : conflicto["parlamentario"],
-                            "region" : regiones[diclist.index(conflicto)],
-                            "cant_conflictos" : 0,
-                            "graves" : 0,
-                            "leves" : 0,
-                            "directos" : 0,
-                            "indirectos" : 0
+                            "Nombre_completo": conflicto["parlamentario"],
+                            "region": regiones[diclist.index(conflicto)],
+                            "cant_conflictos": 0,
+                            "graves": 0,
+                            "leves": 0,
+                            "directos": 0,
+                            "indirectos": 0
                         }
                         dipu_datos["cant_conflictos"] += 1
-
 
                         if conflicto["razon"]["prov_conf"] == "indirecto":
                             dipu_datos["indirectos"] += 1
@@ -758,11 +752,10 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
 
                         stat_diclist[indice_list]["lista_diputados"].append(dipu_datos)
 
-                    else: #diputado si esta en la lista y hay que actualizar
-                        #indice = stat_dic["lista_diputados"].index(diputado)
+                    else:  # diputado si esta en la lista y hay que actualizar
+                        # indice = stat_dic["lista_diputados"].index(diputado)
 
                         stat_diclist[indice_list]["lista_diputados"][indice]["cant_conflictos"] += 1
-
 
                         if conflicto["razon"]["prov_conf"] == "indirecto":
                             stat_diclist[indice_list]["lista_diputados"][indice]["indirectos"] += 1
@@ -772,9 +765,9 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
                                 stat_diclist[indice_list]["lista_diputados"][indice]["leves"] += 1
                             if conflicto["grado"] == "grave":
                                 stat_diclist[indice_list]["lista_diputados"][indice]["graves"] += 1
-                
 
-            else: #condicion si el partido ya esta en el base
+
+            else:  # condicion si el partido ya esta en el base
                 id = stat_query["_id"]
                 lista_d = stat_query["lista_diputados"]
                 total_graves = stat_query["total_graves"]
@@ -802,7 +795,6 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
                     }
                     dipu_datos["cant_conflictos"] += 1
 
-
                     if conflicto["razon"]["prov_conf"] == "indirecto":
                         dipu_datos["indirectos"] += 1
                         total_indirectos += 1
@@ -821,7 +813,6 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
                 else:
                     lista_d[indice]["cant_conflictos"] += 1
 
-
                     if conflicto["razon"]["prov_conf"] == "indirecto":
                         lista_d[indice]["indirectos"] += 1
                         total_indirectos += 1
@@ -834,80 +825,34 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
                         if conflicto["grado"] == "grave":
                             lista_d[indice]["graves"] += 1
                             total_graves += 1
-                total_conflictos+=1
-                self.stats.update_one({"_id": id}, {"$set" : {"lista_diputados" : lista_d ,
-                                                              "total_graves" : total_graves,
-                                                              "total_leves" : total_leves,
-                                                              "total_directos" : total_directos,
-                                                              "total_indirectos" : total_indirectos,
-                                                              "total_conflictos": total_conflictos} })
+                total_conflictos += 1
+                self.stats.update_one({"_id": id}, {"$set": {"lista_diputados": lista_d,
+                                                             "total_graves": total_graves,
+                                                             "total_leves": total_leves,
+                                                             "total_directos": total_directos,
+                                                             "total_indirectos": total_indirectos,
+                                                             "total_conflictos": total_conflictos}})
 
         if len(stat_diclist) > 0:
             x = self.stats.insert_many(stat_diclist)
 
         ctx["indirecto"] = indirecto
         print("Conflictos encontrados: " + str(len(conflictos)))
-        if(len(conflictos) > 0):
-            send_email("Nuevos conflictos encontrados!", "conflict_mail", ctx, "franco.zalavari@sansano.usm.cl")
+        if (len(conflictos) > 0):
+            send_email("Nuevos conflictos encontrados!", "conflict_mail", ctx, "ignacio.tampe@sansano.usm.cl")
+        conn.close()
         return ctx
 
 
-class ConflictoListView(LoginRequiredMixin,TemplateView):
+class ConflictoListView(LoginRequiredMixin, TemplateView):
     template_name = 'conflictos_list.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
-        # query = self.confl.find()
-        # data = []
-        # ley_urls = dict()
-        # for conf in query:
-        #
-        #     if conf["ley"] not in ley_urls:
-        #         ley_urls[conf["ley"]] = self.leyes.find_one({"numero": conf["ley"]})
-        #
-        #     url_ley = ley_urls[conf["ley"]]
-        #
-        #     if url_ley is None:
-        #         url_ley = {}
-        #         url_ley["url"] = "#"
-        #     if conf["partido"] is None:
-        #         conf["partido"] = "Sin información"
-        #
-        #     dic = {
-        #         "ley": conf["ley"],
-        #         "nombre_ley": conf["nombre_ley"],
-        #         "id_parlamentario": str(conf["id_declaracion"]),
-        #         "parlamentario": conf["parlamentario"],
-        #         "partido": conf["partido"],
-        #         "grado": conf.get("grado", "indirecto"),
-        #         "url": url_ley["url"]
-        #     }
-        #     if conf["razon"]["prov_conf"] == 'indirecto':
-        #         conf["razon"]["prov_conf"] = 'Indirecto por ' + conf["razon"]["motivo"]["relacion_diputado"]
-        #
-        #         dic["nombre_involucrado"] = conf["razon"]["motivo"]["nombre_involucrado"]
-        #         dic["relacion_diputado"] = conf["razon"]["motivo"]["relacion_diputado"]
-        #         dic["razon_social"] = conf["razon"]["motivo"]["razon_social"]
-        #         dic["tipo_conflicto"] = 'indirecto'
-        #     else:
-        #         dic["motivo"] = conf["razon"]["motivo"]
-        #         dic["tipo_conflicto"] = 'directo'
-        #
-        #     dic["prov_conf"] = conf["razon"]["prov_conf"]
-        #
-        #     if conf["pariente"] is not None:
-        #         dic["pariente"] = conf["pariente"]
-        #
-        #     data.append(dic)
-        #
-        # # print(data)
-        # context["conflictos"] = json.dumps(data)
-        # print(context["conflictos"])
         return context
 
 
-class ClusterView(LoginRequiredMixin,TemplateView):
+class ClusterView(LoginRequiredMixin, TemplateView):
     template_name = "clustest.html"
 
     def get_context_data(self, **kwargs):
@@ -915,7 +860,7 @@ class ClusterView(LoginRequiredMixin,TemplateView):
         return context
 
 
-class ApiClusterView(LoginRequiredMixin,TemplateView):
+class ApiClusterView(LoginRequiredMixin, TemplateView):
     template_name = "api/patrones.html"
 
     def get_context_data(self, **kwargs):
@@ -927,7 +872,7 @@ class ApiClusterView(LoginRequiredMixin,TemplateView):
         clus = conn.get_collection("clusters")
         obj = clus.find_one({})
 
-        #Se eliminan cosas con ObjectID(), ya que causan problemas, y no se usan
+        # Se eliminan cosas con ObjectID(), ya que causan problemas, y no se usan
         for cluster in obj["clusters"]:
             for conflicto in cluster:
                 del conflicto['_id']
@@ -937,19 +882,19 @@ class ApiClusterView(LoginRequiredMixin,TemplateView):
         print(obj["clusters"])
 
         context["patrones"] = json.dumps(obj["clusters"])
-
+        conn.close()
         return context
 
 
 class ApiConflictosView(TemplateView):
     template_name = "api/conflictos.html"
-    conn = DBconnection()
-    confl = conn.get_collection("conflictos")
-    leyes = conn.get_collection("leyes")
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
+        conn = DBconnection()
+        confl = conn.get_collection("conflictos")
+        leyes = conn.get_collection("leyes")
         query = self.confl.find()
         data = []
         ley_urls = dict()
@@ -996,37 +941,38 @@ class ApiConflictosView(TemplateView):
         # print(data)
         context["conflictos"] = json.dumps(data)
         print(context["conflictos"])
+        conn.close()
         return context
 
 
 class ApiDereclaracionView(TemplateView):
     template_name = "api/declaraciones.html"
-    conn = DBconnection()
-    mycol = conn.get_collection("declaraciones")
 
     def get_context_data(self, **kwargs):
         # Eso es get, para que sea más seguro, usar POST
+        conn = DBconnection()
+        mycol = conn.get_collection("declaraciones")
         ctx = super().get_context_data()
         ctx['id'] = self.kwargs['id']
 
-        query = self.mycol.find_one({"_id": ObjectId(ctx['id'])})
+        query = mycol.find_one({"_id": ObjectId(ctx['id'])})
         query.pop('_id')
         ctx['declaracion'] = json.dumps(query).encode('latin-1').decode('utf-8')
 
         print(ctx['declaracion'])
-
+        conn.close()
         return ctx
 
-      
-class ChangeLogView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
+
+class ChangeLogView(PermissionRequiredMixin, LoginRequiredMixin, TemplateView):
     template_name = "lista_cambios.html"
     permission_required = 'auth.is_admin'
-    conn = DBconnection()
-    log = conn.get_collection("changeLog")  # Coleccion que almacenará los cambios
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
+        conn = DBconnection()
+        log = conn.get_collection("changeLog")  # Coleccion que almacenará los cambios
         query = self.log.find()
         data = []
 
@@ -1040,27 +986,62 @@ class ChangeLogView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
             data.append(dic)
 
         context['cambios'] = data
+        conn.close()
         return context
 
-      
-      
-class StatsView(LoginRequiredMixin,TemplateView):
+
+class StatsView(LoginRequiredMixin, TemplateView):
     template_name = "estadisticas.html"
+
     def get_context_data(self, **kwargs):
-      
         context = super().get_context_data(**kwargs)
+
         conn = DBconnection()
         col = conn.get_collection("estadistica")
         partidos = col.find()
         stats = {
             "partidos": [],
-            "partidos_total": []
+            "partidos_total": [],
+            "partidos_graves": [],
+            "partidos_leves": [],
+            "partidos_directos": [],
+            "partidos_indirectos": [],
+            "region": [],
+            "region_total": [],
+            "region_graves": [],
+            "region_leves": [],
+            "region_directos": [],
+            "region_indirectos": [],
         }
         for p in partidos:
-            print(p)
             stats["partidos"].append(p["Partido"] if p["Partido"] is not None else "N/A")
             stats["partidos_total"].append(p["total_conflictos"])
+            stats["partidos_graves"].append(p["total_graves"])
+            stats["partidos_leves"].append(p["total_leves"])
+            stats["partidos_directos"].append(p["total_directos"])
+            stats["partidos_indirectos"].append(p["total_indirectos"])
+
+            for dip in p["lista_diputados"]:
+                reg = dip["region"] if "VAL" not in dip["region"] else "VALPARAISO"
+
+                if reg not in stats["region"]:
+                    stats["region"].append(reg)
+                    stats["region_total"].append(0)
+                    stats["region_graves"].append(0)
+                    stats["region_leves"].append(0)
+                    stats["region_directos"].append(0)
+                    stats["region_indirectos"].append(0)
+
+                reg_idx = stats["region"].index(reg)
+                stats["region_total"][reg_idx] += dip["cant_conflictos"]
+
+                stats["region_graves"][reg_idx] += dip["graves"]
+                stats["region_leves"][reg_idx] += dip["leves"]
+                stats["region_directos"][reg_idx] += dip["directos"]
+                stats["region_indirectos"][reg_idx] += dip["indirectos"]
 
         context["stats"] = stats
 
+        print(stats)
+        conn.close()
         return context

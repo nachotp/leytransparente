@@ -11,10 +11,9 @@ const EstadisticasVue = {
                     </b-tabs>
                 </b-card>
             </b-col>
-
             <b-col>
                 <b-card>
-                <h1 class="text-center">[[graph_title]]</h1>
+                <h2 class="text-center">[[graph_title]]</h2>
                     <div class="ct-chart ct-golden-section" id="chart1"></div>
                 </b-card>
             </b-col>
@@ -59,6 +58,10 @@ const EstadisticasVue = {
     methods:{
         metodo: function (tab) {
             this.curr_tab = tab;
+            var elements = document.getElementsByClassName('ct-legend');
+            while(elements.length > 0){
+                elements[0].parentNode.removeChild(elements[0]);
+            }
             if( tab === 0){
                 // Partido Político
                 new Chartist.Bar('#chart1', {
@@ -99,16 +102,65 @@ const EstadisticasVue = {
                     })
                   ]
                 });
-            }       //Agregar otros valores de tab para hacer los gráficos
-            else if( tab === 1){
+            }
+            else if (tab === 1) {
                 new Chartist.Bar('#chart1', {
-                    labels: ["Beef","Chris"],
-                    series: [[3,2],[4, 6]]},{
+                    labels: stats.partidos,
+                    series: [
+                        stats.partidos_graves,
+                        stats.partidos_leves,
+                        stats.partidos_directos,
+                        stats.partidos_indirectos,
+                        ]
+                    }
+                    ,{
                     chartPadding: {
                         top: 20,
                         right: 0,
                         bottom: 30,
-                        left: 0
+                        left: 20
+                    },
+                    axisY: {
+                        onlyInteger: true
+                      },
+                    plugins: [
+                        Chartist.plugins.legend({
+                            legendNames: ['Graves', 'Leves', 'Directos', 'Indirectos'],
+                        }),
+                        Chartist.plugins.ctAxisTitle({
+                          axisX: {
+                            axisTitle: 'Partido Político',
+                            axisClass: 'ct-axis-title',
+                            offset: {
+                                x: 0,
+                                y: 50
+                            },
+                            textAnchor: 'middle'
+                          },
+                          axisY: {
+                            axisTitle: 'Total de Conflictos Detectados',
+                            axisClass: 'ct-axis-title',
+                            offset: {
+                                x: 0,
+                                y: -1
+                            },
+                            textAnchor: 'middle',
+                            flip: true
+                          }
+                        })
+                  ]
+                });
+            }//Agregar otros valores de tab para hacer los gráficos
+            else if( tab === 2){
+                new Chartist.Bar('#chart1', {
+                    labels: stats.region,
+                    series: [stats.region_total]
+                    },{
+                    chartPadding: {
+                        top: 20,
+                        right: 0,
+                        bottom: 30,
+                        left: 20
                     },
                     axisY: {
                         onlyInteger: true
@@ -116,7 +168,7 @@ const EstadisticasVue = {
                     plugins: [
                     Chartist.plugins.ctAxisTitle({
                       axisX: {
-                        axisTitle: 'Time (mins)',
+                        axisTitle: 'Región Administrativa',
                         axisClass: 'ct-axis-title',
                         offset: {
                             x: 0,
@@ -125,7 +177,7 @@ const EstadisticasVue = {
                         textAnchor: 'middle'
                       },
                       axisY: {
-                        axisTitle: 'Goals',
+                        axisTitle: 'Total de Conflictos Detectados',
                         axisClass: 'ct-axis-title',
                         offset: {
                             x: 0,
@@ -138,6 +190,55 @@ const EstadisticasVue = {
                   ]
                 });
             }
+            else if (tab === 3) {
+                new Chartist.Bar('#chart1', {
+                    labels: stats.region,
+                    series: [
+                        stats.region_graves,
+                        stats.region_leves,
+                        stats.region_directos,
+                        stats.region_indirectos,
+                        ]
+                    }
+                    ,{
+                    chartPadding: {
+                        top: 20,
+                        right: 0,
+                        bottom: 30,
+                        left: 20
+                    },
+                    axisY: {
+                        onlyInteger: true
+                      },
+                    plugins: [
+                        Chartist.plugins.legend({
+                            legendNames: ['Graves', 'Leves', 'Directos', 'Indirectos'],
+                        }),
+                        Chartist.plugins.ctAxisTitle({
+                          axisX: {
+                            axisTitle: 'Región Administrativa',
+                            axisClass: 'ct-axis-title',
+                            offset: {
+                                x: 0,
+                                y: 50
+                            },
+                            textAnchor: 'middle'
+                          },
+                          axisY: {
+                            axisTitle: 'Total de Conflictos Detectados',
+                            axisClass: 'ct-axis-title',
+                            offset: {
+                                x: 0,
+                                y: -1
+                            },
+                            textAnchor: 'middle',
+                            flip: true
+                          }
+                        })
+                  ]
+                });
+            }
+
         },
             isFirst: function(index) {
             if(index === 0)

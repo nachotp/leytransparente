@@ -32,7 +32,7 @@
                     <tr>
                         <td>{{ cambio.usuario }}</td>
                         <td>{{ cambio.cambio }}</td>
-                        <td>{{ cambio.fecha }}</td>
+                        <td data-sort="{{ cambio.fecha|date:"Y-m-d H:i:s" }}">{{ cambio.fecha }}</td>
                         <td class="align-middle">
                             {% if cambio.tipo == 'user' %}
                                 <a style="color: #007bff" class="align-middle" href="{% url 'Control de usuario' %}"><i class="fas fa-eye"></i></a>
@@ -63,7 +63,7 @@ $(document).ready(function() {
     var diputable = $(table).DataTable({
         "language": langSpanish,
         orderCellsTop: true,
-        "order": [[ 0, "desc" ]],
+        "order": [[ 2, "desc" ]],
         "paging":         true,
 
     });
