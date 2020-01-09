@@ -35,13 +35,13 @@
                         <td data-sort="{{ cambio.fecha|date:"Y-m-d H:i:s" }}">{{ cambio.fecha }}</td>
                         <td class="align-middle">
                             {% if cambio.tipo == 'user' %}
-                                <a style="color: #007bff" class="align-middle" href="{% url 'Control de usuario' %}"><i class="fas fa-eye"></i></a>
+                                <a v-b-popover.hover.top="'Ver usuarios'" style="color: #007bff" class="align-middle" href="{% url 'Control de usuario' %}"><i class="fas fa-eye"></i></a>
 
                             {% elif cambio.tipo == 'ley_file' %}
-                                <a style="color: #007bff" class="align-middle" href="{% url 'Lista Leyes' %}"><i class="fas fa-eye"></i></a>
+                                <a v-b-popover.hover.top="'Ver leyes'" style="color: #007bff" class="align-middle" href="{% url 'Lista Leyes' %}"><i class="fas fa-eye"></i></a>
 
                             {% elif cambio.tipo == 'dipu_file' %}
-                                <a style="color: #007bff" class="align-middle" href="{% url 'Ver Declaracion' id=cambio.id %}"><i class="fas fa-eye"></i></a>
+                                <a v-b-popover.hover.top="'Ver Diputado'" style="color: #007bff" class="align-middle" href="{% url 'Ver Declaracion' id=cambio.id %}"><i class="fas fa-eye"></i></a>
 
                             {% endif %}
                         </td>
