@@ -25,3 +25,4 @@ client = pymongo.MongoClient("mongodb+srv://admin:leytransparente@leytransparent
 - 300K vectores (281 MB): [http://dcc.uchile.cl/~jperez/word-embeddings/fasttext-sbwc.300k.vec.gz](http://dcc.uchile.cl/~jperez/word-embeddings/fasttext-sbwc.300k.vec.gz)
 - *855K vectores (801 MB)*: [http://dcc.uchile.cl/~jperez/word-embeddings/fasttext-sbwc.vec.gz](http://dcc.uchile.cl/~jperez/word-embeddings/fasttext-sbwc.vec.gz)
 
+# The End
