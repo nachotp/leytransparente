@@ -973,7 +973,7 @@ class ChangeLogView(PermissionRequiredMixin, LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         conn = DBconnection()
         log = conn.get_collection("changeLog")  # Coleccion que almacenará los cambios
-        query = self.log.find()
+        query = log.find()
         data = []
 
         for cl in query:
