@@ -22,7 +22,7 @@ class VectorClustering:
 
         # metric = DistanceMetric.get_metric('mahalanobis', V=np.cov(pca))
 
-        db = algo(eps=0.00001, algorithm="brute", metric="manhattan", n_jobs=-1).fit(pca)
+        db = algo(eps=0.00001, algorithm="brute", metric="manhattan").fit(pca)
         labels = db.labels_
         print(labels)
         groups = {}
