@@ -50,6 +50,10 @@ const EstadisticasVue = {
     methods:{
         metodo: function (tab) {
             this.curr_tab = tab;
+            var elements = document.getElementsByClassName('ct-legend');
+            while(elements.length > 0){
+                elements[0].parentNode.removeChild(elements[0]);
+            }
             if( tab === 0){
                 // Partido Político
                 new Chartist.Bar('#chart1', {
