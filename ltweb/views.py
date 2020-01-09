@@ -42,9 +42,29 @@ permission3 = Permission.objects.create(
 )
 """
 
-class HomeView(LoginRequiredMixin,TemplateView):
-    template_name = "home.html"
+class DashboardView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
+    template_name = "dashboard.html"
+    conn = DBconnection()
+    decl = conn.get_collection("estadistica")
+    confl = conn.get_collection("conflictos")
+    permission_required = 'auth.is_oficina'
 
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data()
+        sorted_conflicts = self.confl.find(sort=[( 'meta.fecha', -1 )]).limit(5)
+        today = datetime.now()
+        for i in sorted_conflicts:
+            try:
+                conflict_date = i["meta"]["fecha"]
+                i["meta"]["fecha"] = (today-conflict_date).days
+            except:
+                conflict_date = i["meta"]["Fecha"]
+                i["meta"]["fecha"] = (today-conflict_date).days
+        ctx["conflictos"] = sorted_conflicts
+
+            
+            
+        return ctx
 
 class RegistroView(PermissionRequiredMixin,LoginRequiredMixin,View):
     template_name = "registro.html"
@@ -523,6 +543,7 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
     decl = conn.get_collection("declaraciones")
     leyes = conn.get_collection("leyes")
     confl = conn.get_collection("conflictos")
+    stats = conn.get_collection("estadistica")
     permission_required = 'auth.is_oficina'
 
     def get_context_data(self, **kwargs):
@@ -546,7 +567,10 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
         ctx["conflictos"] = conflictos
         # Creacion de la lista que almacena diccionarios a insertar en la collecion de conflictos
         diclist = []
+        stat_diclist=[]
         cantidad = 0
+        generos = []
+        regiones = []
         for conflicto in conflictos:
             cantidad += 1
             duplicado = self.confl.find_one({"ley": ley, "id_declaracion": conflicto[3]})
@@ -557,6 +581,7 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
                    "parlamentario": conflicto[2]
                    }
             dic["razon"] = {}
+            stat_dic = {}
 
             if int(conflicto[1]) <= 0:
                 apellido_pat = conflicto[2].upper().split()[-2]
@@ -566,6 +591,8 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
                 dic["razon"]["prov_conf"] = "indirecto"
                 dic["razon"]["motivo"]={}
                 dic["razon"]["motivo"]["nombre_involucrado"] = conflicto[6]
+
+                regiones.append(query["Region"]["nombre"])
 
                 if conflicto[1] == 0:
                     dic["razon"]["motivo"]["relacion_diputado"] = "familiar"
@@ -584,6 +611,9 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
                 dic["razon"]["prov_conf"] = "acciones"
                 dic["razon"]["motivo"] = conflicto[4]["Nombre_Razon_Social"]
                 dic["razon"]["prov_conf"] = "acciones"
+
+
+                regiones.append(query["Region"]["nombre"])
 
                 if conflicto[0] * conflicto[1] > 100:
                     high.append(conflicto)
@@ -615,6 +645,205 @@ class ConflictoView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
         emails = [x.email for x in User.objects.filter(groups__name = "Comision de Etica")]
         ctx["high"] = high
         ctx["low"] = low
+
+
+        stat_diclist = []
+        for conflicto in diclist:
+            stat_query = self.stats.find_one({"Partido": conflicto["partido"]})
+
+            #revisar si el partido ya esta en la lista para actualizarlo
+            flag_list = True
+            i = -1
+            for partido in stat_diclist:
+                i += 1
+                if conflicto["partido"] == partido["Partido"]:
+                    indice_list = i
+                    flag_list = False
+
+
+            if stat_query == None: # si no esta en la BD hay que crear el partido
+                if flag_list: # si el partido no esta en la stat_diclist se crea
+                    stat_dic = {
+                        "Partido": conflicto["partido"],
+                        "total_conflictos": 0,
+                        "total_graves": 0,
+                        "total_leves": 0,
+                        "total_directos" : 0,
+                        "total_indirectos" : 0,
+                        "lista_diputados" : []
+                    }
+                    stat_dic["total_conflictos"] += 1
+
+
+                    if conflicto["razon"]["prov_conf"] == "indirecto":
+                        stat_dic["total_indirectos"] += 1
+                    if conflicto["razon"]["prov_conf"] != "indirecto":
+                        stat_dic["total_directos"] += 1
+                        if conflicto["grado"] == "leve":
+                            stat_dic["total_leves"] += 1
+                        if conflicto["grado"] == "grave":
+                            stat_dic["total_graves"] += 1
+
+
+                    # y se le crea el diputado del conflcito para agregarlo a la lista
+                    dipu_datos = {
+                        "Nombre_completo": conflicto["parlamentario"],
+                        "region": regiones[diclist.index(conflicto)],
+                        "cant_conflictos": 0,
+                        "graves": 0,
+                        "leves": 0,
+                        "directos": 0,
+                        "indirectos": 0
+                    }
+                    dipu_datos["cant_conflictos"] += 1
+
+
+                    if conflicto["razon"]["prov_conf"] == "indirecto":
+                        dipu_datos["indirectos"] += 1
+                    if conflicto["razon"]["prov_conf"] != "indirecto":
+                        dipu_datos["directos"] += 1
+                        if conflicto["grado"] == "leve":
+                            dipu_datos["leves"] += 1
+                        if conflicto["grado"] == "grave":
+                            dipu_datos["graves"] += 1
+
+                    stat_dic["lista_diputados"].append(dipu_datos)
+
+                    stat_diclist.append(stat_dic)
+
+
+                else: #si el partido esta en la lista va y actualiza los datos
+                    stat_diclist[indice_list]["total_conflictos"] += 1
+
+
+                    if conflicto["razon"]["prov_conf"] == "indirecto":
+                        stat_diclist[indice_list]["total_indirectos"] += 1
+                    if conflicto["razon"]["prov_conf"] != "indirecto":
+                        stat_diclist[indice_list]["total_directos"] += 1
+                        if conflicto["grado"] == "leve":
+                            stat_diclist[indice_list]["total_leves"] += 1
+                        if conflicto["grado"] == "grave":
+                            stat_diclist[indice_list]["total_graves"] += 1
+
+                    #revisar si el diputado del conflicto ya esta en la lista del partido
+                    flag = True #diputado no esta en la lista
+                    j = 0
+                    for diputado in stat_diclist[indice_list]["lista_diputados"]:
+
+                        if conflicto["parlamentario"] == diputado["Nombre_completo"]:
+                            indice = j
+                            flag = False #diputado si esta en la lista
+                        j += 1
+                    if flag:#diputado no esta en la lista y hay que crearlo
+                        dipu_datos = {
+                            "Nombre_completo" : conflicto["parlamentario"],
+                            "region" : regiones[diclist.index(conflicto)],
+                            "cant_conflictos" : 0,
+                            "graves" : 0,
+                            "leves" : 0,
+                            "directos" : 0,
+                            "indirectos" : 0
+                        }
+                        dipu_datos["cant_conflictos"] += 1
+
+
+                        if conflicto["razon"]["prov_conf"] == "indirecto":
+                            dipu_datos["indirectos"] += 1
+                        if conflicto["razon"]["prov_conf"] != "indirecto":
+                            dipu_datos["directos"] += 1
+                            if conflicto["grado"] == "leve":
+                                dipu_datos["leves"] += 1
+                            if conflicto["grado"] == "grave":
+                                dipu_datos["graves"] += 1
+
+                        stat_diclist[indice_list]["lista_diputados"].append(dipu_datos)
+
+                    else: #diputado si esta en la lista y hay que actualizar
+                        #indice = stat_dic["lista_diputados"].index(diputado)
+
+                        stat_diclist[indice_list]["lista_diputados"][indice]["cant_conflictos"] += 1
+
+
+                        if conflicto["razon"]["prov_conf"] == "indirecto":
+                            stat_diclist[indice_list]["lista_diputados"][indice]["indirectos"] += 1
+                        if conflicto["razon"]["prov_conf"] != "indirecto":
+                            stat_diclist[indice_list]["lista_diputados"][indice]["directos"] += 1
+                            if conflicto["grado"] == "leve":
+                                stat_diclist[indice_list]["lista_diputados"][indice]["leves"] += 1
+                            if conflicto["grado"] == "grave":
+                                stat_diclist[indice_list]["lista_diputados"][indice]["graves"] += 1
+                
+
+            else: #condicion si el partido ya esta en el base
+                id = stat_query["_id"]
+                lista_d = stat_query["lista_diputados"]
+                total_graves = stat_query["total_graves"]
+                total_leves = stat_query["total_leves"]
+                total_directos = stat_query["total_directos"]
+                total_indirectos = stat_query["total_indirectos"]
+                total_conflictos = stat_query["total_conflictos"]
+
+                flag_nbd = True  # diputado no esta en la lista
+                j = 0
+                for diputado in lista_d:
+                    if conflicto["parlamentario"] == diputado["Nombre_completo"]:
+                        indice = j
+                        flag_nbd = False  # diputado si esta en la lista
+                    j += 1
+                if flag_nbd:
+                    dipu_datos = {
+                        "Nombre_completo": conflicto["parlamentario"],
+                        "region": regiones[diclist.index(conflicto)],
+                        "cant_conflictos": 0,
+                        "graves": 0,
+                        "leves": 0,
+                        "directos": 0,
+                        "indirectos": 0
+                    }
+                    dipu_datos["cant_conflictos"] += 1
+
+
+                    if conflicto["razon"]["prov_conf"] == "indirecto":
+                        dipu_datos["indirectos"] += 1
+                        total_indirectos += 1
+                    if conflicto["razon"]["prov_conf"] != "indirecto":
+                        dipu_datos["directos"] += 1
+                        total_directos += 1
+                        if conflicto["grado"] == "leve":
+                            dipu_datos["leves"] += 1
+                            total_leves += 1
+                        if conflicto["grado"] == "grave":
+                            dipu_datos["graves"] += 1
+                            total_graves += 1
+
+                    lista_d.append(dipu_datos)
+
+                else:
+                    lista_d[indice]["cant_conflictos"] += 1
+
+
+                    if conflicto["razon"]["prov_conf"] == "indirecto":
+                        lista_d[indice]["indirectos"] += 1
+                        total_indirectos += 1
+                    if conflicto["razon"]["prov_conf"] != "indirecto":
+                        lista_d[indice]["directos"] += 1
+                        total_directos += 1
+                        if conflicto["grado"] == "leve":
+                            lista_d[indice]["leves"] += 1
+                            total_leves += 1
+                        if conflicto["grado"] == "grave":
+                            lista_d[indice]["graves"] += 1
+                            total_graves += 1
+                total_conflictos+=1
+                self.stats.update_one({"_id": id}, {"$set" : {"lista_diputados" : lista_d ,
+                                                              "total_graves" : total_graves,
+                                                              "total_leves" : total_leves,
+                                                              "total_directos" : total_directos,
+                                                              "total_indirectos" : total_indirectos,
+                                                              "total_conflictos": total_conflictos} })
+
+        if len(stat_diclist) > 0:
+            x = self.stats.insert_many(stat_diclist)
 
         ctx["indirecto"] = indirecto
         print("Conflictos encontrados: " + str(len(conflictos)))
@@ -683,6 +912,14 @@ class ClusterView(LoginRequiredMixin,TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        return context
+
+
+class ApiClusterView(LoginRequiredMixin,TemplateView):
+    template_name = "api/patrones.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         vc = VectorClustering()
         cls = vc.cluster()
 
@@ -690,7 +927,16 @@ class ClusterView(LoginRequiredMixin,TemplateView):
         clus = conn.get_collection("clusters")
         obj = clus.find_one({})
 
-        context["clusters"] = obj["clusters"]
+        #Se eliminan cosas con ObjectID(), ya que causan problemas, y no se usan
+        for cluster in obj["clusters"]:
+            for conflicto in cluster:
+                del conflicto['_id']
+                del conflicto['id_declaracion']
+                del conflicto['meta']
+
+        print(obj["clusters"])
+
+        context["patrones"] = json.dumps(obj["clusters"])
 
         return context
 
@@ -771,7 +1017,7 @@ class ApiDereclaracionView(TemplateView):
 
         return ctx
 
-
+      
 class ChangeLogView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
     template_name = "lista_cambios.html"
     permission_required = 'auth.is_admin'
@@ -794,4 +1040,27 @@ class ChangeLogView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
             data.append(dic)
 
         context['cambios'] = data
+        return context
+
+      
+      
+class StatsView(LoginRequiredMixin,TemplateView):
+    template_name = "estadisticas.html"
+    def get_context_data(self, **kwargs):
+      
+        context = super().get_context_data(**kwargs)
+        conn = DBconnection()
+        col = conn.get_collection("estadistica")
+        partidos = col.find()
+        stats = {
+            "partidos": [],
+            "partidos_total": []
+        }
+        for p in partidos:
+            print(p)
+            stats["partidos"].append(p["Partido"] if p["Partido"] is not None else "N/A")
+            stats["partidos_total"].append(p["total_conflictos"])
+
+        context["stats"] = stats
+
         return context

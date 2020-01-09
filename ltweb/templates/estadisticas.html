@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head_end %}
+    <link type="text/css" rel="stylesheet" href="{%  static "lib/chartist/chartist.min.css" %}"/>
+    <link rel="stylesheet" href="{% static 'ltweb/style.css' %}">
+    <script type="text/x-template" id="EstadisticasVue"></script>
+    <script src="{% static 'ltweb/js/estadistica.js' %}"></script>
+    <script type="text/javascript" charset="utf8" src="{% static 'lib/chartist/chartist.min.js' %}"></script>
+    <script type="text/javascript" charset="utf8" src="{% static 'lib/chartist/chartist-plugin-axistitle.js' %}"></script>
+    <style>
+        .ct-label {
+            font-size: 1rem;
+            color: rgba(0,0,0,.8)
+        }
+        .ct-axis-title {
+           font-size: 1.2rem;
+            font-family: "Roboto";
+        }
+    </style>
+{% endblock %}
+
+<script>
+{% block vue_dependencies %}
+    const DEPS = {'estadisticas-vue': EstadisticasVue};
+{% endblock %}
+</script>
+
+{% block content %}
+
+    <estadisticas-vue :class="toEstadisticas"></estadisticas-vue>
+
+{% endblock %}
+
+
+
+{% block body_end %}
+      <script type="text/javascript">
+        var stats = {{stats|safe}};
+      </script>
+{% endblock %}

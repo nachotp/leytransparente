@@ -84,6 +84,10 @@
                     this.actualPage = 'Patrones';
                     return '';
                 },
+                toEstadisticas: function(){
+                    this.actualPage = 'Estadisticas';
+                    return '';
+                },
 
                 inConflictos: function () {
                     if (this.actualPage === 'Conflictos')
@@ -117,6 +121,12 @@
                 },
                 inPatrones: function () {
                     if (this.actualPage === 'Patrones')
+                        return 'active';
+                    else
+                        return '';
+                },
+                inEstadisticas: function () {
+                    if (this.actualPage === 'Estadisticas')
                         return 'active';
                     else
                         return '';

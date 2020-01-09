@@ -22,6 +22,7 @@
                     <b-nav-item href="{% url "Lista Leyes" %}" class="nav-menu-item" :class="inProyLey">Proyectos de Ley</b-nav-item>
                     <b-nav-item href="{% url "Lista Conflictos" %}" class="nav-menu-item" :class="inConflictos">Conflictos</b-nav-item>
                     <b-nav-item href="{% url "Cluster" %}" class="nav-menu-item" :class="inPatrones">Patrones</b-nav-item>
+                    <b-nav-item href="{% url "Estadisticas" %}" class="nav-menu-item" :class="inEstadisticas">Estadisticas</b-nav-item>
                 {% if perms.auth.is_admin %}
                     <b-nav-item href="{% url "Control de usuario" %}" class="nav-menu-item" :class="inControl">Control de Cuentas</b-nav-item>
                     <b-nav-item href="{% url "Change Log" %}" class="nav-menu-item" :class="inChangeLog">Historial de Cambios</b-nav-item>

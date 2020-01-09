@@ -4,7 +4,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.decorators import login_required, permission_required
 
 urlpatterns = [
-    path("", views.HomeView.as_view(), name="Home"),
+    path("", views.DashboardView.as_view(), name="Home"),
     path(r'ley', views.SubirLeyView.as_view(), name='Subir Ley'),
     path(r'leyes', views.LeyesListView.as_view(), name='Lista Leyes'),
     path(r'declaracion/', views.SubirDeclaracionView.as_view(), name='Subir declaracion'),
@@ -18,6 +18,7 @@ urlpatterns = [
     path(r'logout/', LogoutView.as_view(), name='logout'),
     path(r'control/', views.ControlView.as_view(), name='Control de usuario'),
     path(r'cluster/', views.ClusterView.as_view(), name='Cluster'),
+    path(r'estadisticas/', views.StatsView.as_view(), name='Estadisticas'),
     path(r'actualizar/<str:id>/', views.ActualizarView.as_view(), name='Actualizar Usuario'),
     path(r'actualizar_permisos/', views.ActualizarPermisosView.as_view(), name='Actualizar Permisos'),
     path(r'eliminar_usuario/<str:id>/', views.EliminarUserView.as_view(), name='Eliminar Usuario'),
@@ -26,5 +27,6 @@ urlpatterns = [
     path(r'api/conflictos/', views.ApiConflictosView.as_view(), name='Api Conflictos'),
     path(r'api/declaracion/<str:id>/', views.ApiDereclaracionView.as_view(), name='Api Declaraciones'),
     path(r'changelog/', views.ChangeLogView.as_view(), name='Change Log'),
+    path(r'api/patrones/', views.ApiClusterView.as_view(), name='Api Patrones'),
 ]
 
