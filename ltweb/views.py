@@ -76,6 +76,7 @@ class DashboardView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
         ctx["conflictos"] = leyes_list
         ctx["diputados"] = top_dip
         ctx["partidos"] = top_par
+        conn.close()
         return ctx
 
 
@@ -180,8 +181,7 @@ class ActualizarPassView(PermissionRequiredMixin, LoginRequiredMixin, View):
         # Registro del cambio realizado
         change = {}
         change['usuario'] = request.user.get_username()
-        change['cambio'] = "Actualización contraseña del usuario: " + request.POST['username'] + " por: " + \
-                           request.POST['new_password']
+        change['cambio'] = "Actualización contraseña del usuario: " + request.POST['username']
         change["fecha"] = datetime.now()
         change['id'] = request.POST['username']
         change['tipo'] = 'user'

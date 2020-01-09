@@ -2,7 +2,7 @@
 
 {% block content %}
     <b-container>
-        <b-card header-bg-variant="dark" header-text-variant="white" style="font-size: large;" header="Actalizar constraseña del usuario">
+        <b-card header-bg-variant="dark" header-text-variant="white" style="font-size: large;" header="Actualizar contraseña del usuario">
             <b-form method="POST" action="{% url 'Actualizar Pass' %}" v-if="show">
                 {% csrf_token %}
                 <b-row class="justify-content-center">
@@ -22,6 +22,7 @@
                             <b-form-group label="Contraseña Actual:" label-for="textPassword">
                                 <b-form-input id="textPassword"
                                 required
+                                type="password"
                                 placeholder="Ingresar Contraseña Antigua"
                                 value=""
                                 name="password">
@@ -35,6 +36,7 @@
                             <b-form-group label="Nueva Contraseña:" label-for="textPassword">
                                 <b-form-input id="textPassword"
                                 required
+                                type="password"
                                 placeholder="Ingresar Nueva Contraseña"
                                 value=""
                                 name="new_password">
@@ -44,6 +46,7 @@
                             <b-form-group label="Confirmar contraseña:" label-for="textPassword2">
                                 <b-form-input id="textPassword2"
                                 required
+                                type="password"
                                 placeholder="Confirmar Nueva Contraseña"
                                 value=""
                                 name="new_passwordConfirm">
