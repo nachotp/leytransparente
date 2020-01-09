@@ -12,35 +12,9 @@ from .utilities import send_email
 from datetime import datetime
 
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
 from django.db import IntegrityError
-from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.auth.models import Permission, Group
-from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.models import Group
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-
-"""
-content_type = ContentType.objects.get_for_model(User)
-permission = Permission.objects.create(
-    codename='is_oficina',
-    name='Oficina de Informaciones',
-    content_type=content_type,
-)
-
-content_type = ContentType.objects.get_for_model(User)
-permission2 = Permission.objects.create(
-    codename='is_comision',
-    name='Comision de Etica',
-    content_type=content_type,
-)
-
-content_type = ContentType.objects.get_for_model(User)
-permission3 = Permission.objects.create(
-    codename='is_admin',
-    name='Administrador',
-    content_type=content_type,
-)
-"""
 
 
 class DashboardView(PermissionRequiredMixin, LoginRequiredMixin, TemplateView):
@@ -114,12 +88,11 @@ class RegistroView(PermissionRequiredMixin, LoginRequiredMixin, View):
             user.save()
 
             # Registro del cambio realizado
-            change = {}
-            change['usuario'] = request.user.get_username()
-            change['cambio'] = "Creación de un nuevo usuario: " + ctx['username']
-            change["fecha"] = datetime.now()
-            change['id'] = ctx['username']
-            change['tipo'] = 'user'
+            change = {'usuario': request.user.get_username(),
+                      'cambio': "Creación de un nuevo usuario: " + ctx['username'],
+                      'fecha': datetime.now(),
+                      'id': ctx['username'], 'tipo': 'user'
+                      }
 
             self.log.insert(change)
 
@@ -226,12 +199,11 @@ class PassView(PermissionRequiredMixin, LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         user = User.objects.get(username=self.kwargs['id'])
 
-        dic = {}
-        dic['username'] = user.username
-        dic['nombre'] = user.first_name
-        dic['apellido'] = user.last_name
-        dic['email'] = user.email
-        dic['password'] = user.password
+        dic = {'username': user.username,
+               'nombre': user.first_name,
+               'apellido': user.last_name,
+               'email': user.email,
+               'password': user.password}
 
         context['usuarios'] = dic
         return context
@@ -247,13 +219,13 @@ class ControlView(PermissionRequiredMixin, LoginRequiredMixin, TemplateView):
         users = User.objects.all()
 
         for u in users:
-            if u.is_superuser != True:
-                dic = {}
-                dic['username'] = u.username
-                dic['nombre'] = u.first_name
-                dic['apellido'] = u.last_name
-                dic['email'] = u.email
-                dic['password'] = u.password
+            if not u.is_superuser:
+                dic = {'username': u.username,
+                       'nombre': u.first_name,
+                       'apellido': u.last_name,
+                       'email': u.email,
+                       'password': u.password
+                       }
 
                 perm = u.get_all_permissions()
 
@@ -280,12 +252,12 @@ class ActualizarView(PermissionRequiredMixin, LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         user = User.objects.get(username=self.kwargs['id'])
 
-        dic = {}
-        dic['username'] = user.username
-        dic['nombre'] = user.first_name
-        dic['apellido'] = user.last_name
-        dic['email'] = user.email
-        dic['password'] = user.password
+        dic = {'username': user.username,
+               'nombre': user.first_name,
+               'apellido': user.last_name,
+               'email': user.email,
+               'password': user.password
+               }
 
         context['usuarios'] = dic
         return context
@@ -301,12 +273,10 @@ class EliminarUserView(PermissionRequiredMixin, LoginRequiredMixin, View):
         user.delete()
 
         # Registro del cambio realizado
-        change = {}
-        change['usuario'] = request.user.get_username()
-        change['cambio'] = "Se elimina el usuario: " + self.kwargs['id']
-        change["fecha"] = datetime.now()
-        change['id'] = self.kwargs['id']
-        change['tipo'] = 'user'
+        change = {'usuario': request.user.get_username(),
+                  'cambio': "Se elimina el usuario: " + self.kwargs['id'],
+                  "fecha": datetime.now(), 'id': self.kwargs['id'],
+                  'tipo': 'user'}
 
         self.log.insert(change)
 
@@ -543,15 +513,15 @@ class ConflictoView(PermissionRequiredMixin, LoginRequiredMixin, TemplateView):
     template_name = "conflict_view.html"
 
     permission_required = 'auth.is_oficina'
-
+    conn = DBconnection()
+    decl = conn.get_collection("declaraciones")
+    leyes = conn.get_collection("leyes")
+    confl = conn.get_collection("conflictos")
+    stats = conn.get_collection("estadistica")
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data()
 
-        conn = DBconnection()
-        decl = conn.get_collection("declaraciones")
-        leyes = conn.get_collection("leyes")
-        confl = conn.get_collection("conflictos")
-        stats = conn.get_collection("estadistica")
+
 
         ley = self.kwargs['ley']
         print(f"Buscando Ley {ley}")
@@ -840,7 +810,7 @@ class ConflictoView(PermissionRequiredMixin, LoginRequiredMixin, TemplateView):
         print("Conflictos encontrados: " + str(len(conflictos)))
         if (len(conflictos) > 0):
             send_email("Nuevos conflictos encontrados!", "conflict_mail", ctx, "ignacio.tampe@sansano.usm.cl")
-        conn.close()
+        self.conn.close()
         return ctx
 
 
@@ -895,13 +865,13 @@ class ApiConflictosView(TemplateView):
         conn = DBconnection()
         confl = conn.get_collection("conflictos")
         leyes = conn.get_collection("leyes")
-        query = self.confl.find()
+        query = confl.find()
         data = []
         ley_urls = dict()
         for conf in query:
 
             if conf["ley"] not in ley_urls:
-                ley_urls[conf["ley"]] = self.leyes.find_one({"numero": conf["ley"]})
+                ley_urls[conf["ley"]] = leyes.find_one({"numero": conf["ley"]})
 
             url_ley = ley_urls[conf["ley"]]
 
@@ -967,7 +937,6 @@ class ApiDereclaracionView(TemplateView):
 class ChangeLogView(PermissionRequiredMixin, LoginRequiredMixin, TemplateView):
     template_name = "lista_cambios.html"
     permission_required = 'auth.is_admin'
-
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -1042,6 +1011,5 @@ class StatsView(LoginRequiredMixin, TemplateView):
 
         context["stats"] = stats
 
-        print(stats)
         conn.close()
         return context
