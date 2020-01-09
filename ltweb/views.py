@@ -12,11 +12,9 @@ from .utilities import send_email
 from datetime import datetime
 
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
+
 from django.db import IntegrityError
-from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.auth.models import Permission, Group
-from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.models import Group
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 """
@@ -42,6 +40,7 @@ permission3 = Permission.objects.create(
 )
 """
 
+
 class DashboardView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
     template_name = "dashboard.html"
     conn = DBconnection()
@@ -62,9 +61,8 @@ class DashboardView(PermissionRequiredMixin,LoginRequiredMixin,TemplateView):
                 i["meta"]["fecha"] = (today-conflict_date).days
         ctx["conflictos"] = sorted_conflicts
 
-            
-            
         return ctx
+
 
 class RegistroView(PermissionRequiredMixin,LoginRequiredMixin,View):
     template_name = "registro.html"
@@ -1054,13 +1052,46 @@ class StatsView(LoginRequiredMixin,TemplateView):
         partidos = col.find()
         stats = {
             "partidos": [],
-            "partidos_total": []
+            "partidos_total": [],
+            "partidos_graves": [],
+            "partidos_leves": [],
+            "partidos_directos": [],
+            "partidos_indirectos": [],
+            "region": [],
+            "region_total": [],
+            "region_graves": [],
+            "region_leves": [],
+            "region_directos": [],
+            "region_indirectos": [],
         }
         for p in partidos:
-            print(p)
             stats["partidos"].append(p["Partido"] if p["Partido"] is not None else "N/A")
             stats["partidos_total"].append(p["total_conflictos"])
+            stats["partidos_graves"].append(p["total_graves"])
+            stats["partidos_leves"].append(p["total_leves"])
+            stats["partidos_directos"].append(p["total_directos"])
+            stats["partidos_indirectos"].append(p["total_indirectos"])
+
+            for dip in p["lista_diputados"]:
+                if dip["region"] not in stats["region"]:
+                    print(dip["Nombre_completo"], dip["region"])
+                    stats["region"].append(dip["region"])
+                    stats["region_total"].append(0)
+                    stats["region_graves"].append(0)
+                    stats["region_leves"].append(0)
+                    stats["region_directos"].append(0)
+                    stats["region_indirectos"].append(0)
+
+                reg_idx = stats["region"].index(dip["region"])
+                stats["region_total"][reg_idx] += dip["cant_conflictos"]
+
+                stats["region_graves"][reg_idx] += dip["graves"]
+                stats["region_leves"][reg_idx] += dip["leves"]
+                stats["region_directos"][reg_idx] += dip["directos"]
+                stats["region_indirectos"][reg_idx] += dip["indirectos"]
 
         context["stats"] = stats
+
+        print(stats)
 
         return context
