@@ -31,7 +31,7 @@
       </div>
       <div class="col-md-6 col-lg-4 G">
         <div class="row" style="margin-bottom: 15px;">
-          <div>
+          <div class="col mb-4">
             <b-card title="Parlamentarios con más conflictos">
               <b-card-text>
                 <table align="center">
@@ -41,45 +41,40 @@
                   </tr>
                     {% for cant, nombre, partido in diputados %}
                     <tr style="border-bottom: 1px solid #ddd;">
-                    <td>{{ nombre }}</td>
-                    <td style="text-align:center">{{ cant }}</td>
+                    <td class = "py-2">{{ nombre }}</td>
+                    <td style="text-align:center" class = "py-2">{{ cant }}</td>
                     </tr>
                     {% endfor %}
                 </table>
               </b-card-text>
             </b-card>
           </div>
+          <div class="col">
+            <b-card title="Partidos con más conflictos">
+              <b-card-text>
+                <table>
+                  <tr>
+                    <th style="text-align:center ; padding-right: 2rem;">Partido</th>
+                    <th style="text-align:center ; padding-right: 2rem;">Total</th>
+                    <th style="text-align:center ; padding-right: 2rem;">Graves</th>
+                    <th style="text-align:center ; padding-right: 2rem;">Leves</th>
+                  </tr>
+                    {% for total, graves, leves, partido in partidos %}
+                    <tr style="border-bottom: 1px solid #ddd; ">
+                    <td style= "padding-right: 2rem; ">{{ partido }}</tdpadding-right: 7.5px;>
+                    <td  style="text-align:center ; padding-right: 2rem;" class = "py-2">{{ total }}</td>
+                    <td  style="text-align:center; padding-right: 2rem;" class = "py-2">{{ graves }}</td>
+                    <td  style="text-align:center; padding-right: 2rem;" class = "py-2">{{ leves }}</td>
+                    </tr>
+                    {% endfor %}
+                  </table>
+              </b-card-text>
+            </b-card>
+          </div>
         </div>
-
-        <div class="row">
-            <div>
-                <b-card title="Partidos con más conflictos">
-                  <b-card-text>
-                    <table>
-                      <tr>
-                        <th style="text-align:center ; padding-right: 2rem;">Partido</th>
-                        <th style="text-align:center ; padding-right: 2rem;">Total</th>
-                        <th style="text-align:center ; padding-right: 2rem;">Graves</th>
-                        <th style="text-align:center ; padding-right: 2rem;">Leves</th>
-                      </tr>
-                        {% for total, graves, leves, partido in partidos %}
-                        <tr style="border-bottom: 1px solid #ddd;">
-                        <td style= "padding-right: 2rem; ">{{ partido }}</tdpadding-right: 7.5px;>
-                        <td  style="text-align:center ; padding-right: 2rem;">{{ total }}</td>
-                        <td  style="text-align:center; padding-right: 2rem;">{{ graves }}</td>
-                        <td  style="text-align:center; padding-right: 2rem;">{{ leves }}</td>
-                        </tr>
-                        {% endfor %}
-                      </table>
-                  </b-card-text>
-                </b-card>
-              </div>
-            </div>
       </div>
       </div>
     </div>
-    <estadisticas-vue :class="toEstadisticas"></estadisticas-vue>
-
 </div>
 
 {% endblock%}
