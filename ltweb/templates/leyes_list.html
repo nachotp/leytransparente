@@ -35,9 +35,10 @@
 
                                 ></b-form-file>
 
-                        <b-button block type="submit" variant="primary"><i class="fas fa-file-upload"></i> Subir Archivo</b-button>
+                        <b-button v-on:click="$bvModal.show('spinerModal')" block type="submit" variant="primary"><i class="fas fa-file-upload"></i> Subir Archivo</b-button>
                     </form>
                 </b-modal>
+
             </b-col>
         {% endif %}
     </b-row>
