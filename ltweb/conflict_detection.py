@@ -19,6 +19,8 @@ class EmbeddingPredictor:
             os.environ['JAVAHOME'] = str(os.environ['JAVA_HOME'])
 
         tools_dir = settings.TOOLS_DIR
+        if "java.exe" not in os.environ['JAVAHOME']:
+            os.environ['JAVAHOME'] += "\\java.exe"
 
         self.we = KeyedVectors.load_word2vec_format(os.path.join(tools_dir, filename), binary=True, limit=lim)
 

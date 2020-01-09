@@ -5,8 +5,9 @@ const EstadisticasVue = {
             <b-col md="3">
                 <b-card>
                 <h4>Gráficos</h4>
+                <h5>Partido Político</h5>
                     <b-tabs vertical pills fill nav-wrapper-class="w-100" v-on:input="metodo" lazy>
-                        <b-tab v-for="(tab,index) in tabs" :key="index" title-item-class="h5" :title="tab" :class="isFirst(index)" ></b-tab>
+                        <b-tab v-for="(tab,index) in tabs" :key="index" title-item-class="h5 dummytab" :title="tab" :class="isFirst(index)" ></b-tab>
                     </b-tabs>
                 </b-card>
             </b-col>
@@ -23,13 +24,13 @@ const EstadisticasVue = {
     data() {
         return {
             tabs: [
-                'Total conflictos según partido',
-                'Tipos de conflicto según partido',
-                'Total conflictos según Región',
-                'Tipos de conflicto según región'
+                'Total de Conflictos',
+                'Tipos de Conflicto',
+                'Total de Conflictos',
+                'Tipos de Conflicto'
             ],
             graph_names: [
-                "Conflictos de tectados según partido político",
+                "Conflictos detectados según partido político",
                 "Conflictos detectados por partido político según tipo",
                 "Conflictos detectados según Región",
                 "Conflictos detectados por Región según tipo"
@@ -45,7 +46,15 @@ const EstadisticasVue = {
             return this.graph_names[this.curr_tab];
         }
     },
-    created: function (){
+    mounted: function (){
+        this.$nextTick(function () {
+            var lis = document.getElementsByClassName('dummytab');
+            for (var i = 0; i < lis.length; i++){
+                if (i === 1) {
+                    lis[i].insertAdjacentHTML('afterend', "<h5>Región</h5>");
+                }
+            }
+        });
     },
     methods:{
         metodo: function (tab) {
